@@ -1,119 +1,180 @@
-# Ephemeral Login Sentinel
+<div align="center">
 
-A customer-local prototype that explains session risk on a **0–100 scale**, recommends MFA or human review, and never automatically locks an account. The application and documentation are in English.
+![Ephemeral Login Sentinel — less identity exposure, more inspectable evidence](docs/media/banner.svg)
 
-The current Vela demonstration uses a **local server verifier**, calibrated behaviour scores, rolling attempt/source analysis, separate credential-weakness evidence and explicit data quality. A general authenticated event interface supports a future identity-provider adapter in **shadow mode**. No real identity provider or customer pilot is connected.
+**Understand suspicious sign-ins. Keep less identity data. Show your evidence.**
 
-Prepared for the **IBM Z Datathon security/privacy theme**: [four-minute demo and judging brief](docs/datathon_demo.md), [threat model](docs/threat_model.md), and [cryptographic inventory](docs/crypto_inventory.md). The classic ink/ivory/brass security desk demonstrates CIA controls, HMAC receipt tampering, server-side resource authorization and expiring state. IBM Z hardware execution and quantum-safe integration are planned, not claimed.
+[![Tests](https://github.com/can-yazicioglu/TurAz-Security/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/can-yazicioglu/TurAz-Security/actions/workflows/tests.yml)
+[![Python 3.10+](https://img.shields.io/badge/runtime-Python_3.10%2B-32688c?style=flat-square)](#quick-start)
+[![MIT license](https://img.shields.io/badge/license-MIT-b49a54?style=flat-square)](LICENSE)
+[![Synthetic research prototype](https://img.shields.io/badge/status-synthetic_prototype-725d86?style=flat-square)](#what-is-actually-validated)
 
-## Run the current demo
+[**Run the demo**](#quick-start) · [**Four-minute pitch**](docs/datathon_demo.md) · [**How it works**](#from-sign-in-to-decision) · [**Türkçe anlatım**](docs/project_story.tr.md)
 
-Python 3.10+ is sufficient; runtime uses the standard library and included artifacts. No API key, package installation or internet access is needed.
+</div>
+
+Sentinel is a customer-local **session-risk prototype**. It turns short-lived sign-in evidence into a **0–100 risk score**, readable reasons, and a recommendation for **MFA or human review**. It never automatically locks an account.
+
+The fictional **Vela employee portal** puts the full journey on screen: sign in, replay an attack, inspect the evidence, challenge a decision receipt, and test server-side authorization. Prepared for the **IBM Z Datathon security and privacy theme**; IBM Z execution and quantum-safe integration are future work.
+
+> **Prototype status:** All demonstrations and evaluations use synthetic data. The current model has no validated action thresholds, so even normal complete-context sign-ins receive a review recommendation. The improved experimental model is **blocked from release** after missing a required attack scenario. See [the evidence and limitations](#what-is-actually-validated).
+
+## See it in action
+
+[![Actual local demo: brute-force replay, review, demo MFA, receipt tampering, restricted-resource denial, and reset](docs/media/sentinel-demo.gif)](docs/media/sentinel-demo.gif)
+
+*Recorded from the running application using public fictional credentials. Brute force → review → demo MFA → receipt integrity → access control → reset. The score is a model estimate, not a proven attack probability. [Recording details and reproduction](docs/media/README.md).*
+
+<table>
+<tr>
+<td width="50%"><a href="docs/screenshots/attack-review.png"><img src="docs/screenshots/attack-review.png" alt="Vela portal and risk reasons after twenty synthetic failed sign-ins"></a></td>
+<td width="50%"><a href="docs/screenshots/security-proof.png"><img src="docs/screenshots/security-proof.png" alt="Security lab showing an altered receipt rejected and employee access denied to the restricted console"></a></td>
+</tr>
+<tr>
+<td><strong>01 / Follow the risk</strong><br>Current score, retained session peak, reasons and missing context.</td>
+<td><strong>02 / Challenge the boundary</strong><br>Verify a receipt and exercise server-owned permissions.</td>
+</tr>
+</table>
+
+[Desktop portal](docs/screenshots/desktop.png) · [Mobile view](docs/screenshots/mobile.png) · [Demo script](docs/datathon_demo.md)
+
+## Quick start
+
+**Python 3.10+** is enough to run the included demo. No API key, build step, runtime package installation or network access is required after cloning.
 
 ```bash
+git clone https://github.com/can-yazicioglu/TurAz-Security.git
+cd TurAz-Security
 python3 scripts/preflight.py
 python3 app/serve.py --port 8001
 ```
 
-Restart an older server first. Open **http://127.0.0.1:8001/company.html**. Both pages use a simple 2010-style navy/gray interface with compact forms and bordered panels; existing parameters, controls and displays are preserved.
+Open **[http://127.0.0.1:8001/company.html](http://127.0.0.1:8001/company.html)**. Keep the terminal running; stop with `Ctrl+C`. On Windows, use `py -3` if `python3` is unavailable. If port 8001 is occupied, choose another `--port` and open that port.
 
-- Public demo account: **demo / VelaDemo!42**.
-- Public demo MFA code: **123456**. The local server checks it; it is not real MFA security.
-- Use **Brute force**, then sign in correctly and complete MFA. Review remains recommended.
-- Use **Distributed attempts** or **Password spraying** to compare source/account counters.
-- Try VPN, travel, a new device or **Missing history**. Missing context remains unscored.
-- Try a common password or variation: weakness is shown separately, with **no automatic +25/+10 bonus** in the current flow.
-- Incorrect interactive passwords trigger a server-enforced **1 → 2 → 4 → 8 → 16 → 32 → 60 second** wait, capped at 60 seconds. The form shows a countdown; it never resubmits credentials automatically. A verified password resets this delay, while risk/MFA decisions still apply.
-- Review the latest synthetic event as normal/suspicious to exercise feedback. Labels do not train the model or change access.
-- Open **Evidence & privacy workbench** below the sign-in panels: compare 30/60/120-second rule evidence, see changes within one account session, and inspect the expiring in-memory inventory. **Refresh evidence** creates no event and does not extend retention. [Walkthrough and limitations](docs/evidence_workbench.md).
-- In **Security lab**, test an altered HMAC decision receipt. The original verifies; the changed score is rejected without changing live evidence.
-- After demo MFA, open the **Employee resource**, then **Try restricted console**. The server checks each request; the public employee fixture never receives an administrator role. Grants expire within two minutes and reset removes them.
-- **Load suspicious-success example** prepares a new-device/new-network/unusual-context login without failures. Its separate rule is explicitly demo-only: consumed synthetic cohorts show high benign overlap, so it is disabled on trusted ingestion. [Measured tradeoff](docs/datathon_demo.md#tested-experimental-rule-and-its-tradeoff).
+| Public demo fixture | Value |
+|---|---|
+| Username | `demo` |
+| Password | `VelaDemo!42` |
+| Demo MFA code | `123456` |
 
-Credentials entered here travel only to this loopback server and are used transiently. Use invented demo values only. Forms clear immediately; no credentials or event-password hashes are retained or logged. The fictional workspace contains no protected company resources.
+Use invented values only. The published MFA code illustrates a flow; it is **not a real second factor**. Default transport is loopback HTTP; [optional TLS 1.3 setup](docs/crypto_inventory.md#local-tls-demonstration) is available.
 
-The fixed public credential is checked against a salted **scrypt** verifier, with at most four concurrent checks. HMAC receipt keys are randomly generated per demo and removed on reset/expiry. Default transport is unencrypted loopback HTTP; optional **TLS 1.3** and a certificate-verifying adapter are available. [TLS setup and crypto boundaries](docs/crypto_inventory.md#local-tls-demonstration).
+### Your first four-minute demo
 
-The password delay belongs to the current demo and clears on demo reset/expiry. Synthetic scenario buttons replay events and neither clear nor increase the interactive-password delay. The two-minute analysis window and five-minute retention remain fixed. Trusted ingestion is still advisory; a real login provider must enforce its own shared account throttling before verification.
+1. **Replay an attack.** Click **Brute force** under “Change the story.” Twenty synthetic failures produce evidence and a review recommendation; no remote attack is performed.
+2. **Verify the sign-in.** Click **Fill in**, **Sign in**, then enter `123456`. The fictional workspace opens; earlier risk evidence remains visible.
+3. **Test integrity.** Open **Security lab** → **Test altered receipt**. The original verifies; a changed score is rejected.
+4. **Test authorization.** Open **Employee resource**, then **Try restricted console**. The employee grant works; the restricted request is denied by the server.
+5. **Inspect and expire.** Open **Evidence & privacy** to compare rule evidence and retained RAM state. **Reset demo** removes the demo records, grant and current receipt key.
 
-## What the score and actions mean
+<details>
+<summary><strong>More scenarios to try</strong></summary>
 
-The original 11-feature logistic model supplies the behaviour estimate. A separate sigmoid mapping was fitted on one validation-account partition; decision thresholds were searched on another. Trusted ingestion remains unscored during its first 120 seconds of observation; its counters are explicitly lower bounds. The current score and retained session peak are separate. Neither is a proven real-world attack probability.
+- **Password spraying / Distributed attempts:** compare failed-account and failing-source counts within the same two-minute window.
+- **VPN / Travel / New device:** inspect benign context changes; they do not automatically prove an attack.
+- **Missing history:** the score becomes unavailable, rather than silently becoming zero.
+- **Common password / Variation:** see local reference-list evidence, separate from the model score. The live flow adds no arbitrary +25/+10 points.
+- **Wrong password:** interactive retries wait **1 → 2 → 4 → 8 → 16 → 32 → 60 seconds**, capped at 60. This per-demo delay clears on reset/expiry; a real provider needs shared account throttling.
+- **Suspicious-success example:** a successful sign-in with combined unusual context exercises an explicitly **demo-only** safeguard. It has high benign overlap and is disabled on trusted ingestion.
+- **Review feedback:** labels remain short-lived annotations; they neither train the model nor grant access.
 
-**The predefined decision targets were not met.** Neither MFA FPR ≤5% / recall ≥50% nor review FPR ≤1% / recall ≥25% had a feasible threshold. Both thresholds are explicitly unavailable. Complete events still receive a calibrated score, with limited decision support and a conservative **review recommendation**; there is no hidden 30/70 fallback. Consequently, the demo currently recommends review even for normal complete-context logins and demonstrates MFA before opening the fictional workspace. This is an unresolved usability/performance limitation, not an improvement in false alarms.
+</details>
 
-Independent sequence rules identify repeated failures, failures across transient sources, spraying, success after failures in unusual contexts, and repeated MFA failures. They can raise the recommended action; they do not manufacture calibrated probability points. MFA/passkey verification is separate evidence and never erases the recorded peak or unresolved sequence evidence.
+## What is built
 
-Additional two-minute signals distinguish failed accounts/sources from successful traffic, measure account/source failure ratios, and report attempt gaps and burst density with sample support. Spraying requires at least eight failed accounts and a source failure ratio of at least 0.8 in a complete window; distributed failures require at least three failing sources and five failures. Ordinary successful users sharing a network do not inflate those failure counts. These changes pass targeted behavior tests, but do not establish improved real-world accuracy. Timing signals remain descriptive until validated. The CSV and trained model feature set are unchanged.
+| Capability | What you can inspect |
+|---|---|
+| **AI session risk** | Original 11-feature logistic model, calibrated score, current versus peak risk, explicit missing-context handling. |
+| **Attack evidence** | Two-minute brute-force, spraying and distributed-failure rules; sequence evidence stays separate from probability points. |
+| **Privacy lifecycle** | Opaque identifiers, bounded RAM, five-minute demo expiry and a count-only retention inventory. |
+| **Decision integrity** | One current HMAC-SHA-256 receipt per demo; an altered copy fails verification. |
+| **Authentication & authorization** | Salted scrypt fixture verifier, sign-in-bound demo MFA, expiring server-owned employee grants. |
+| **Bounded work** | Request deadlines, worker/body/event limits, four password-check slots and exponential retry delays. |
+| **Evidence workbench** | Compare 30/60/120-second rule evidence and changes within one account/session without extending retention. |
+| **Provider boundary** | Signed, replay-protected events with separate producer/reviewer keys; recommendations only, in shadow mode. |
+| **Responsible release** | Frozen synthetic evaluations, attack-specific audit and a loader that refuses the blocked candidate. |
 
-The synthetic regression comparison improved event probability error: Brier **0.1156 → 0.0466**, ECE **0.1785 → 0.0189**. These are previously inspected test results, not an untouched real-world evaluation. [Full results and limitations](docs/reliability_results.md).
+## From sign-in to decision
 
-## General identity-provider integration
-
-The provider is not selected yet. The prepared adapter boundary accepts only verified, opaque events from a customer-side producer. It does not accept browser claims of successful authentication or ingest raw credentials.
-
-- `POST /api/events`: authenticated outcome/context ingestion, recommendations only.
-- `POST /api/review`: independent human-review labels, authenticated with a separate reviewer key.
-- `POST /api/metrics`: aggregate coverage, score distribution, subgroup alerts and feedback metrics; reviewer key required.
-- `GET /api/status`: readiness/configuration flags only; no activity or review aggregates.
-- HMAC signatures bind the path, timestamp, nonce and body; replay, stale requests, unexpected fields and invalid context are rejected.
-- Ingestion is disabled until a customer-held `SENTINEL_INGEST_SECRET` is configured. Review/metrics need a different `SENTINEL_REVIEW_SECRET`. No secret is included in this repository.
-
-Use `--disable-demo` when running only trusted shadow ingestion. The server bounds concurrent connections, request duration and body/header sizes, separates demo/trusted event capacity, and rate-limits operations without storing IPs. MFA challenges are bound to the current sign-in. Adapter schema validation occurs before any request is sent.
-
-See the [integration guide](docs/runtime_integration.md) and [event contract](docs/event_contract.md). The loopback development server is not a production deployment or an identity provider. A selected provider still needs an adapter that validates its events and derives context inside the customer environment.
-
-## Historical CSV analysis
-
-**http://127.0.0.1:8001/** preserves the original browser-only CSV experiments for reproducibility and is visibly labelled historical.
-
-- `data/mvp_synthetic_logins.csv`: original 17 columns and 10,000 synthetic events.
-- `data/mvp_synthetic_logins_v2.csv`: original fields plus exact/near password-reference flags; the old +25/+10 experiment remains visible only in this historical viewer.
-- CSVs stay in browser memory. Neither CSV contains verified live IdP outcomes, so neither can reproduce the new trusted event stream or establish the actual account password.
-
-The public reference contains 12,526 entries from two pinned password-only dictionaries. It is bounded common-password coverage, not an exhaustive breach search. An unsuccessful weak-password submission does not establish that the account's real password is weak. [Source provenance and license](docs/password_sources.md).
-
-## Development and verification
-
-Two completed tuning studies are documented in [model tuning and release decision](docs/model_tuning.md). The second candidate improves ranking and passes aggregate synthetic targets, but detects **0/108 and 0/115 scored suspicious-success sessions** in its final attack audit. It is blocked from activation. The default demo and trusted-ingestion model remain unchanged; `--tuned-demo` rejects the blocked release. Candidate artifacts, fixed protocols and reproducible evidence are retained under `experiments/`. These experiments do not establish real-world performance.
-
-The recorded development environment uses Python 3.13 and Node.js 24.
-
-```bash
-python3.13 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt -r requirements-optional.txt
-npm install --global pnpm@12.14.0
-pnpm --dir app install --frozen-lockfile
-python -m unittest discover -s tests -v
-python -m unittest discover -s app/tests -p 'test_*.py' -v
-pnpm --dir app test
-pnpm --dir app exec playwright install --with-deps chromium
-pnpm --dir app test:browser
-python scripts/preflight.py
+```mermaid
+flowchart LR
+    subgraph LOCAL["Customer environment"]
+      D["Vela demo verifier"] --> E["Opaque event + derived context"]
+      P["Future customer IdP adapter"] -. "signed events / shadow mode" .-> E
+      E --> W["120-second rolling evidence"]
+      W --> M["11-feature model + calibration"]
+      W --> R["Separate sequence rules"]
+      M --> O["Score / quality / reasons"]
+      R --> O
+      O --> A["MFA or human-review recommendation"]
+      O --> H["Expiring decision receipt"]
+      A -->|demo only| V["Demo verification + server authorization"]
+      V --> F["Fictional employee workspace"]
+    end
 ```
 
-Python discovery includes the company controller against a real ephemeral HTTP server, authenticated ingestion, replay/tamper checks, expiry, MFA, TLS 1.3, authorization and calibration integrity. LinkeDOM checks behaviour and wire contracts. Playwright separately exercises actual Chromium desktop/mobile sign-in, attack replay, receipt tampering, resource denial, reset, keyboard navigation and overflow. Screenshots were visually reviewed. CI uses pinned action commits and runs the same suites plus release-file verification.
+Credentials are checked transiently by the **demo verifier**, never by the ML model. Model inputs are numeric/context features; identifiers, the target label and attack-type metadata are excluded. The [shared 17-column CSV](docs/synthetic_data.md) remains unchanged. A future provider must derive trustworthy context within the customer environment; no real IdP is connected.
 
-The release manifest is a SHA-256 comparison, not a signature. After reviewing intentional runtime changes, maintainers rebuild it with `python scripts/preflight.py --write-manifest`; normal users should verify the committed manifest. Rebuilding a checksum does not qualify the blocked candidate.
+The current score describes the latest scored attempt. The session peak remembers the maximum within retained session evidence. Neither replaces authentication or authorization. Missing context remains unscored, and a successful MFA does not erase earlier evidence. [Architecture](docs/architecture.md) · [Event contract](docs/event_contract.md)
 
-Reproduce evaluations without retraining the baseline:
+## Privacy with an inspectable boundary
 
-```bash
-python -m src.models.evaluate_password_policy
-python -m src.models.calibrate_reliability
+| Data | Current treatment |
+|---|---|
+| Entered credentials | Transient local verification; fields clear immediately; no raw credential or submitted-password hash log. |
+| Raw IPs, persistent fingerprints, mouse/keyboard biometrics | Not collected or retained by this prototype. |
+| Opaque tokens, derived events, review labels | Retained temporarily in bounded server RAM; demo lifetime is fixed at five minutes. |
+| Receipt key and access grant | RAM only; reset/expiry removes references. The grant lasts at most two minutes. |
+| Model, public reference, synthetic training/evaluation files | Versioned development artifacts; intentionally persist in this repository. |
+
+This is **data minimization with explicit retention**, not “zero data storage.” Releasing application references does not prove physical memory erasure. No cookies, browser storage, external analytics or runtime password API are used. Customer-side IdP logs require their own retention policy. [Retention policy](docs/retention_policy.md) · [Threat model](docs/threat_model.md)
+
+The password reference contains **12,526 entries from two pinned password-only dictionaries**, checked locally for exact and bounded near matches. It is not an exhaustive breach search and does not link leaked identities to login events. A failed weak-password attempt says nothing conclusive about the account's real password. [Sources and license](docs/password_sources.md)
+
+## What is actually validated
+
+| Area | Current evidence and boundary |
+|---|---|
+| **Working software** | 200 Python tests, 13 HTTP/server tests, 111 JavaScript checks and 8 Chromium desktop/mobile cases recorded in the [security review](docs/security_review.md). The CI badge reports the current run. |
+| **Default model** | Complete-context scores are available, but no threshold met the predefined false-positive/recall targets. **Review is the current fallback, including normal logins.** |
+| **Tuning candidate** | Better synthetic ranking, but **0/108 and 0/115 scored suspicious-success sessions detected** in two final cohorts. **Release blocked; not the default model.** |
+| **Demo context safeguard** | Combined new device/network/unusual context triggers an illustrative rule. Its substantial benign VPN/travel overlap is measured; it is **disabled on trusted ingestion**. |
+| **Production and IBM Z** | No customer pilot, real IdP, IBM Z hardware execution, Secure Execution attestation or quantum-safe integration has been verified. |
+
+The evaluations use synthetic data from authored generators. They establish reproducibility and reveal failure modes; they do **not** establish real-world accuracy. [Model tuning and release decision](docs/model_tuning.md) · [Rule tradeoffs](docs/datathon_demo.md#tested-experimental-rule-and-its-tradeoff) · [Security review](docs/security_review.md)
+
+### What makes this project distinctive?
+
+Risk-based authentication, MFA, logistic models, scrypt and HMAC are established techniques. The contribution here is their **inspectable, short-lived implementation**: an evidence workbench, visible retention, ephemeral decision receipts and a release process that exposes a failed attack scenario instead of hiding it behind an aggregate metric.
+
+That is an engineering and product contribution, **not a claim of a new ML algorithm, cryptographic primitive or first-of-its-kind system**. [Comparison with existing approaches and originality assessment](docs/originality.md)
+
+## Explore the project
+
+| Start here | Go deeper |
+|---|---|
+| [Four-minute Datathon pitch](docs/datathon_demo.md) | [Architecture and boundaries](docs/architecture.md) |
+| [Project story — Türkçe](docs/project_story.tr.md) | [Cryptographic inventory / TLS setup](docs/crypto_inventory.md) |
+| [Company demo walkthrough](docs/company_demo.md) | [Identity-provider integration](docs/runtime_integration.md) |
+| [Evidence workbench](docs/evidence_workbench.md) | [Model experiments and blocked release](docs/model_tuning.md) |
+| [Originality assessment](docs/originality.md) | [Test plan and security review](docs/test_plan.md) |
+| [Development and reproduction](docs/development.md) | [Responsible security reporting](SECURITY.md) |
+
+```text
+app/           Vela portal, evidence workbench, local HTTP server
+src/runtime/   Ephemeral state, risk policy, verified event ingestion
+src/models/    Model evaluation, calibration and release checks
+models/        Runtime artifacts and blocked-candidate decision
+data/          Synthetic CSVs and public password-reference artifact
+experiments/   Frozen tuning protocols, evaluations and source snapshots
+tests/         Runtime, privacy, integrity and model regression tests
+docs/          Architecture, evidence, demo guides and screenshots
 ```
 
-To rebuild the baseline, use `python src/data/generate_synthetic.py --rows 10000 --seed 42 --attack-rate 0.08`, then `python -m src.models.train` and `python -m src.models.evaluate`. Rebuild dependent artifacts after changing a model/dataset. `python -m src.data.extend_password_flags` re-fetches the two pinned public dictionaries in memory to create checked synthetic examples; this reproduction step needs internet access.
+For development, see [setup and all test commands](docs/development.md). The original browser-only CSV viewer remains at **http://127.0.0.1:8001/**, explicitly labelled historical; its old password-score experiment is separate from the current login flow.
 
-## Further documentation
+Contributions should preserve the fixed schema, short retention and honest evaluation boundaries. Start with [CONTRIBUTING.md](CONTRIBUTING.md). Source is [MIT licensed](LICENSE); password-reference attribution is retained under [`third_party/passwords/`](third_party/passwords/).
 
-- [Architecture](docs/architecture.md) and [project scope](docs/project_brief.md)
-- [Company demo walkthrough](docs/company_demo.md)
-- [Evidence and privacy workbench](docs/evidence_workbench.md)
-- [Model tuning experiments and blocked release](docs/model_tuning.md)
-- [Security review](docs/security_review.md), [test plan](docs/test_plan.md) and [retention](docs/retention_policy.md)
-- [Original model results](docs/model_results.md), [old password-policy results](docs/password_policy_results.md) and [synthetic data](docs/synthetic_data.md)
-- [Datathon demo](docs/datathon_demo.md), [CIA threat model](docs/threat_model.md), [cryptographic inventory](docs/crypto_inventory.md) and [security policy](SECURITY.md)
+**Keywords:** privacy-aware AI · cybersecurity · session risk · identity and access management · anomaly detection · adaptive authentication · explainable evidence · responsible AI · data minimization · IBM Z Datathon
 
-No real credentials, raw IPs, customer files, persistent fingerprints or mouse/keyboard biometrics belong in this repository or an AI conversation. Customer processing remains local. License: [LICENSE](LICENSE); third-party reference attribution is retained under `third_party/passwords/`.
+Maintainers: [prepared GitHub About and Topics settings](docs/repository_settings.md).
