@@ -99,17 +99,10 @@ Use invented values only. The published MFA code illustrates a flow; it is **not
 ```mermaid
 flowchart LR
     subgraph LOCAL["Customer environment"]
-      D["Vela demo verifier"] --> E["Opaque event + derived context"]
-      P["Future customer IdP adapter"] -. "signed events / shadow mode" .-> E
-      E --> W["120-second rolling evidence"]
-      W --> M["11-feature model + calibration"]
-      W --> R["Separate sequence rules"]
-      M --> O["Score / quality / reasons"]
-      R --> O
-      O --> A["MFA or human-review recommendation"]
-      O --> H["Expiring decision receipt"]
-      A -->|demo only| V["Demo verification + server authorization"]
-      V --> F["Fictional employee workspace"]
+      E["Opaque event<br/>and context"] --> W["120s rolling<br/>evidence"]
+      W --> M["Model + calibration<br/>Separate rules"]
+      M --> O["Score, quality<br/>and reasons"]
+      O --> A["MFA / human<br/>review recommendation"]
     end
 ```
 
