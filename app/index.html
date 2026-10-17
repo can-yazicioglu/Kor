@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Ephemeral Login Sentinel — a colorful local workspace for privacy-conscious session risk analysis.">
+  <meta name="description" content="Kör — a colorful local workspace for privacy-conscious session risk analysis.">
   <meta name="color-scheme" content="light">
-  <title>Sentinel · See the whole sign-in story</title>
+  <title>Kör · See the whole sign-in story</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./main.js"></script>
@@ -13,7 +13,7 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <aside class="sidebar">
-    <a class="brand" href="#overview" aria-label="Sentinel overview"><span class="brand-symbol" aria-hidden="true">✳</span><span>SENTINEL<small>A CLEARER SIGN-IN STORY</small></span></a>
+    <a class="brand" href="#overview" aria-label="Kör overview"><span class="brand-symbol" aria-hidden="true">✳</span><span>KÖR<small>A CLEARER SIGN-IN STORY</small></span></a>
     <div class="workspace"><span class="workspace-icon">E</span><span>Your local workspace<small>Synthetic research prototype</small><span class="online-dot"></span></span></div>
     <p class="nav-label">YOUR WORKSPACE</p>
     <nav aria-label="Main navigation">
@@ -23,10 +23,10 @@
       <button class="nav-item" data-view="privacy"><span aria-hidden="true">◇</span> Privacy boundaries</button>
     </nav>
     <div class="sidebar-note"><div class="rainbow-arch" aria-hidden="true"><span></span></div><h3>More context.<br>A clearer picture.</h3><p>Understand the signals.<br>Choose a thoughtful next step.</p><span class="local-tag"><i></i> Local processing, by design</span></div>
-    <div class="sidebar-footer"><span class="tiny-mark">✦</span><span>Ephemeral Login Sentinel<small>Prototype · Synthetic evaluation</small></span></div>
+    <div class="sidebar-footer"><span class="tiny-mark">✦</span><span>Kör<small>Prototype · Synthetic evaluation</small></span></div>
   </aside>
   <div class="shell">
-    <header class="topbar"><div><span class="breadcrumb">Workspace</span><span class="slash">/</span><span id="page-name">Overview</span></div><div class="topbar-right"><a class="try-demo-link" href="./company.html">Try the sign-in experience ↗</a><span class="connection"><i></i> Local environment</span><span class="avatar" aria-label="Sentinel workspace">EL</span></div></header>
+    <header class="topbar"><div><span class="breadcrumb">Workspace</span><span class="slash">/</span><span id="page-name">Overview</span></div><div class="topbar-right"><a class="try-demo-link" href="./company.html">Try the sign-in experience ↗</a><span class="connection"><i></i> Local environment</span><span class="avatar" aria-label="Kör workspace">K</span></div></header>
     <main id="main" tabindex="-1">
       <div class="page-heading"><div><p class="eyebrow">A LITTLE CONTEXT. A LOT MORE CLARITY.</p><h1 id="page-title">See the whole story<span>.</span></h1><p id="page-description">Turn sign-in signals into a clearer next step.</p></div><div class="heading-actions"><button id="reset-button" class="button secondary">Clear data / Mock</button><button id="import-button" class="button primary"><span aria-hidden="true">↑</span> Import CSV</button><input id="csv-input" type="file" accept=".csv,text/csv" hidden></div></div>
       <div id="notice" class="notice" role="status" aria-live="polite"><span class="pill mock-pill">MOCK</span><p><strong>Interface preview.</strong> Scores and reasons are fixed illustrations, not model results or performance metrics.</p></div>
@@ -58,7 +58,7 @@
       <section id="privacy-view" class="info-view" aria-labelledby="privacy-title" hidden>
         <div class="panel prose-panel"><p class="eyebrow">LOCAL PROCESSING. EXPLICIT BOUNDARIES.</p><h2 id="privacy-title">Transient data. Lasting care.</h2><p>CSV is processed in browser memory and is never uploaded. No browser storage, analytics or third-party requests are used. The model JSON is fetched only from the same local server. Its checksum detects accidental corruption, not model authenticity. Imported data references are released after your chosen 5 / 10 / 15 minutes, on reset or when leaving the page. Suspended tabs recheck expiry on return. This is not a physical memory-wiping guarantee.</p><div class="flow-diagram"><div><small>01</small><strong>Identity provider</strong><span>Raw credentials stay here</span></div><span aria-hidden="true">→</span><div><small>02</small><strong>Local context</strong><span>Two-minute count window</span></div><span aria-hidden="true">→</span><div><small>03</small><strong>Risk & next steps</strong><span>MFA or human review</span></div></div><div class="privacy-rules"><article><h3>A temporary session</h3><p>The production design uses a short-lived random session key. This demo creates no cookies and records no mouse or keyboard biometrics.</p></article><article><h3>An opaque account</h3><p>Use a customer identity provider's opaque ID instead of a username. Leave account_token empty if it is unnecessary. Format checks do not guarantee anonymity.</p></article><article><h3>A measured response</h3><p>Risk runs from 0 to 100; higher means greater risk. It is not a probability or safety guarantee. The demo never locks accounts or triggers real MFA.</p></article><article><h3>Only demonstration inputs</h3><p>Never put real credentials, raw IP addresses, customer records or leaked files into an AI conversation. Use the supplied synthetic CSV and public Vela demo credentials.</p></article></div><div class="inline-note">No real 30-day history is assumed. Persistent device fingerprinting and biometric tracking remain outside this prototype. V2 carries only reference-list result flags, never plaintext passwords or list contents.</div></div>
       </section>
-      <footer class="page-footer"><span>EPHEMERAL LOGIN SENTINEL <span class="footer-dot">·</span> Local model / Synthetic evaluation</span><span>See clearly. Respond thoughtfully. ✦</span></footer>
+      <footer class="page-footer"><span>KÖR <span class="footer-dot">·</span> Local model / Synthetic evaluation</span><span>See clearly. Respond thoughtfully. ✦</span></footer>
     </main>
   </div>
   <noscript>This local demo requires JavaScript. No CSV or model has been run.</noscript>

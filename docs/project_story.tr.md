@@ -1,6 +1,6 @@
-# Ephemeral Login Sentinel: sıfırdan projenin tamamı
+# Kör: sıfırdan projenin tamamı
 
-**Tek cümleyle:** Sentinel, bir girişin çevresindeki kısa ömürlü işaretleri inceleyip oturum riskini açıklayan, gerektiğinde ek doğrulama veya insan incelemesi öneren bir güvenlik prototipi.
+**Tek cümleyle:** Kör, bir girişin çevresindeki kısa ömürlü işaretleri inceleyip oturum riskini açıklayan, gerektiğinde ek doğrulama veya insan incelemesi öneren bir güvenlik prototipi.
 
 Amacımız yalnızca “şifre doğru mu?” sorusunu cevaplamak değil. Doğru şifreyle yapılan bir girişin çevresinde şüpheli olaylar varsa bunları da görünür kılmak. Bunu yaparken kalıcı cihaz parmak izi, ham IP kaydı veya uzun süreli kullanıcı takibi oluşturmuyoruz.
 
@@ -8,11 +8,11 @@ Amacımız yalnızca “şifre doğru mu?” sorusunu cevaplamak değil. Doğru 
 
 Bir saldırgan aynı hesaba art arda şifre deneyebilir: **brute force**. Aynı kaynaktan çok sayıda hesaba az sayıda deneme yapabilir: **password spraying**. Birden fazla kaynakla aynı hesabı hedefleyebilir. Hatta doğru şifreyi bilip yeni cihaz ve alışılmadık bağlamla giriş yapabilir.
 
-Sadece şifrenin doğru olması bu olayların tamamını açıklamaz. Sentinel, girişin öncesine ve bağlamına bakarak güvenlik ekibine ek kanıt sunmayı amaçlıyor. Otomatik hesap kilitlemiyor; önerisi MFA veya inceleme. Bu bir araştırma demosu: gerçek saldırılara karşı başarısı henüz kanıtlanmış değil.
+Sadece şifrenin doğru olması bu olayların tamamını açıklamaz. Kör, girişin öncesine ve bağlamına bakarak güvenlik ekibine ek kanıt sunmayı amaçlıyor. Otomatik hesap kilitlemiyor; önerisi MFA veya inceleme. Bu bir araştırma demosu: gerçek saldırılara karşı başarısı henüz kanıtlanmış değil.
 
 ## 2. Ekrandaki şirket ne?
 
-**Vela**, projeyi anlatmak için oluşturulmuş hayali şirket. Çalışan giriş sayfasının yanında Sentinel risk monitörü var. Böylece şirket çalışanının gördüğü giriş akışıyla güvenlik ekibinin gördüğü kanıt aynı demoda izlenebiliyor.
+**Vela**, projeyi anlatmak için oluşturulmuş hayali şirket. Çalışan giriş sayfasının yanında Kör risk monitörü var. Böylece şirket çalışanının gördüğü giriş akışıyla güvenlik ekibinin gördüğü kanıt aynı demoda izlenebiliyor.
 
 Gerçek bir şirket hesabına bağlanmıyoruz. `demo / VelaDemo!42` ve `123456` herkese açık sunum değerleri. MFA ekranındaki kod gerçek bir ikinci faktör güvenliği sağlamıyor; akışı gösteriyor. Açılan çalışma alanı da tamamen kurgusal.
 

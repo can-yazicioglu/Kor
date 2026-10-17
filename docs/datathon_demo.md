@@ -2,7 +2,7 @@
 
 ## Pitch
 
-Ephemeral Login Sentinel helps notice suspicious sign-ins while minimizing identity exposure. It computes a local AI risk score, shows what evidence is missing, and recommends verification or review instead of automatically locking users out. Short-lived state, authenticated ingestion and explicit model-release gates make security and responsible data use part of the architecture.
+Kör helps notice suspicious sign-ins while minimizing identity exposure. It computes a local AI risk score, shows what evidence is missing, and recommends verification or review instead of automatically locking users out. Short-lived state, authenticated ingestion and explicit model-release gates make security and responsible data use part of the architecture.
 
 The differentiator is the combined evidence workflow: current score versus retained peak, prior-only attempt signals, a 30/60/120-second rule comparison, expiring state inventory, an authenticated decision receipt and a model rejection visible to the presenter. These are implemented engineering choices, not a claim that each algorithm is novel.
 

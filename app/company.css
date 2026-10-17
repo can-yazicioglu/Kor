@@ -42,15 +42,15 @@ img { max-width: 100%; }
   border-bottom: 1px solid #0b2630;
   background: linear-gradient(#213d48, #122e39);
 }
-.demo-bar a, .demo-bar .sentinel-wordmark { color: #faf8ef; }
-.demo-bar .sentinel-wordmark span { color: #c9d9dc; }
+.demo-bar a, .demo-bar .kor-wordmark { color: #faf8ef; }
+.demo-bar .kor-wordmark span { color: #c9d9dc; }
 .demo-bar a:hover { color: #f4d995; }
 .desk-nav { display:flex; align-items:center; flex-wrap:wrap; gap:0; border-bottom:1px solid #a9ac9f; background:linear-gradient(#fffef9,#e4e3d8); padding:0 24px; }
 .desk-nav a { padding:11px 15px; color:#2e4851; border-inline:1px solid transparent; font-weight:bold; text-decoration:none; }
 .desk-nav a[aria-current], .desk-nav a:hover { background:#fffdf5; border-inline-color:#c5c7b8; box-shadow:inset 0 -3px #a88c44; }
 .desk-nav span { margin-left:auto; padding:8px 12px; color:#52605c; font:10px Consolas,monospace; letter-spacing:.4px; }
-.sentinel-wordmark { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: #23486c; text-decoration: none; font-size: 17px; font-weight: bold; }
-.sentinel-wordmark span { font-size: 12px; font-weight: normal; color: #586d80; }
+.kor-wordmark { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: #23486c; text-decoration: none; font-size: 17px; font-weight: bold; }
+.kor-wordmark span { font-size: 12px; font-weight: normal; color: #586d80; }
 .demo-badge { display: inline-block; padding: 3px 7px; border: 1px solid #c4b56e; border-radius: 2px; background: #fff6d5; color: #655321; font-size: 11px; font-weight: bold; }
 .back-link { margin-left: auto; color: #2b5881; font-size: 13px; }
 .back-link span { margin-left: 5px; }
@@ -114,7 +114,7 @@ form input::placeholder { color: #697b8b; }
 .runbook-note { border-top:1px dashed #c0b99c; padding-top:12px; color:#655832; font-size:12px; line-height:1.65; }
 
 /* Risk details retain every current/peak, quality, password and review field. */
-.sentinel-console { padding: 22px; border-left: 1px solid #adbecc; background: white; }
+.kor-console { padding: 22px; border-left: 1px solid #adbecc; background: white; }
 .console-heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 .console-heading h2 { margin: 5px 0 0; font-size: 23px; font-weight: bold; line-height: 1.25; }
 .console-heading .eyebrow { font-size: 10px; }
@@ -255,14 +255,14 @@ form input::placeholder { color: #697b8b; }
 @media(max-width:1200px) { .assurance-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .desk-nav span { width:100%; margin:0; } }
 @media(max-width:700px) { .assurance-grid { grid-template-columns:minmax(0,1fr); } }
 @media(max-width:480px) { .desk-nav { padding:0 4px; } .desk-nav a { padding:10px 8px; font-size:11px; } .assurance-section { padding:18px 10px; } .field-guide { margin:10px; padding:16px; } }
-@media print { .demo-bar, .desk-nav, button, form, .company-stage, .sentinel-console { display:none; } .demo-layout, .assurance-grid, .insights-grid { display:block; } .assurance-card, .insight-card { break-inside:avoid; margin-bottom:12px; } }
+@media print { .demo-bar, .desk-nav, button, form, .company-stage, .kor-console { display:none; } .demo-layout, .assurance-grid, .insights-grid { display:block; } .assurance-card, .insight-card { break-inside:avoid; margin-bottom:12px; } }
 @media (max-width: 1100px) { .insights-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 480px) { .insights-section { padding: 16px 10px; } .insight-card { padding: 12px; } .insight-card h3 { margin: -12px -12px 10px; padding: 9px 12px; } }
 
 @media (max-width: 1050px) {
   .demo-layout { grid-template-columns: minmax(0, 1fr) minmax(350px, 400px); }
   .company-stage { padding: 20px; }
-  .sentinel-console { padding: 18px; }
+  .kor-console { padding: 18px; }
   .login-card { padding: 16px; }
   .portal-label { max-width: 200px; }
 }
@@ -273,14 +273,14 @@ form input::placeholder { color: #697b8b; }
   .company-stage { padding: 18px; }
   .stage-body { padding: 20px 0; }
   .stage-intro, .login-card { max-width: 580px; }
-  .sentinel-console { border-left: 0; border-top: 1px solid #a9bece; padding: 20px; }
+  .kor-console { border-left: 0; border-top: 1px solid #a9bece; padding: 20px; }
   .console-heading h2 { font-size: 23px; }
 }
 
 @media (max-width: 480px) {
   .demo-bar { padding: 10px; gap: 9px 12px; }
-  .sentinel-wordmark { font-size: 15px; }
-  .sentinel-wordmark span { font-size: 11px; }
+  .kor-wordmark { font-size: 15px; }
+  .kor-wordmark span { font-size: 11px; }
   .back-link { margin-left: 0; font-size: 12px; }
   .company-stage { padding: 14px 10px; }
   .company-top { gap: 9px; }
@@ -289,7 +289,7 @@ form input::placeholder { color: #697b8b; }
   .stage-body { padding: 17px 0; }
   .login-card { padding: 14px; }
   .login-card h2 { font-size: 20px; }
-  .sentinel-console { padding: 16px 10px; }
+  .kor-console { padding: 16px 10px; }
   .console-heading h2 { font-size: 22px; }
   .live-signals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .quality-card, .password-risk-card { padding: 10px; }

@@ -1,6 +1,6 @@
 <div align="center">
 
-![Ephemeral Login Sentinel — less identity exposure, more inspectable evidence](docs/media/banner.svg)
+![Kör — less identity exposure, more inspectable evidence](docs/media/banner.svg)
 
 **Understand suspicious sign-ins. Keep less identity data. Show your evidence.**
 
@@ -13,7 +13,7 @@
 
 </div>
 
-Sentinel is a customer-local **session-risk prototype**. It turns short-lived sign-in evidence into a **0–100 risk score**, readable reasons, and a recommendation for **MFA or human review**. It never automatically locks an account.
+Kör is a customer-local **session-risk prototype**. It turns short-lived sign-in evidence into a **0–100 risk score**, readable reasons, and a recommendation for **MFA or human review**. It never automatically locks an account.
 
 The fictional **Vela employee portal** puts the full journey on screen: sign in, replay an attack, inspect the evidence, challenge a decision receipt, and test server-side authorization. Prepared for the **IBM Z Datathon security and privacy theme**; IBM Z execution and quantum-safe integration are future work.
 
@@ -21,7 +21,7 @@ The fictional **Vela employee portal** puts the full journey on screen: sign in,
 
 ## See it in action
 
-[![Actual local demo: brute-force replay, review, demo MFA, receipt tampering, restricted-resource denial, and reset](docs/media/sentinel-demo.gif)](docs/media/sentinel-demo.gif)
+[![Actual local demo: brute-force replay, review, demo MFA, receipt tampering, restricted-resource denial, and reset](docs/media/kor-demo.gif)](docs/media/kor-demo.gif)
 
 *Recorded from the running application using public fictional credentials. Brute force → review → demo MFA → receipt integrity → access control → reset. The score is a model estimate, not a proven attack probability. [Recording details and reproduction](docs/media/README.md).*
 
@@ -56,7 +56,7 @@ Open **[http://127.0.0.1:8001/company.html](http://127.0.0.1:8001/company.html)*
 
 `can't open file .../scripts/preflight.py` means the command was run outside the checkout. Run `cd ~/TurAz-Security` first, or use the actual path where you cloned the project.
 
-`Port 8001 is already in use` means another process already owns that port. If your Sentinel demo is already running there, open its browser address instead of starting it again. Otherwise, choose a free port, for example:
+`Port 8001 is already in use` means another process already owns that port. If your Kör demo is already running there, open its browser address instead of starting it again. Otherwise, choose a free port, for example:
 
 ```bash
 cd ~/TurAz-Security

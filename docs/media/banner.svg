@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
-  <title id="title">Ephemeral Login Sentinel</title>
+  <title id="title">Kör</title>
   <desc id="desc">Less identity exposure. More inspectable evidence. A local session-risk prototype with a 120-second observation window, 300-second demo retention and human review.</desc>
   <defs>
     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern>
@@ -11,10 +11,9 @@
     <rect x="42" y="35" width="40" height="42" rx="7" fill="#dae89a"/>
     <path d="M62 43l12 5v9c0 7-7 12-12 15-5-3-12-8-12-15v-9z" fill="none" stroke="#18343d" stroke-width="2"/>
     <path d="m56 56 4 4 8-9" fill="none" stroke="#18343d" stroke-width="2.5"/>
-    <text x="97" y="53" fill="#f8f5e9" font-size="17" font-weight="700" letter-spacing="2">SENTINEL</text>
+    <text x="97" y="53" fill="#f8f5e9" font-size="17" font-weight="700" letter-spacing="2">KÖR</text>
     <text x="97" y="73" fill="#b2c7c9" font-size="12" letter-spacing="1.4">SECURITY DESK / RESEARCH PROTOTYPE</text>
-    <text x="42" y="153" fill="#fffdf4" font-family="Georgia, 'Times New Roman', serif" font-size="52">Ephemeral Login</text>
-    <text x="42" y="211" fill="#fffdf4" font-family="Georgia, 'Times New Roman', serif" font-size="52">Sentinel.</text>
+    <text x="42" y="207" fill="#fffdf4" font-family="Georgia, 'Times New Roman', serif" font-size="112">Kör.</text>
     <text x="44" y="255" fill="#d8e3de" font-size="20">Less identity exposure. More inspectable evidence.</text>
     <text x="44" y="287" fill="#b2c7c9" font-size="15">Local AI risk analysis with expiring state and human review.</text>
     <g transform="translate(784 96)">

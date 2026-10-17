@@ -17,7 +17,7 @@ from unittest import mock
 from html.parser import HTMLParser
 
 APP = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('sentinel_serve', APP / 'serve.py')
+spec = importlib.util.spec_from_file_location('kor_serve', APP / 'serve.py')
 serve = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(serve)
 

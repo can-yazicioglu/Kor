@@ -23,7 +23,7 @@ MAX_DOWNLOAD_BYTES = 2 * 1024 * 1024
 def download(path: str) -> bytes:
     if path not in (*SOURCE_PATHS, 'LICENSE'):
         raise ValueError('Only the pinned public dictionary and license paths are allowed.')
-    request = urllib.request.Request(f'{RAW_ROOT}/{path}', headers={'User-Agent': 'Ephemeral-Login-Sentinel-reference-builder'})
+    request = urllib.request.Request(f'{RAW_ROOT}/{path}', headers={'User-Agent': 'Kor-reference-builder'})
     with urllib.request.urlopen(request, timeout=30) as response:
         if response.geturl() != request.full_url:
             raise ValueError('Unexpected source redirect.')

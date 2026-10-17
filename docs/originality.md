@@ -1,19 +1,19 @@
 # Originality: what we can honestly claim
 
-Sentinel is an original implementation and a focused product experiment. It is **not a new category of authentication, a new cryptographic scheme, or a new ML algorithm**. The strongest contribution is the combination of short-lived evidence, inspectable decisions and explicit release limits in a working local demonstration.
+Kör is an original implementation and a focused product experiment. It is **not a new category of authentication, a new cryptographic scheme, or a new ML algorithm**. The strongest contribution is the combination of short-lived evidence, inspectable decisions and explicit release limits in a working local demonstration.
 
 This is a scoped comparison with public product documentation, checked on 17 October 2026. It is not an exhaustive literature review, patent search or proof that a feature has never been built elsewhere.
 
 ## Established ideas
 
-| Idea in Sentinel | Existing approach | Assessment |
+| Idea in Kör | Existing approach | Assessment |
 |---|---|---|
 | Login risk followed by an MFA step | Auth0 Adaptive MFA evaluates new-device, impossible-travel and untrusted-IP signals before additional verification. | Established product pattern. |
 | Risk at user/sign-in level, unfamiliar properties and risk-based policies | Microsoft Entra ID Protection documents these detections and risk-based MFA/password-reset policies. | Established identity-security capability. |
 | Logistic/boosted models, rolling counts and threshold selection | Standard statistical modeling and security engineering methods. | Implementation work, not algorithmic novelty. |
 | scrypt, HMAC-SHA-256, TLS and role checks | Established cryptography and access-control mechanisms. | Security controls, not invented primitives. |
 
-The first two comparisons are supported by [Auth0's Adaptive MFA documentation](https://auth0.com/docs/secure/multi-factor-authentication/adaptive-mfa) and [Microsoft's risk-detection documentation](https://learn.microsoft.com/en-us/entra/id-protection/concept-risk-detection-types). They demonstrate prior art for the broad product idea; they do not establish that Sentinel is more accurate or more private than either product as a whole.
+The first two comparisons are supported by [Auth0's Adaptive MFA documentation](https://auth0.com/docs/secure/multi-factor-authentication/adaptive-mfa) and [Microsoft's risk-detection documentation](https://learn.microsoft.com/en-us/entra/id-protection/concept-risk-detection-types). They demonstrate prior art for the broad product idea; they do not establish that Kör is more accurate or more private than either product as a whole.
 
 ## The contribution demonstrated here
 
@@ -36,7 +36,7 @@ These points are distinct within this project's design. Claiming that this exact
 
 These are engineering judgments, not measured scores. A defensible pitch is:
 
-> Sentinel explores how much useful sign-in risk evidence we can provide while keeping identity exposure and retention small—and makes both the evidence and its limitations inspectable.
+> Kör explores how much useful sign-in risk evidence we can provide while keeping identity exposure and retention small—and makes both the evidence and its limitations inspectable.
 
 Avoid “the first,” “zero data stored,” “unhackable,” “quantum-safe,” “production-ready,” or a synthetic result presented as real-world accuracy.
 

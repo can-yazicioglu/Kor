@@ -13,7 +13,7 @@ import uuid
 from src.runtime.service import APIError, CONTEXTS, RuntimeService, sign_payload
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('sentinel_backoff_http', ROOT/'app/serve.py')
+spec = importlib.util.spec_from_file_location('kor_backoff_http', ROOT/'app/serve.py')
 serve = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(serve)
 

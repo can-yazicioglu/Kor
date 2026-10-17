@@ -1,4 +1,4 @@
-# Ephemeral Login Sentinel — project brief
+# Kör — project brief
 
 ## Problem and purpose
 

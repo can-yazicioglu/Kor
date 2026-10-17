@@ -5,12 +5,12 @@ These assets illustrate the **actual local synthetic demo**, not a customer depl
 | Asset | Provenance |
 |---|---|
 | `banner.svg` | Original repository-native SVG artwork; no IBM certification or partner logo. |
-| `sentinel-demo.gif` | Chromium screen recording of the running Vela application. Public demo fixtures only; no fake score overlays or mocked responses. |
+| `kor-demo.gif` | Chromium screen recording of the running Vela application. Public demo fixtures only; no fake score overlays or mocked responses. |
 | `../screenshots/attack-review.png` | Browser screenshot after the public 20-attempt brute-force replay. |
 | `../screenshots/security-proof.png` | Browser screenshot after demo MFA, restricted-resource denial and an altered-receipt check. |
-| `../screenshots/desktop.png`, `security-desk.png`, `mobile.png` | Earlier desktop/mobile browser captures from the same runtime release. |
+| `../screenshots/desktop.png`, `security-desk.png`, `mobile.png` | Desktop/mobile browser captures refreshed with the Kör branding. |
 
-The walkthrough was captured on **17 October 2026** against runtime commit **`e8c1e4b14568da1674edd7a00cedf896be1834d4`**. Recording automation lives in [`scripts/capture_demo.mjs`](../../scripts/capture_demo.mjs). Documentation changes do not alter that runtime. Scores, receipt digests and countdowns can vary between runs; no identities or live bearer handles are displayed in the published media.
+The walkthrough and screenshots were refreshed on **17 October 2026** from the Kör-branded runtime committed with this media update. Recording automation lives in [`scripts/capture_demo.mjs`](../../scripts/capture_demo.mjs); the capture-time runtime manifest digest is recorded in [`provenance.json`](provenance.json). Scores, receipt digests and countdowns can vary between runs; no identities or live bearer handles are displayed in the published media.
 
 ## What the animation shows
 
@@ -37,14 +37,14 @@ In another terminal:
 node scripts/capture_demo.mjs
 ```
 
-The script accepts an optional **loopback-only** URL, asserts the displayed outcomes, checks for page errors and external requests, and checks that cookies/local/session storage remain empty. It records WebM under ignored `.local/repo-media/` and writes the two screenshots above. Stop the dedicated server after capture. Do not use a real account or customer environment.
+The script accepts an optional **loopback-only** URL, asserts the displayed outcomes, checks for page errors and external requests, and checks that cookies/local/session storage remain empty. It records WebM under ignored `.local/repo-media/` and writes all five desktop/mobile screenshots above. Stop the dedicated server after capture. Do not use a real account or customer environment.
 
 To encode with FFmpeg, replace `RECORDING.webm` with the path printed by the script:
 
 ```bash
 ffmpeg -i .local/repo-media/RECORDING.webm \
   -filter_complex '[0:v]fps=4,scale=960:-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode=full:max_colors=64[p];[b][p]paletteuse=dither=none:diff_mode=rectangle' \
-  -loop 0 -y docs/media/sentinel-demo.gif
+  -loop 0 -y docs/media/kor-demo.gif
 ```
 
 The GIF retains the recorded sequence and timing; only resolution, frame rate and palette are reduced for download size. It loops automatically. Static screenshots and the textual walkthrough provide alternatives to motion. The repository runtime has no dependency on FFmpeg or the recording tool.

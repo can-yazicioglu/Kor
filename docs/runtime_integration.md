@@ -1,5 +1,7 @@
 # Customer-local shadow integration
 
+The product name is **Kör**. Existing `SENTINEL_*` environment variables, `X-Sentinel-*` request headers and `els-*` artifact/contract identifiers remain stable for compatibility. They are integration identifiers, not the displayed product name. Renaming the product does not rotate keys, change the CSV schema or rewrite frozen model evidence.
+
 The identity provider is intentionally unspecified. The implemented interface and transport are provider-neutral; no provider account, tenant credentials, real traffic or production MFA system was connected during development.
 
 Optional `--tls-cert` and `--tls-key` server arguments require TLS 1.3. The CLI adapter's `--tls-ca` uses certificate and hostname verification and never falls back to HTTP. Default transport remains unencrypted loopback HTTP. [TLS configuration](crypto_inventory.md#local-tls-demonstration).

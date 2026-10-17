@@ -25,7 +25,7 @@ from src.runtime import adapter
 from src.runtime.service import APIError, CONTEXTS, RuntimeService, sign_payload
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location('sentinel_hardening_server', ROOT/'app/serve.py')
+SPEC = importlib.util.spec_from_file_location('kor_hardening_server', ROOT/'app/serve.py')
 serve = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(serve)
 

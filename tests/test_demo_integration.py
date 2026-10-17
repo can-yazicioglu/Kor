@@ -32,7 +32,7 @@ class DemoIntegrationTests(unittest.TestCase):
         self.assertIn('10 JavaScript', self.run_js('app/tests/model-integration.test.mjs'))
 
     def test_all_actual_csv_events_have_python_javascript_score_and_reason_parity(self):
-        spec = importlib.util.spec_from_file_location('sentinel_portable_core', ROOT / 'src/models/core.py')
+        spec = importlib.util.spec_from_file_location('kor_portable_core', ROOT / 'src/models/core.py')
         core = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(core)
         model = json.loads((ROOT / 'models/demo_model.json').read_text())

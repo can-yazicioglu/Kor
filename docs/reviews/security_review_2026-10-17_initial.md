@@ -2,7 +2,7 @@
 
 # AI 4 — Security and independent validation report
 
-**Project:** Ephemeral Login Sentinel
+**Project:** Kör
 **Review date:** 17 October 2026
 **Report branch:** `A4`, created from A1.
 **Test plan:** [docs/test_plan.md](../test_plan.md)

@@ -17,7 +17,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node') or '/usr/lib/chatgpt/resources/cua_node/bin/node'
-spec = importlib.util.spec_from_file_location('sentinel_company_http', ROOT/'app/serve.py')
+spec = importlib.util.spec_from_file_location('kor_company_http', ROOT/'app/serve.py')
 serve = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(serve)
 

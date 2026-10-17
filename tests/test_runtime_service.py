@@ -17,7 +17,7 @@ import uuid
 from src.runtime.service import RuntimeService, sign_payload, strict_json, APIError
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('sentinel_service_test_server', ROOT/'app/serve.py')
+spec = importlib.util.spec_from_file_location('kor_service_test_server', ROOT/'app/serve.py')
 serve = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(serve)
 

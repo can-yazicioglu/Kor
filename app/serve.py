@@ -25,7 +25,7 @@ MAX_MODEL_BYTES = 512 * 1024
 REFERENCE_FILE = ROOT.parent / 'data' / 'password_reference.json'
 MAX_REFERENCE_BYTES = 4 * 1024 * 1024
 _reference_spec = importlib.util.spec_from_file_location(
-    'sentinel_password_check', ROOT.parent / 'src' / 'security' / 'password_check.py')
+    'kor_password_check', ROOT.parent / 'src' / 'security' / 'password_check.py')
 _reference_module = importlib.util.module_from_spec(_reference_spec)
 _reference_spec.loader.exec_module(_reference_module)
 ASSETS = {
@@ -163,7 +163,7 @@ class HeaderBudget:
 
 class DemoHandler(BaseHTTPRequestHandler):
     def version_string(self):
-        return 'SentinelLocal'
+        return 'KorLocal'
 
     def setup(self):
         super().setup()
@@ -389,7 +389,7 @@ def main():
         parser.exit(1, 'Local port or TLS files unavailable. Check --port and configured file paths.\n')
     except ValueError:
         parser.exit(1, 'Invalid runtime configuration. Role keys must be distinct; --tuned-demo requires a qualified intact release.\n')
-    print(f'Ephemeral Login Sentinel · {server.scheme}://127.0.0.1:{args.port}/company.html', flush=True)
+    print(f'Kör · {server.scheme}://127.0.0.1:{args.port}/company.html', flush=True)
     print('Local demo: company credentials are checked transiently on this local server; CSV stays in your browser. Trusted adapters run in shadow mode. Stop with Ctrl+C.', flush=True)
     try:
         server.serve_forever()

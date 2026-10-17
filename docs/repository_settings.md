@@ -6,7 +6,7 @@ README, artwork, screenshots, animation and documentation are versioned in Git. 
 
 **Description**
 
-> Privacy-aware session-risk prototype: local AI, expiring evidence, MFA/review recommendations and inspectable security controls. Synthetic demo for the IBM Z Datathon.
+> Kör — privacy-aware session-risk prototype: local AI, expiring evidence, MFA/review recommendations and inspectable security controls. Synthetic demo for the IBM Z Datathon.
 
 **Website**
 
@@ -32,7 +32,7 @@ Then apply the prepared settings:
 
 ```bash
 gh repo edit can-yazicioglu/TurAz-Security \
-  --description 'Privacy-aware session-risk prototype: local AI, expiring evidence, MFA/review recommendations and inspectable security controls. Synthetic demo for the IBM Z Datathon.' \
+  --description 'Kör — privacy-aware session-risk prototype: local AI, expiring evidence, MFA/review recommendations and inspectable security controls. Synthetic demo for the IBM Z Datathon.' \
   --homepage 'https://github.com/can-yazicioglu/TurAz-Security/blob/main/docs/datathon_demo.md' \
   --add-topic 'cybersecurity,privacy,privacy-by-design,machine-learning,anomaly-detection,risk-scoring,authentication,authorization,identity-access-management,mfa,responsible-ai,data-minimization,python,javascript,ibm-z,datathon'
 ```

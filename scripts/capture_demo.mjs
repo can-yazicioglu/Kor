@@ -29,6 +29,7 @@ const pause = ms => page.waitForTimeout(ms); // Deliberate reading time in the r
 try {
   await page.goto(new URL('/company.html', base).href);
   await expect(page.locator('#fill-demo')).toBeEnabled();
+  await page.screenshot({ path: path.join(root, 'docs/screenshots/desktop.png') });
   await pause(1800);
   await page.getByRole('link', { name: 'Risk monitor', exact: true }).click();
   await page.locator('#run-brute').scrollIntoViewIfNeeded();
@@ -63,6 +64,7 @@ try {
   await page.locator('#check-receipt').click();
   await expect(page.locator('#proof-result')).toContainText('Altered score rejected');
   await page.screenshot({ path: path.join(root, 'docs/screenshots/security-proof.png') });
+  await page.locator('#security-desk').screenshot({ path: path.join(root, 'docs/screenshots/security-desk.png') });
   await pause(3300);
   await page.getByRole('link', { name: 'Evidence & privacy', exact: true }).click();
   await pause(2500);
@@ -75,6 +77,21 @@ try {
   expect(errors).toEqual([]);
   expect(external).toEqual([]);
   expect(await page.evaluate(() => [localStorage.length, sessionStorage.length, document.cookie])).toEqual([0, 0, '']);
+  const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  try {
+    const mobile = await mobileContext.newPage();
+    await mobile.goto(new URL('/company.html', base).href);
+    await expect(mobile.locator('#fill-demo')).toBeEnabled();
+    await mobile.locator('#fill-demo').click();
+    await mobile.locator('#sign-in').click();
+    await expect(mobile.locator('#mfa-panel')).toBeVisible();
+    await mobile.evaluate(() => window.scrollTo(0, 0));
+    await mobile.screenshot({ path: path.join(root, 'docs/screenshots/mobile.png') });
+    await mobile.locator('#reset-company').click();
+    await expect(mobile.locator('#event-total')).toHaveText('0 EVENTS');
+  } finally {
+    await mobileContext.close();
+  }
 } finally {
   const video = page.video();
   await context.close();

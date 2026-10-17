@@ -75,10 +75,10 @@ Frozen evidence is under [experiment v1](../experiments/tuning_v1/README.md) and
 To reproduce the known v2 experiment in a **new output directory**:
 
 ```bash
-.venv/bin/python -m src.models.tune_followup prepare --run-dir /tmp/sentinel-tuning-reproduction
-.venv/bin/python -m src.models.tune_followup fit --run-dir /tmp/sentinel-tuning-reproduction
-.venv/bin/python -m src.models.tune_followup evaluate --run-dir /tmp/sentinel-tuning-reproduction
-.venv/bin/python -m src.models.audit_tuned --run-dir /tmp/sentinel-tuning-reproduction
+.venv/bin/python -m src.models.tune_followup prepare --run-dir /tmp/kor-tuning-reproduction
+.venv/bin/python -m src.models.tune_followup fit --run-dir /tmp/kor-tuning-reproduction
+.venv/bin/python -m src.models.tune_followup evaluate --run-dir /tmp/kor-tuning-reproduction
+.venv/bin/python -m src.models.audit_tuned --run-dir /tmp/kor-tuning-reproduction
 ```
 
 Existing run directories cannot be overwritten, and an experiment cannot consume its final cohorts twice. Repeating these known seeds is **reproduction**, not new validation. V1 source snapshots preserve its earlier implementation; current-source hashes intentionally prevent silently re-evaluating it as though the implementation had stayed fixed. No automatic training occurs from demo feedback or five-minute RAM records.

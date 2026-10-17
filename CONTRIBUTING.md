@@ -1,4 +1,4 @@
-# Contributing to Ephemeral Login Sentinel
+# Contributing to Kör
 
 Start with the [project brief](docs/project_brief.md), [architecture](docs/architecture.md) and [development guide](docs/development.md). This is a synthetic research prototype with explicit unresolved model limitations.
 

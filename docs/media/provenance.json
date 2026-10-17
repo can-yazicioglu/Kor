@@ -1,0 +1,41 @@
+{
+  "project": "Kör",
+  "capture_date": "2026-10-17",
+  "scope": "Local Chromium captures using public synthetic fixtures; not a customer deployment.",
+  "runtime_manifest_sha256": "4455d6dca318cbaf57b8ad26d34f26adfc4426e6a7db913d57df9738539ac9df",
+  "capture_script_sha256": "aa7cb6648177e7a2f0131aa73c24865d4946401931fbb33bde44fd66a3fe1ff5",
+  "assets": {
+    "docs/media/banner.svg": {
+      "sha256": "49f63343710ec5cd05db988e59bc46fbe18a9d1a7cb57a241f3f711811a72539",
+      "bytes": 2975
+    },
+    "docs/media/kor-demo.gif": {
+      "sha256": "d1542eaf7a85b965e65353aa037bf85df8ce5344485d696535d66de245a28145",
+      "bytes": 5300745,
+      "width": 960,
+      "height": 667,
+      "frames": 98,
+      "duration_seconds": 24.5
+    },
+    "docs/screenshots/attack-review.png": {
+      "sha256": "4531a2ab263c875bd64f7fbd9805531702713b0f17ceaa3aca12acfee959cea2",
+      "bytes": 263225
+    },
+    "docs/screenshots/desktop.png": {
+      "sha256": "a7a2985ba9f095d16d615cb89a427e4e67940ea50efeceedb65d9bf9e5833617",
+      "bytes": 247519
+    },
+    "docs/screenshots/mobile.png": {
+      "sha256": "eae6d48d3e541c0a809acf21da029c411f7a7eaa0c8f86505f2793cff98aaa37",
+      "bytes": 96009
+    },
+    "docs/screenshots/security-desk.png": {
+      "sha256": "5bec14e0c2935f9cf27eb2e465b3107debdda4b158e4e45f910bc3d1254e3461",
+      "bytes": 157654
+    },
+    "docs/screenshots/security-proof.png": {
+      "sha256": "b51ed971c43011d050679d2e4bc11cad35546d316d409c88b6d562e89865c324",
+      "bytes": 248648
+    }
+  }
+}
