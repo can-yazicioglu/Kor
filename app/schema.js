@@ -11,7 +11,7 @@ export const MAX_BYTES = 2 * 1024 * 1024;
 export const MAX_ROWS = 10000;
 const FLAGS = new Set(['typical_weekday', 'device_managed', 'device_new', 'is_suspicious']);
 const COUNTS = new Set(['attempts_2m', 'attempts_1h', 'distinct_accounts_2m']);
-const RATIOS = new Set(['failed_ratio_24h', 'network_familiarity']);
+const RATIOS = new Set(['failed_ratio_24h']);
 
 function invalid(row, column, reason) {
   // Never echo a cell, token, file name, or entire row in an error.
@@ -76,7 +76,7 @@ export function parseCSV(text) {
           invalid(rowNumber, column, 'geçerli bir takvim zamanı bekleniyor.');
         }
         event[column] = value;
-      } else if (column === 'asn_category' || column === 'attack_type') {
+      } else if (column === 'asn_category' || column === 'attack_type' || column === 'network_familiarity') {
         if (value.length > 64 || /[\x00-\x1f\x7f]/.test(value)) invalid(rowNumber, column, 'en fazla 64 karakterlik kategori bekleniyor.');
         event[column] = value || null;
       } else if (!value) event[column] = null; // Missing history is unknown, never zero.
@@ -92,6 +92,10 @@ export function parseCSV(text) {
         event[column] = number;
       }
     });
+    if (event.attempts_2m !== null && event.attempts_1h !== null && event.attempts_2m > event.attempts_1h) {
+      invalid(rowNumber, 'attempts_2m', 'iki dakikalık sayı bir saatlik sayıyı aşamaz.');
+    }
+    if (event.hour_deviation !== null && event.hour_deviation > 12) invalid(rowNumber, 'hour_deviation', '0–12 saat aralığı bekleniyor.');
     if (seen.has(event.event_id)) invalid(rowNumber, 'event_id', 'yinelenen olay anahtarı.');
     seen.add(event.event_id);
     return event;
@@ -103,7 +107,7 @@ export function selectFeatures(event) {
 }
 
 export function recommendation(score) {
-  if (score === null) return { level: 'pending', label: 'Puan bekleniyor', action: 'Model bağlantısını bekle', detail: 'Puan üretilmedi. Bu oturum için otomatik karar verilmez.' };
+  if (score === null) return { level: 'pending', label: 'Puan bekleniyor', action: 'Ek bağlamı incele', detail: 'Puan yok: model erişimini veya eksik bağlamı kontrol edin. Bu oturum düşük risk kabul edilmez; otomatik işlem yapılmaz.' };
   if (score >= 70) return { level: 'high', label: 'Yüksek risk', action: 'MFA + inceleme öner', detail: 'Ek doğrulama isteyin ve oturumu güvenlik ekibinin değerlendirmesine sunun.' };
   if (score >= 30) return { level: 'medium', label: 'Orta risk', action: 'MFA öner', detail: 'Kimlik sağlayıcısı üzerinden ek doğrulama değerlendirin.' };
   return { level: 'low', label: 'Düşük risk', action: 'İzlemeye devam et', detail: 'Bu puan güvenli oturum garantisi değildir. Mevcut güvenlik politikasını uygulayın.' };

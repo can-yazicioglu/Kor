@@ -1,0 +1,643 @@
+{
+  "model_version": "els-lr-41383a34524c-s42",
+  "origin": "feature-only selections from the delivered synthetic holdout CSV",
+  "cases": [
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.2,
+        "hour_deviation": 7.778611,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 92.04,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "residential",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 88,
+        "probability": 0.8755632332094216,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Olağan saatten sapma: riski artıran model katkısı (+0.95)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.02829573386634777,
+          "hour_deviation": 0.9521851775171637,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": -0.020336344628330342,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.44131996370641663,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 1.656389,
+        "typical_weekday": 0.0,
+        "geo_velocity_kmh": 39.28,
+        "network_familiarity": "familiar",
+        "asn_category": "residential",
+        "device_managed": 1.0,
+        "device_new": 0
+      },
+      "expected": {
+        "risk_score": 1,
+        "probability": 0.011877583905927712,
+        "reasons": [
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
+          "Ağ kategorisi: riski artıran model katkısı (+0.44)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": -0.3324062918932397,
+          "typical_weekday": -0.3414678323184123,
+          "geo_velocity_kmh": -0.02217094654877628,
+          "network_familiarity": -0.593488608181644,
+          "asn_category": 0.44131996370641663,
+          "device_managed": -1.0099575458940135,
+          "device_new": -0.18126125977361254
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.142857,
+        "hour_deviation": 7.700556,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 169.17,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "business",
+        "device_managed": 1.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 28,
+        "probability": 0.28414834998818184,
+        "reasons": [
+          "Olağan saatten sapma: riski artıran model katkısı (+0.94)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
+          "Ağ aşinalığı: riski artıran model katkısı (+0.58)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.05174033726490762,
+          "hour_deviation": 0.935807335102297,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": -0.017654334656306173,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.4019334634874914,
+          "device_managed": -1.0099575458940135,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 2,
+        "attempts_1h": 2,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.125,
+        "hour_deviation": 7.701389,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 169.17,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "business",
+        "device_managed": 1.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 35,
+        "probability": 0.3506335772103017,
+        "reasons": [
+          "Olağan saatten sapma: riski artıran model katkısı (+0.94)",
+          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
+          "Yeni cihaz bağlamı: riski artıran model katkısı (+0.43)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -0.4507922280570666,
+          "attempts_1h": 0.3593989524568835,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.059066698899545,
+          "hour_deviation": 0.9359821188154683,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": -0.017654334656306173,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.4019334634874914,
+          "device_managed": -1.0099575458940135,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.285714,
+        "hour_deviation": 7.28,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 1121.43,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "business",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 87,
+        "probability": 0.8673839590994591,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Olağan saatten sapma: riski artıran model katkısı (+0.85)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": 0.0068709660917251275,
+          "hour_deviation": 0.8475644308088296,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": 0.01545821319744379,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.4019334634874914,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 11.585,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 120.67,
+        "network_familiarity": "familiar",
+        "asn_category": "business",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 81,
+        "probability": 0.81097612532099,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Olağan saatten sapma: riski artıran model katkısı (+1.75)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": 1.7508584106435676,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": -0.01934080533753491,
+          "network_familiarity": -0.593488608181644,
+          "asn_category": 0.4019334634874914,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 5.414167,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 840.23,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "vpn",
+        "device_managed": 1.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 8,
+        "probability": 0.07868110291134628,
+        "reasons": [
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
+          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
+          "Olağan saatten sapma: riski artıran model katkısı (+0.46)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": 0.4560671680267186,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": 0.005680160505453695,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": -0.6194762854908704,
+          "device_managed": -1.0099575458940135,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 2,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 1.413333,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 840.23,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "vpn",
+        "device_managed": 1.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 6,
+        "probability": 0.06270574123058176,
+        "reasons": [
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
+          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
+          "2 dakikadaki farklı hesap sayısı: riski artıran model katkısı (+0.46)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": 0.4550962264745176,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": -0.38340536774985107,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": 0.005680160505453695,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": -0.6194762854908704,
+          "device_managed": -1.0099575458940135,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 11,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.105263,
+        "hour_deviation": 0.768611,
+        "typical_weekday": 0.0,
+        "geo_velocity_kmh": 98.41,
+        "network_familiarity": "familiar",
+        "asn_category": "residential",
+        "device_managed": 0.0,
+        "device_new": 0
+      },
+      "expected": {
+        "risk_score": 1,
+        "probability": 0.005133387086469974,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Ağ kategorisi: riski artıran model katkısı (+0.44)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": -2.7934580337700265,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.06716438605768119,
+          "hour_deviation": -0.5186837652567063,
+          "typical_weekday": -0.3414678323184123,
+          "geo_velocity_kmh": -0.02011484322133185,
+          "network_familiarity": -0.593488608181644,
+          "asn_category": 0.44131996370641663,
+          "device_managed": 1.7885616946799527,
+          "device_new": -0.18126125977361254
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 2,
+        "attempts_1h": 12,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.15,
+        "hour_deviation": 0.771389,
+        "typical_weekday": 0.0,
+        "geo_velocity_kmh": 98.41,
+        "network_familiarity": "familiar",
+        "asn_category": "residential",
+        "device_managed": 0.0,
+        "device_new": 0
+      },
+      "expected": {
+        "risk_score": 1,
+        "probability": 0.007153084998700431,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Ağ kategorisi: riski artıran model katkısı (+0.44)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -0.4507922280570666,
+          "attempts_1h": -3.1437754766841275,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.04880971055514593,
+          "hour_deviation": -0.5181008731136213,
+          "typical_weekday": -0.3414678323184123,
+          "geo_velocity_kmh": -0.02011484322133185,
+          "network_familiarity": -0.593488608181644,
+          "asn_category": 0.44131996370641663,
+          "device_managed": 1.7885616946799527,
+          "device_new": -0.18126125977361254
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 3.611667,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 31.92,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "cloud",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 67,
+        "probability": 0.6744585179728481,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
+          "Ağ aşinalığı: riski artıran model katkısı (+0.58)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": 0.07785871305526348,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": -0.02242687282122666,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.1771434572352982,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 2,
+        "attempts_1h": 2,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 3.602222,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 31.92,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "cloud",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 74,
+        "probability": 0.7391029126962758,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
+          "Yeni cihaz bağlamı: riski artıran model katkısı (+0.43)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -0.4507922280570666,
+          "attempts_1h": 0.3593989524568835,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": 0.07587692173365153,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": -0.02242687282122666,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.1771434572352982,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 10.673889,
+        "typical_weekday": 0.0,
+        "geo_velocity_kmh": 31.74,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "residential",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 89,
+        "probability": 0.8858982933826457,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Olağan saatten sapma: riski artıran model katkısı (+1.56)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": 1.5596851048918354,
+          "typical_weekday": -0.3414678323184123,
+          "geo_velocity_kmh": -0.022433131887672455,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.44131996370641663,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 2,
+        "attempts_1h": 2,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.5,
+        "hour_deviation": 10.674444,
+        "typical_weekday": 0.0,
+        "geo_velocity_kmh": 31.74,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "residential",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 93,
+        "probability": 0.928881971487347,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Olağan saatten sapma: riski artıran model katkısı (+1.56)",
+          "Ağ aşinalığı: riski artıran model katkısı (+0.58)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -0.4507922280570666,
+          "attempts_1h": 0.3593989524568835,
+          "distinct_accounts_2m": -0.1402352591058994,
+          "failed_ratio_24h": 0.09478812626644113,
+          "hour_deviation": 1.5598015574258204,
+          "typical_weekday": -0.3414678323184123,
+          "geo_velocity_kmh": -0.022433131887672455,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.44131996370641663,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 2,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 10.115556,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 1814.86,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "residential",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 95,
+        "probability": 0.9532293750475538,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "Olağan saatten sapma: riski artıran model katkısı (+1.44)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": 0.4550962264745176,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": 1.4425332262291013,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": 0.039570571228050806,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.44131996370641663,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 3,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 1.885556,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": 1814.86,
+        "network_familiarity": "unfamiliar",
+        "asn_category": "residential",
+        "device_managed": 0.0,
+        "device_new": 1
+      },
+      "expected": {
+        "risk_score": 87,
+        "probability": 0.8679641597674318,
+        "reasons": [
+          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
+          "2 dakikadaki farklı hesap sayısı: riski artıran model katkısı (+1.05)",
+          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+        ],
+        "model_version": "els-lr-41383a34524c-s42",
+        "contributions": {
+          "attempts_2m": -1.1159823260244066,
+          "attempts_1h": 0.7097163953709846,
+          "distinct_accounts_2m": 1.0504277120549346,
+          "failed_ratio_24h": -0.11035164062154039,
+          "hour_deviation": -0.28432146692766774,
+          "typical_weekday": 0.08343714876563695,
+          "geo_velocity_kmh": 0.039570571228050806,
+          "network_familiarity": 0.5794421550370097,
+          "asn_category": 0.44131996370641663,
+          "device_managed": 1.7885616946799527,
+          "device_new": 0.42612513669077046
+        }
+      }
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": 0.0,
+        "hour_deviation": 11.081944,
+        "typical_weekday": 1.0,
+        "geo_velocity_kmh": null,
+        "network_familiarity": null,
+        "asn_category": "business",
+        "device_managed": null,
+        "device_new": 1
+      },
+      "expected": null
+    },
+    {
+      "features": {
+        "attempts_2m": 1,
+        "attempts_1h": 1,
+        "distinct_accounts_2m": 1,
+        "failed_ratio_24h": null,
+        "hour_deviation": null,
+        "typical_weekday": null,
+        "geo_velocity_kmh": null,
+        "network_familiarity": null,
+        "asn_category": "cloud",
+        "device_managed": null,
+        "device_new": 1
+      },
+      "expected": null
+    }
+  ]
+}

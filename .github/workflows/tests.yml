@@ -1,0 +1,32 @@
+name: Verify prototype
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install training and test dependencies
+        run: python -m pip install -r requirements.txt -r requirements-optional.txt
+      - name: Install DOM test dependencies
+        run: |
+          npm install --global pnpm@12.14.0
+          pnpm --dir app install --frozen-lockfile
+      - name: Data and model checks
+        run: python -m unittest discover -s tests -v
+      - name: Static server boundaries
+        run: python -m unittest discover -s app/tests -p 'test_*.py' -v
+      - name: JavaScript contracts, model and UI checks
+        run: pnpm --dir app test

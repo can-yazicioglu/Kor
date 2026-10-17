@@ -1,0 +1,2 @@
+# Optional fourth comparison model. SHAP is not required for local explanations.
+xgboost==3.4.1

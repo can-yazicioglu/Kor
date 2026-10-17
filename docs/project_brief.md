@@ -1,65 +1,51 @@
-# Ephemeral Login Sentinel
+# Ephemeral Login Sentinel — proje brief'i
 
 ## Problem ve amaç
 
-Giriş olayları tek başına sıradan görünebilir; kısa bir zaman penceresinde bir araya geldiklerinde tek hesaba yoğun denemeler, çok hesaba yayılım veya alışılmadık giriş bağlamı ortaya çıkabilir. Amaç, ham parola, gerçek kullanıcı adı, ham IP veya kalıcı cihaz parmak izi saklamadan bu sinyallerden **oturum başına 0–100 risk puanı** üreten bir prototip tasarlamaktır. **100 en yüksek risktir.**
+Kısa sürede tek hesaba yoğunlaşan denemeler, çok hesaba yayılan denemeler ve alışılmadık bağlamdan başarılı giriş, tek olaydan anlaşılmayabilir. Amaç; ham parola, gerçek kullanıcı adı, ham IP veya kalıcı cihaz izi saklamadan giriş bağlamından **oturum başına 0–100 risk puanı** üreten yerel bir prototip geliştirmektir. **100 en yüksek risktir.**
 
-Yüksek riskin sonucu otomatik hesap kilitleme değildir. Sistem MFA veya insan incelemesi önerir. Puan bir saldırı olasılığı, kimlik doğrulama kararı veya güvenlik garantisi olarak sunulmaz.
+Yüksek risk MFA veya insan incelemesi önerir. Puan kimlik doğrulama kararı, saldırı olasılığı veya güvenlik garantisi değildir. Otomatik hesap kilitleme uygulanmaz.
 
 ## MVP kapsamı
 
-| Senaryo | Aranan sinyal | Sınır |
-| --- | --- | --- |
-| Brute force | Kayan iki dakikada tek hesaba çok sayıda deneme | Hesap bağlamı müşteri içinde, opak kimlikle ilişkilendirilir. |
-| Password spraying | Kayan iki dakikada ortak kaynak bağlamından çok sayıda hesaba deneme | Kaynak gruplaması özellik çıkarımında yapılır; ham kaynak veya IP CSV'ye konmaz. Dağıtık kaynaklı saldırıları kapsama garantisi yoktur. |
-| Şüpheli başarılı giriş | Yeni cihaz/ağ ve olağan dışı bağlamla birlikte başarı | Başarı bilgisi müşteri kimlik sağlayıcısında bulunur. Ortak CSV tek olayın başarılı olduğunu kanıtlayan alan içermez. |
+| Senaryo | Yaklaşım |
+| --- | --- |
+| Brute force | Aynı hesapta kayan 120 saniyelik deneme yoğunluğu ve önceki başarısızlık bağlamı |
+| Password spraying | Geçici ortak kaynakta kayan 120 saniyede farklı hesap sayısı |
+| Şüpheli başarılı giriş | Yeni cihaz/ağ ile zaman ve diğer bağlamların birlikte değerlendirilmesi; başarı bilgisi sentetik denetim manifestinde doğrulanır |
 
-MVP; ortak CSV sözleşmesi, geçici ve yerel özellik çıkarımı tasarımı, ileride bağlanacak model arayüzü, açıklanabilir risk görünümü ve MFA/inceleme önerisini kapsar. Kritik kısa pencere **120 saniyedir**; `attempts_1h` ve `failed_ratio_24h` yardımcı bağlamlardır.
+Normal yanlış parola, VPN, seyahat/yeni cihaz, gece çalışma ve eksik geçmiş karşı örnekleri de bulunur. CSV başarı sonucunu taşımadığı için gerçek IdP başarısı CSV'den tek başına kanıtlanamaz.
 
-## AI 1 tesliminin durumu
+## Tamamlanan dört iş kolu
 
-- `app/`: Python standart kütüphanesiyle açılan, dış bağımlılıksız yerel web demosu.
-- Dört elle yazılmış **mock arayüz kartı**: üç saldırı senaryosu ve olağan bağlam. Bunlar olay veri seti, eğitim örneği veya değerlendirme sonucu değildir.
-- Oturum seçimi, anahtar araması, risk filtresi, risk nedenleri, aksiyon önerileri, veri sözleşmesi ve gizlilik görünümü.
-- Ortak 17 alanı doğrulayan CSV içe aktarımı; dosya içeriği tarayıcı belleğinde işlenir.
-- Model girdisini 11 özellikle sınırlandıran bağdaştırıcı. Model bağlı değildir; içe aktarılan oturumlarda puan **bekliyor** görünür.
-- Tek oturumun olaylarını bir araya getiren, tamamı puanlandığında en yüksek olay riskini oturum riski olarak sunan entegrasyon iskeleti.
+1. **AI 1 — mimari/demo:** Türkçe duyarlı ekran, açık mock modu, gerçek yerel model çıkarımı, CSV doğrulama, oturum risk/gerekçe/aksiyonları, arama/filtre/sayfalama ve bellek yaşam döngüsü.
+2. **AI 2 — veri:** Seed/oranı ayarlanabilir sentetik üretici, 10.000 olaylık teslim, kaynak/episode/başarı/bölme denetim manifesti, nedensel sayaçlar, veri sözlüğü ve açık kaynak araştırma raporu.
+3. **AI 3 — model:** Çalışan eğitim/değerlendirme CLI'ları; kural, Logistic Regression, Random Forest ve kurulu XGBoost karşılaştırması; açık özellik listesi; kullanıcı/zaman/episode ayrımı; taşınabilir demo modeli ve sonuç raporu.
+4. **AI 4 — güvenlik:** Üç normal/üç şüpheli temel senaryo, gizlilik/sızıntı kontrolleri, çapraz bileşen testleri, ilk bulguların kapanış denetimi ve kalan sınırlamalar.
 
-**AI 1 veri seti üretmez, veri seti araştırmaz, model eğitmez ve başarı metriği hesaplamaz.** Testlerdeki küçük sabit girdiler yalnızca parser ve entegrasyon sözleşmesi testleridir.
+Başlangıçta ayrı branch teslimleri incelendi. Kullanıcının tüm eksikleri tamamlama talebiyle `integration/full-mvp` üzerinde ortak entegrasyon yapıldı; ilk denetim tarihsel olarak korundu. Bu aşamada yalnız tek AI'ın dosyalarıyla sınırlı çalışma yerine tüm bileşenlerin uyumu tamamlanmıştır.
 
-## Gizlilik ilkeleri
+## Gizlilik sınırları
 
-1. Gerçek kullanıcı kayıtlarını, ham parolaları, ham IP'leri ve sızdırılmış dosyaları hiçbir AI sohbetine yüklemeyin.
-2. Müşteri giriş verileri müşteri ortamından çıkmaz. Dış model servisi, telemetri, analitik veya uzaktaki bir CSV yükleme servisi bu tasarımın parçası değildir.
-3. Kullanıcı adı gerekmiyorsa tutulmaz. Hesap gruplaması gerektiğinde kimlik sağlayıcısının opak kimliği veya sunucuda üretilen takma kimlik kullanılır. Ham ad loglanmaz ve modele verilmez.
-4. Cookie, üretim tasarımında yalnızca kısa ömürlü rastgele oturum anahtarıdır; kalıcı cihaz izi değildir. Demo cookie oluşturmaz.
-5. Fare/klavye hareketleri, biyometrisi ve kalıcı cihaz parmak izi toplanmaz.
-6. Sızdırılmış parola listeleri giriş olaylarıyla birleştirilmez. Parola sızıntısı kontrolü MVP dışıdır.
-7. Gerçek 30 günlük kullanıcı geçmişinin mevcut olduğu varsayılmaz. Bu geçmiş yalnızca AI 2'nin sentetik veri çalışmasında açıkça simüle edilebilir. Eksik geçmiş sıfır veya normal davranış değildir.
+- Müşteri giriş verileri müşteri ortamından çıkmaz. Demo CSV'yi tarayıcı belleğinde işler; yalnızca model JSON'u yerel sunucudan alınır.
+- Gerçek kullanıcı kaydı, parola, IP veya sızdırılmış dosya AI sohbetine verilmez. Üretici dış müşteri veri kaynağı okumaz.
+- Model 11 özellik alır; kimlikler, ham zaman, hedef etiket, saldırı metaverisi ve manifest alanları model girdisi değildir.
+- Demo cookie kullanmaz. Canlı entegrasyonda cookie yalnız rastgele kısa ömürlü anahtar olabilir; kalıcı cihaz izi veya hareket/klavye biyometrisi oluşturulamaz.
+- Gerçek 30 günlük geçmiş varsayılmaz. Sentetik profil açıkça simülasyondur; eksik özellik puansız kalır ve sıfır risk sayılmaz.
+- Sentetik CSV/model/raporlar geliştirme artefaktlarıdır. Gerçek müşteri çıktısı bu depoya eklenmez.
 
 ## Kapsam dışı
 
-- Gerçek IdP bağlantısı, kimlik doğrulama veya MFA işlemi; otomatik hesap kilitleme.
-- Parola toplama, sızdırılmış veri kullanımı, parola sızıntısı kontrolü.
-- Kalıcı cihaz tanıma, canvas/font parmak izi, hareket veya tuş vuruşu analizi.
-- AI 1 kapsamında veri üretimi, veri araştırması, eğitim, model seçimi ve model değerlendirmesi.
-- Üretim erişim kontrolü, çok kiracılı servis, yüksek erişilebilirlik, dağıtık saldırı önleme veya kanıtlanmış gerçek dünya başarısı iddiası.
-
-## İş bölümü ve teslim sınırları
-
-AI 1 yalnızca `docs/project_brief.md`, `docs/architecture.md`, `docs/integration_notes_ai1.md`, `app/` ve kök `README.md` dosyalarının sahibidir. AI 2'nin veri dosyaları, AI 3'ün model dosyaları ve diğer AI'nın raporları bu teslimde oluşturulmaz veya değiştirilmez.
-
-AI 2 ilk kullanılabilir CSV'yi erken teslim eder. AI 3, AI 2'nin fiilen teslim ettiği CSV gelmeden eğitim yapmaz veya metrik üretmez. Bu teslimde CSV beklenmeden yalnızca arayüz ve entegrasyon sözleşmesi hazırlanmıştır. AI 1'in mock kartları AI 2 tesliminin yerine geçmez.
-
-Şema sabittir. Kodlama ve anlam belirsizlikleri [ayrı entegrasyon notunda](integration_notes_ai1.md) raporlanır; sütun eklenmez, çıkarılmaz veya yeniden adlandırılmaz. Model bağlantısı sırasında bağdaştırıcı değişikliğini AI 1 yapar; diğer AI'lar kendi teslimlerini ayrı dosyalarda tutar.
+Gerçek IdP ve MFA çağrıları, otomatik kilitleme, canlı üretim TTL/kimlik doğrulama servisi, kalıcı cihaz parmak izi, biyometri, parola sızıntısı kontrolü, sızdırılmış listeler ve üretim etkinliği iddiaları kapsam dışıdır. Yeni müşteri ortamına dağıtım ve gerçek veriyle doğrulama bu yerel MVP'nin tamamlanmasıyla otomatik olarak yapılmış sayılmaz.
 
 ## Kabul ölçütleri
 
-- Ekranda 0–100 risk ölçeği, gerekçeler ve MFA/inceleme önerisi görülebilir.
-- Mock puanlar ve açıklamalar her ilgili görünümde açıkça işaretlenir.
-- Gerçek model yokken içe aktarılan CSV'ye uydurma veya etiketten türetilmiş puan verilmez.
-- Kimlikler, zaman damgası, hedef etiket ve saldırı metaverisi model girdisine sızmaz.
-- Puanlanmayan oturum düşük risk olarak gösterilmez; hatalı içe aktarım önceki görünümü korur.
-- Hiçbir ekran veya işlem otomatik kilitleme, gerçek MFA isteği veya veri dışa aktarımı yapmaz.
-- Kurulum ve demo adımları yeni bir yerel ortamda uygulanabilir.
-- Sonuçlar gerçek dünyada doğrulanmış başarı olarak sunulmaz.
+- Sabit 17 sütun korunur; teslim edilmiş CSV demo tarafından okunur.
+- Model gerçek sentetik teslim geldikten sonra eğitilir; mock sonuçlar eğitim metriği yapılmaz.
+- Risk 0–100, gerekçeler modele verilen özelliklerle ilişkili, aksiyon MFA/incelemedir.
+- Model dosyası yok/bozuk veya özellik eksikse puan üretilmez. Oturumun herhangi bir olayı puansızsa oturum tam değerlendirilmiş görünmez.
+- Eğitim/validation/test arasında hesap, oturum, episode ve kaynak ortaklığı yoktur; zaman sırası ve pencere boşluğu denetlenir.
+- Yanlış alarm ve çekimserlik açıkça raporlanır. Sentetik sonuçlar gerçek dünya başarısı olarak sunulmaz.
+- Belgelenmiş kurulum, tekrar çalıştırma ve test komutları vardır. Test kapsamı ile doğrulanamayan üretim/görsel sınırlar ayrılır.
+
+Güncel kanıtlar [güvenlik incelemesinde](security_review.md), model sonuçları [değerlendirme raporunda](model_results.md) bulunur.

@@ -3,6 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/contracts.test.mjs"
-  }
+    "test": "node tests/contracts.test.mjs && node tests/model-integration.test.mjs && node tests/ui.test.mjs"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.13"
+  },
+  "packageManager": "pnpm@12.14.0"
 }

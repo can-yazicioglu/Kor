@@ -1,0 +1,123 @@
+// DOM behavior checks. This is not a visual or real-browser test.
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { parseHTML } from 'linkedom';
+import { parseCSV } from '../schema.js';
+const root = new URL('../../', import.meta.url);
+const html = await readFile(new URL('app/index.html', root), 'utf8');
+const csv = await readFile(new URL('data/mvp_synthetic_logins.csv', root), 'utf8');
+const modelText = await readFile(new URL('models/demo_model.json', root), 'utf8');
+const events = parseCSV(csv);
+const { window, document } = parseHTML(html);
+globalThis.window = window;
+globalThis.document = document;
+const $ = id => document.getElementById(id);
+// Linkedom models select.value as getter-only; bridge its missing selection API.
+Object.defineProperty($('risk-filter'), 'value', { value: 'all', writable: true });
+Object.defineProperty($('retention-minutes'), 'value', { value: '15', writable: true });
+const realSetTimeout = globalThis.setTimeout;
+const realClearTimeout = globalThis.clearTimeout;
+const realDateNow = Date.now;
+let now = realDateNow();
+Date.now = () => now;
+const scheduled = new Map();
+let timerId = 0;
+globalThis.setTimeout = (callback, delay, ...args) => {
+  if (delay >= 60000) { const id = ++timerId; scheduled.set(id, callback); return id; }
+  return realSetTimeout(callback, delay, ...args);
+};
+globalThis.clearTimeout = id => { if (scheduled.has(id)) scheduled.delete(id); else realClearTimeout(id); };
+globalThis.setInterval = () => 0;
+let modelAvailable = true;
+const requests = [];
+globalThis.fetch = async (url, options) => {
+  requests.push({ url, options });
+  return { ok: modelAvailable, text: async () => modelText };
+};
+const waitFor = async predicate => {
+  for (let n = 0; n < 300; n++) { if (predicate()) return; await new Promise(resolve => realSetTimeout(resolve, 10)); }
+  assert.fail('UI operation did not finish');
+};
+const dispatch = (id, type) => $(id).dispatchEvent(new window.Event(type, { bubbles: true }));
+async function importCSV(text) {
+  const encoded = new TextEncoder().encode(text);
+  Object.defineProperty($('csv-input'), 'files', { configurable: true, value: [{ size: encoded.length, arrayBuffer: async () => encoded.buffer }] });
+  dispatch('csv-input', 'change');
+  await waitFor(() => !$('import-button').disabled);
+}
+await import('../main.js');
+await waitFor(() => $('model-status').textContent.includes('hazır'));
+assert.match($('notice').textContent, /MOCK/);
+assert.equal($('session-list').children.length, 4);
+let count = 1;
+await importCSV(csv);
+assert.equal($('error').hidden, true);
+assert.match($('notice').textContent, /YEREL CSV/);
+assert.equal(Number($('total-count').textContent), new Set(events.map(event => event.session_token)).size);
+assert.equal($('session-list').children.length, 50);
+assert.equal($('page-count').textContent.startsWith('1 / '), true);
+assert.match($('retention-status').textContent, /15 dk/);
+count++;
+dispatch('page-next', 'click');
+assert.equal($('page-count').textContent.startsWith('2 / '), true);
+$('search').value = events[0].session_token; dispatch('search', 'input');
+assert.equal($('session-list').children.length, 1);
+assert.equal($('page-count').textContent, '1 / 1');
+count++;
+$('search').value = ''; dispatch('search', 'input');
+$('risk-filter').value = 'pending'; dispatch('risk-filter', 'change');
+assert.match($('session-detail').textContent, /eksik özellik|tanımadığı kategori/);
+assert.match($('session-detail').textContent, /Ek bağlamı incele/);
+assert.doesNotMatch($('session-detail').textContent, /MODEL ÇIKTISI/);
+count++;
+$('risk-filter').value = 'high'; dispatch('risk-filter', 'change');
+assert.match($('session-detail').textContent, /MODEL ÇIKTISI/);
+assert.match($('session-detail').textContent, /MFA \+ inceleme/);
+count++;
+const previousTotal = $('total-count').textContent;
+await importCSV('bad-private-sentinel\nsecret');
+assert.equal($('error').hidden, false);
+assert.doesNotMatch($('error').textContent, /bad-private-sentinel|secret/);
+assert.equal($('total-count').textContent, previousTotal);
+count++;
+$('search').value = '<img src=x onerror=alert(1)>'; dispatch('search', 'input');
+assert.equal($('session-list').querySelectorAll('img').length, 0);
+assert.match($('session-list').textContent, /eşleşen oturum yok/);
+count++;
+dispatch('reset-button', 'click');
+assert.equal($('session-list').children.length, 4);
+assert.equal($('search').value, '');
+assert.match($('notice').textContent, /MOCK/);
+assert.equal(scheduled.size, 0);
+assert.equal(document.body.textContent.includes(events[0].session_token), false);
+count++;
+$('retention-minutes').value = '5';
+await importCSV(csv);
+now += 5 * 60000;
+document.dispatchEvent(new window.Event('visibilitychange'));
+assert.match($('notice').textContent, /MOCK/);
+assert.match($('retention-status').textContent, /Süre doldu/);
+assert.equal($('session-list').children.length, 4);
+count++;
+modelAvailable = false;
+await importCSV(csv);
+assert.match($('model-status').textContent, /kullanılamıyor/);
+assert.match($('session-detail').textContent, /Yerel model yüklenemedi/);
+assert.equal($('high-count').textContent, '0oturum');
+assert.match($('total-caption').textContent, /oturum puan bekliyor/);
+count++;
+window.dispatchEvent(new window.Event('pagehide'));
+assert.match($('notice').textContent, /MOCK/);
+assert.equal(scheduled.size, 0);
+count++;
+assert.ok(requests.length >= 3);
+for (const request of requests) {
+  assert.equal(request.url, './demo-model.json');
+  assert.equal(request.options.method, 'GET');
+  assert.equal(request.options.body, undefined);
+}
+count++;
+Date.now = realDateNow;
+globalThis.setTimeout = realSetTimeout;
+globalThis.clearTimeout = realClearTimeout;
+console.log(`${count} DOM integration checks passed (no visual browser verification).`);

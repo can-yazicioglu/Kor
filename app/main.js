@@ -1,6 +1,7 @@
 import { CSV_COLUMNS, FEATURE_COLUMNS, MAX_BYTES, parseCSV, recommendation } from './schema.js';
 import { MOCK_CARDS } from './mock-view.js';
-import { predictRisk } from './model-adapter.js';
+import { predictRisk, loadModel, getModelStatus } from './model-adapter.js';
+import { createRetention } from './lifecycle.js';
 import { buildSessions } from './sessions.js';
 
 const $ = id => document.getElementById(id);
@@ -8,6 +9,10 @@ let sessions = [...MOCK_CARDS];
 let selectedId = sessions[0].id;
 let mode = 'mock';
 let importGeneration = 0;
+let page = 0;
+const PAGE_SIZE = 50;
+let retentionMessage = 'CSV henüz içe aktarılmadı.';
+const retention = createRetention({ onExpire: () => resetView('Süre doldu: içe aktarılan verinin uygulama referansları bırakıldı.') });
 const labels = { high: 'Yüksek', medium: 'Orta', low: 'Düşük', pending: 'Bekliyor' };
 
 function el(tag, className, text) {
@@ -28,7 +33,10 @@ function filteredSessions() {
 }
 
 function renderList() {
-  const visible = filteredSessions();
+  const matches = filteredSessions();
+  const pageCount = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
+  page = Math.min(page, pageCount - 1);
+  const visible = matches.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   if (!visible.some(session => session.id === selectedId)) selectedId = visible[0]?.id ?? null;
   $('session-list').replaceChildren();
   for (const session of visible) {
@@ -51,11 +59,14 @@ function renderList() {
     const chevron = el('span', 'row-chevron', '›'); chevron.setAttribute('aria-hidden', 'true');
     right.append(score, chevron);
     button.append(identity, right);
-    button.addEventListener('click', () => { selectedId = session.id; renderList(); renderDetail(); $('session-list').querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true }); });
+    button.addEventListener('click', () => { if (retention.check()) return; selectedId = session.id; renderList(); renderDetail(); $('session-list').querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true }); });
     $('session-list').append(button);
   }
   if (!visible.length) $('session-list').append(el('p', 'empty-state', 'Bu filtreyle eşleşen oturum yok. Aramayı veya risk filtresini değiştirin.'));
-  $('shown-count').textContent = `${visible.length} / ${sessions.length} oturum gösteriliyor`;
+  $('shown-count').textContent = `${visible.length} gösteriliyor · ${matches.length} eşleşme / ${sessions.length} oturum`;
+  $('page-count').textContent = `${page + 1} / ${pageCount}`;
+  $('page-prev').disabled = page === 0;
+  $('page-next').disabled = page >= pageCount - 1;
   $('list-count').textContent = String(sessions.length);
 }
 
@@ -66,7 +77,7 @@ function renderDetail() {
   const risk = recommendation(session.score);
   const hero = el('div', 'detail-hero');
   const head = el('div', 'detail-head');
-  head.append(el('h2', '', 'Oturum risk özeti'), el('span', 'pill', session.mock ? 'MOCK PUAN' : session.score === null ? 'MODEL BEKLENİYOR' : 'MODEL ÇIKTISI'));
+  head.append(el('h2', '', 'Oturum risk özeti'), el('span', 'pill', session.mock ? 'MOCK PUAN' : session.score === null ? 'PUAN BEKLENİYOR' : 'MODEL ÇIKTISI'));
   hero.append(head, el('p', 'detail-session', shortId(session.id)));
   const scoreLine = el('div', 'score-line');
   const scoreContext = el('div', 'score-context');
@@ -82,7 +93,7 @@ function renderDetail() {
   body.append(el('h3', '', session.mock ? 'Örnek risk nedenleri' : session.score === null ? 'Puanlama durumu' : 'Modelin risk nedenleri'));
   const reasons = el('ul', 'reason-list');
   const explanations = session.mock ? session.reasons : session.score === null ?
-    [session.error ? 'Model yanıtı alınamadı veya doğrulanamadı. Bu oturum için puan üretilmedi.' : 'CSV doğrulandı. Gerçek model henüz bağlı olmadığı için bu oturum puanlanmadı.',
+    [session.error ? 'Model yanıtı alınamadı veya doğrulanamadı. Bu oturum için puan üretilmedi.' : getModelStatus().state !== 'ready' ? 'Yerel model yüklenemedi. Bu oturuma puan verilmedi; model dosyasını kontrol edip CSV’yi yeniden içe aktarın.' : 'En az bir olayda eksik özellik veya modelin tanımadığı kategori var. Oturumun tamamı puansız bırakıldı.',
       'Hedef etiket ve saldırı türü risk gerekçesi olarak kullanılmaz.',
       'Bilinmeyen geçmiş olağan davranış olarak varsayılmaz.'] :
     session.reasons.length ? session.reasons : ['Model açıklama döndürmedi; gerekçe uydurulmadı.'];
@@ -102,7 +113,7 @@ function renderDetail() {
   const foot = el('p', 'detail-foot');
   foot.textContent = session.mock ? 'Mock senaryo · Eşikler yalnızca demo politikasıdır. Otomatik kilitleme veya gerçek MFA işlemi yapılmaz.' :
     session.score === null ? 'Puan yok ≠ düşük risk. Gösterilen sinyaller en son olaya aittir. CSV yalnızca tarayıcı belleğinde tutulur.' :
-    `Model: ${session.modelVersion} · Oturumun en yüksek olay puanı gösterilir. Sinyaller ve nedenler bu olaya aittir. Eşikler doğrulanmış değildir.`;
+    `Model: ${session.modelVersion} · Tüm olaylar puanlandı; oturumun en yüksek olay puanı gösterilir. Katkılar modelin iç hesaplamasıdır, nedensellik değildir. 30/70 demo aksiyon eşikleri model değerlendirme eşiğinden ayrıdır; gerçek ortamda doğrulanmamıştır.`;
   root.append(hero, body, action, foot);
 }
 
@@ -126,12 +137,31 @@ function renderStats() {
 
 function renderNotice() {
   const notice = $('notice'); notice.replaceChildren();
-  const text = mode === 'mock' ? 'Puanlar ve gerekçeler sabit gösterim örnekleridir; model sonucu veya başarı metriği değildir.' : 'CSV tarayıcı belleğinde işlendi. Model bağlanana kadar puanlar bekler; hedef etiketler modele veya risk nedenlerine aktarılmaz.';
+  const text = mode === 'mock' ? 'Puanlar ve gerekçeler sabit gösterim örnekleridir; model sonucu veya başarı metriği değildir.' : 'CSV yalnızca tarayıcı belleğinde işlendi. Model sentetik veriden öğrenilmiştir; puan gerçek saldırı olasılığı veya kanıtlanmış başarı değildir. Eksik / tanınmayan bağlam puansız kalır.';
   const paragraph = el('p'); paragraph.append(el('strong', '', mode === 'mock' ? 'Arayüz önizlemesi. ' : 'Yerel CSV görünümü. '), document.createTextNode(text));
   notice.append(el('span', 'pill mock-pill', mode === 'mock' ? 'MOCK' : 'YEREL CSV'), paragraph);
 }
 
-function render() { renderList(); renderDetail(); renderStats(); renderNotice(); }
+function renderModelStatus() {
+  const model = getModelStatus();
+  $('model-status').textContent = model.state === 'ready' ? `Yerel model hazır · ${model.version}` : model.state === 'loading' ? 'Yerel model yükleniyor…' : 'Model kullanılamıyor · içe aktarılanlar puansız kalır';
+  $('model-status').classList.toggle('pending', model.state !== 'ready');
+}
+function renderRetention() {
+  const remaining = retention.remaining();
+  $('retention-status').textContent = remaining === null ? retentionMessage : `Bellekte tutma: ${Math.ceil(remaining / 60000)} dk kaldı · fiziksel silme garantisi değildir`;
+}
+function render() { renderList(); renderDetail(); renderStats(); renderNotice(); renderModelStatus(); renderRetention(); }
+function resetView(message = 'İçe aktarılan verinin uygulama referansları bırakıldı.') {
+  importGeneration++;
+  retention.clear();
+  retentionMessage = message;
+  sessions = [...MOCK_CARDS]; selectedId = sessions[0].id; mode = 'mock'; page = 0;
+  $('search').value = ''; $('risk-filter').value = 'all'; $('csv-input').value = '';
+  $('error').hidden = true; $('error').textContent = '';
+  $('import-button').disabled = false;
+  render(); showView('overview');
+}
 function showView(view) {
   const descriptions = {
     overview: ['Genel görünüm', 'Oturum güvenliği', 'Şüpheli bağlamı fark edin. Bir sonraki adımı bilin.'],
@@ -153,17 +183,12 @@ function showView(view) {
 
 document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
 document.querySelector('.brand').addEventListener('click', event => { event.preventDefault(); showView('overview'); });
-$('search').addEventListener('input', () => { renderList(); renderDetail(); });
-$('risk-filter').addEventListener('change', () => { renderList(); renderDetail(); });
+$('search').addEventListener('input', () => { if (retention.check()) return; page = 0; renderList(); renderDetail(); });
+$('risk-filter').addEventListener('change', () => { if (retention.check()) return; page = 0; renderList(); renderDetail(); });
+$('page-prev').addEventListener('click', () => { if (retention.check()) return; page = Math.max(0, page - 1); renderList(); renderDetail(); });
+$('page-next').addEventListener('click', () => { if (retention.check()) return; page++; renderList(); renderDetail(); });
 $('import-button').addEventListener('click', () => $('csv-input').click());
-$('reset-button').addEventListener('click', () => {
-  importGeneration++;
-  sessions = [...MOCK_CARDS]; selectedId = sessions[0].id; mode = 'mock';
-  $('search').value = ''; $('risk-filter').value = 'all'; $('csv-input').value = '';
-  $('error').hidden = true; $('error').textContent = '';
-  $('import-button').disabled = false;
-  render(); showView('overview');
-});
+$('reset-button').addEventListener('click', () => resetView());
 $('csv-input').addEventListener('change', async event => {
   const file = event.target.files[0]; if (!file) return;
   const generation = ++importGeneration;
@@ -175,18 +200,22 @@ $('csv-input').addEventListener('change', async event => {
     const text = new TextDecoder('utf-8', { fatal: true }).decode(await file.arrayBuffer());
     if (generation !== importGeneration) return;
     const events = parseCSV(text);
+    const modelLoad = loadModel(); renderModelStatus();
+    await modelLoad;
+    if (generation !== importGeneration) return;
     const imported = await buildSessions(events, features => {
       if (generation !== importGeneration) return null;
       return predictRisk(features);
-    });
+    }, { active: () => generation === importGeneration, yieldControl: () => new Promise(resolve => setTimeout(resolve, 0)) });
     if (generation !== importGeneration) return;
-    sessions = imported; selectedId = sessions[0]?.id ?? null; mode = 'csv';
+    sessions = imported; selectedId = sessions[0]?.id ?? null; mode = 'csv'; page = 0;
+    retention.start(Number($('retention-minutes').value));
     $('search').value = ''; $('risk-filter').value = 'all';
     render(); showView('overview');
   } catch (error) {
     if (generation !== importGeneration) return;
     // Only our controlled parse errors contain text; never print native decoding errors.
-    const message = error instanceof TypeError ? 'Dosya UTF-8 olarak okunamadı.' : error.message;
+    const message = error instanceof TypeError ? 'Dosya UTF-8 olarak okunamadı.' : error.name === 'Error' ? error.message : 'Dosya güvenli biçimde okunamadı.';
     $('error').textContent = `${message} Önceki görünüm korundu. Gerçek kayıtları AI sohbetine yüklemeyin.`;
     $('error').hidden = false;
     renderNotice();
@@ -202,3 +231,8 @@ CSV_COLUMNS.forEach(name => {
   row.append(el('td', '', name), el('td', '', role)); $('schema-table-body').append(row);
 });
 render();
+loadModel().then(renderModelStatus);
+setInterval(() => { if (!retention.check()) renderRetention(); }, 1000);
+document.addEventListener('visibilitychange', () => { if (!retention.check()) renderRetention(); });
+window.addEventListener('pagehide', () => resetView('Sayfa kapatıldı; uygulama referansları bırakıldı.'));
+window.addEventListener('pageshow', () => { if (!retention.check()) renderRetention(); });

@@ -1,9 +1,12 @@
 import { selectFeatures } from './schema.js';
 import { validatePrediction } from './model-adapter.js';
 
-export async function buildSessions(events, predict) {
+export async function buildSessions(events, predict, { active = () => true, yieldControl = null } = {}) {
   const groups = new Map();
+  let processed = 0;
   for (const event of events) {
+    if (yieldControl && processed++ % 250 === 0) await yieldControl();
+    if (!active()) throw new Error('İçe aktarma iptal edildi.');
     let group = groups.get(event.session_token);
     if (!group) {
       group = { id: event.session_token, events: [], latest: event, score: null, reasons: [], modelVersion: null, scoredEvent: null, unscored: 0, error: false, mock: false };

@@ -10,7 +10,7 @@ export async function runContractTests() {
   const header = CSV_COLUMNS.join(',');
   const base = {
     event_id: 'unit-event', event_ts_utc: '2026-01-01T00:00:00Z', session_token: 'unit-session', account_token: '',
-    attempts_2m: '1', attempts_1h: '1', distinct_accounts_2m: '1', failed_ratio_24h: '', hour_deviation: '',
+    attempts_2m: '1', attempts_1h: '3', distinct_accounts_2m: '1', failed_ratio_24h: '', hour_deviation: '',
     typical_weekday: '', geo_velocity_kmh: '', network_familiarity: '', asn_category: '', device_managed: '',
     device_new: '', is_suspicious: '', attack_type: '',
   };
@@ -65,7 +65,10 @@ export async function runContractTests() {
   await check('Geçersiz sayı, oran ve flag reddedilir', () => {
     for (const value of ['-1', '1.5', 'Infinity', 'NaN', '0x10', '9007199254740992']) assert.throws(() => event({ attempts_2m: value }), /attempts_2m/);
     assert.throws(() => event({ failed_ratio_24h: '1.1' }), /failed_ratio_24h/);
-    assert.throws(() => event({ network_familiarity: '2' }), /network_familiarity/);
+    assert.equal(event({ network_familiarity: 'unfamiliar' }).network_familiarity, 'unfamiliar');
+    assert.equal(event({ network_familiarity: 'unseen-category' }).network_familiarity, 'unseen-category');
+    assert.throws(() => event({ hour_deviation: '12.01' }), /hour_deviation/);
+    assert.throws(() => event({ attempts_2m: '4', attempts_1h: '3' }), /aşamaz/);
     assert.throws(() => event({ device_new: 'yes' }), /device_new/);
   });
   await check('Hatalar hücre içeriğini yansıtmaz', () => {

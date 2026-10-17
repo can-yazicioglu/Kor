@@ -1,150 +1,116 @@
-# Mimari — Ephemeral Login Sentinel
+# Ephemeral Login Sentinel — uygulanan mimari
 
-Bu belge **hedef ürün mimarisi** ile **AI 1'de gerçekten çalışan demo** arasında ayrım yapar. Özellik çıkarımı, gerçek IdP bağlantısı ve eğitilmiş model henüz uygulanmamıştır. Ortak CSV şeması değişmemiştir.
+Bu belge yerel MVP'yi açıklar. Model artık bağlıdır; canlı IdP/özellik toplama servisi uygulanmış gibi sunulmaz. Sabit CSV şeması değişmemiştir.
 
-## 1. Hedef veri akışı ve gizlilik sınırı
+## Veri akışı
 
 ```mermaid
 flowchart LR
-  subgraph customer["Müşteri ortamı / veri sınırı"]
-    IDP["Kimlik sağlayıcısı\nGiriş sonucu ve anlık bağlam"]
-    MIN["Yerel minimizasyon\nOpak hesap + geçici oturum"]
-    WIN["Kayan pencereler\n120 sn / yardımcı 1 sa ve 24 sa"]
-    FEAT["11 özellik\nGeçmiş yoksa bilinmiyor"]
-    MODEL["Yerel model\nHenüz bağlı değil"]
-    AGG["Oturum başına risk\n0–100 + nedenler"]
-    UI["Operatör ekranı\nMFA / inceleme önerisi"]
-    IDP --> MIN --> WIN --> FEAT --> MODEL --> AGG --> UI
+  subgraph development["Yerel sentetik geliştirme"]
+    G["Sentetik üretici"] --> CSV["17 alanlı CSV"]
+    G --> MAN["Denetim manifesti"]
+    CSV --> TRAIN["11 özellik · fit bölümü"]
+    MAN --> AUDIT["Kimlik/zaman/episode ayrımı"]
+    AUDIT --> TRAIN
+    TRAIN --> JSON["Eğitilmiş lojistik JSON"]
+    TRAIN --> EVAL["Ayrılmış test değerlendirmesi"]
   end
-  UI -. "Müşteri politikasının ayrı işlemi" .-> IDP
+  subgraph local["Müşteri / yerel çalışma sınırı"]
+    JSON --> SERVER["Loopback statik sunucu"]
+    SERVER --> BROWSER["Tarayıcıda model parametreleri"]
+    FILE["Yerelden seçilen CSV"] --> PARSE["Şema ve değer doğrulama"]
+    PARSE --> FEATURES["11 özellik allowlist'i"]
+    FEATURES --> BROWSER
+    BROWSER --> SESSION["Oturum maksimumu veya puansız"]
+    SESSION --> UI["Risk + katkılar + MFA/inceleme önerisi"]
+  end
 ```
 
-Ham parola özellik çıkarımına girmez; kimlik doğrulama sağlayıcısının sınırında kalır. Ham kullanıcı adı, ham IP ve kalıcı cihaz izi model, CSV, uygulama logu veya AI sohbetine aktarılmaz. Gerekli ağ bağlamı müşteri içinde anlık olarak türetilir; IP için ayrı bir kalıcı kayıt oluşturulmaz. Müşterinin mevcut IdP log saklama politikası bu prototipin kontrolünde değildir; hedef entegrasyonda ayrıca gözden geçirilmelidir.
+CSV sunucuya gönderilmez. Modelin çıkarımı tarayıcıda JavaScript ile yapılır. Harici AI API'si, analitik, veri yükleme endpoint'i veya gerçek IdP komutu bulunmaz.
 
-**Dışarı çıkmayanlar:** olaylar, CSV, hesap/oturum anahtarları, özellikler, model istekleri ve sonuçları. Tasarım dış AI API'si gerektirmez. Opaklaştırılmış kayıtlar da hâlâ ilişkilendirilebilir ve hassas kabul edilir.
+## Bileşenler
 
-## 2. Bugün çalışan yol
+| Bileşen | Sorumluluk |
+| --- | --- |
+| `src/data/generate_synthetic.py` | Sentetik akış, nedensel sayaçlar, sabit CSV ve ayrı denetim manifesti |
+| `src/models/core.py` | 11 özellik listesi, veri/manifest doğrulama, bölme denetimi, portable çıkarım ve eşik seçimi |
+| `src/models/train.py` | Fit üzerinde eğitim ve model export; CSV/manifest doğrulanmadan çalışmaz |
+| `src/models/evaluate.py` | Yeniden eğitim yapmadan test/alt grup/oturum/politika değerlendirmesi |
+| `models/demo_model.json` | Gerçek eğitimden katsayı, ölçekleme, kategori sözlüğü, sürüm ve veri hash'i |
+| `app/schema.js` | CSV ayrıştırma, tip/sınır denetimi ve model girdi allowlist'i |
+| `app/model-adapter.js` | Model sözleşmesi doğrulama ve yerel lojistik çıkarım |
+| `app/sessions.js` | Oturum gruplaması, tam puanlama şartı, maksimum puan ve aynı olaya ait gerekçeler |
+| `app/lifecycle.js` | Mutlak süre sonu ve uygulama referanslarının bırakılması |
+| `app/serve.py` | Yalnızca izinli web dosyaları ve doğrulanmış model JSON'u için loopback HTTP |
 
-```text
-Python loopback sunucusu → yerel HTML/CSS/JS
-                                   ↓
-               Sabit mock görünüm VEYA kullanıcı seçimiyle CSV
-                                   ↓
-             UTF-8 + tam şema + tip/sınır doğrulama
-                                   ↓
-              Özellik allowlist'i → predictRisk(features)
-                                   ↓
-           Model yok: null → “Puan bekleniyor” → karar yok
-```
-
-`app/serve.py` yalnızca `127.0.0.1` üzerinde statik dosyalar sunar. Dosya listesi sabittir; depo, belgeler, model, test ve veri dizinleri sunulmaz. CSV yükleme endpoint'i yoktur. Tarayıcı File API ile CSV'yi bellekte okur. `localStorage`, `sessionStorage`, IndexedDB, service worker, cookie, analitik veya konsol veri logu kullanılmaz.
-
-Sunucu erişim logu yazmaz. `Cache-Control: no-store`, `Referrer-Policy: no-referrer`, MIME koruması ve bir içerik güvenlik politikası uygular. `connect-src 'none'` ağ API çağrılarını engeller; üçüncü taraf script/font/görsel yoktur. Host başlığı loopback adresleriyle sınırlıdır. Bu önlemler üretim yetkilendirmesi veya izole bir işletim sistemi yerine geçmez.
-
-“Mock görünüm” bellekteki içe aktarım referanslarını bırakır ve sabit kartları geri getirir. Yeni başarılı içe aktarım önceki CSV'nin yerini alır. Hatalı CSV önceki görünümü korur. Sayfa yenileme/kapanışı veriyi uygulama açısından bırakır; JavaScript çöp toplama, tarayıcı veya işletim sistemi için garantili fiziksel bellek silme iddiası yoktur. Seçilen kaynak dosya kullanıcının diskinde kalır.
-
-## 3. Kimlikler, pencere ve özellik anlamları
-
-### Kimlik yaşam döngüsü
-
-- `event_id`: yinelenen olayları ayıran opak anahtar; benzersiz olması gerekir. Yalnızca gruplama/izlenebilirlik.
-- `session_token`: kriptografik güvenli rastgele üretilecek kısa ömürlü anahtar. Hedef cookie politikası için başlangıç önerisi: 15 dakika mutlak ömür, `Secure`, `HttpOnly`, `SameSite=Lax`, kimlik doğrulamada döndürme. Bu parametreler demo uygulaması değil, müşteri entegrasyonu tasarımıdır. TTL, iki dakikalık analiz penceresinden farklıdır. Token yenileme davranışı saldırı korelasyonunu etkileyebilir.
-- `account_token`: gerekiyorsa müşteri IdP'sinin opak kimliği; alternatif olarak yalnızca müşteri sunucusunda gizli anahtarla türetilen, kiracıya özgü takma kimlik. Düz kullanıcı adı hash'i kullanılmaz. Ham ad mapping'i ve gizli anahtar modelde veya CSV'de bulunmaz. Hesap gruplaması gerekmiyorsa alan boş kalabilir. Brute force özelliklerinin üretilebilmesi için özellik çıkarımı sırasında hesap ilişkilendirmesi gerekir.
-
-Rastgele oturum cookie'si bir cihaz kimliği değildir. Cookie yenilendi diye `device_new=1` üretilemez. Yeni/yönetilen cihaz sinyali müşteri IdP'sinin mevcut güvenilir bağlamından, kalıcı bir parmak izi oluşturmadan alınabilmelidir. Bu bilgi yoksa alan bilinmiyor kalır.
-
-### Zaman ve sayaçlar
-
-Önerilen ortak anlam: UTC olay zamanı `t` için pencere **(t−120 saniye, t]**; olayın kendisi bir kez dâhil edilir. `attempts_2m` ve `attempts_1h` aynı hesap kapsamındadır. Olay zamanı esas alınır; üretim tüketicisi yinelenen/geç gelen olay politikası belirlemelidir. Model özelliklerine gelecekteki olaylar katılmaz. Demo sayaç üretmez ve verilen sayaçların doğruluğunu kanıtlamaz.
-
-`distinct_accounts_2m` hesap veya cookie bazında değil, **aynı müşteri içindeki ortak kaynak bağlamı** bazında hesaplanmalıdır. Ortak CSV kaynak anahtarı içermez. Özellik çıkarıcı, gerekli kaynak eşlemesini müşteri içinde geçici bellekte yapmalı; iki dakikalık pencere ve kabul edilen gecikme sonunda silmelidir. Salt per-session sayım cookie yenileyen bir saldırganı kaçırır. Ham IP veya ağ kimliği modele gönderilmez. NAT ortak kullanıcıları bir araya getirebilir; dağıtık saldırılar kaynak gruplamasını aşabilir. Bu nedenle özellik tek başına saldırı kararı değildir.
-
-`failed_ratio_24h`, IdP'deki geçmiş sonuçlardan türetilir; `is_suspicious` etiketi başarısız giriş demek değildir. `geo_velocity_kmh` için gerekiyorsa müşteri içinde kaba konum ve zaman farkından hız hesaplanır; ham IP ve hassas konum CSV'ye eklenmez. Önceki gözlem yoksa hız sıfır varsayılmaz. VPN, seyahat ve ağ konumu belirsizliği bu özelliğin güvenilirliğini sınırlar.
-
-30 günlük gerçek geçmiş varsayılmaz. Zaman alışkanlığı ve ağ aşinalığı mevcut, yeterli ve izin verilen geçmişten üretilebiliyorsa kullanılır. Aksi hâlde boş değer korunur. 1 saat/24 saat sayaçlarının bulunması 30 günlük profilin mevcut olduğunu göstermez.
-
-## 4. Sabit CSV sözleşmesi
+## Sabit veri sözleşmesi
 
 ```csv
 event_id,event_ts_utc,session_token,account_token,attempts_2m,attempts_1h,distinct_accounts_2m,failed_ratio_24h,hour_deviation,typical_weekday,geo_velocity_kmh,network_familiarity,asn_category,device_managed,device_new,is_suspicious,attack_type
 ```
 
-Başlıklar tam ve bu sırada olmalıdır. UTF-8, isteğe bağlı BOM, virgül ayırıcı, LF/CRLF ve CSV tırnak kaçışları desteklenir. Boyut sınırı 2 MiB, olay sınırı 10.000'dir. Ek/eksik/sırası değiştirilmiş sütunlar reddedilir. Hatalar hücre içeriğini veya dosya adını yansıtmaz.
+CSV UTF-8 ve virgülle ayrılır; BOM, tırnak kaçışları ve LF/CRLF desteklenir. Başlık/sıra tam eşleşmeli. UI sınırı 2 MiB ve 10.000 olaydır. Yinelenen olay, geçersiz UTC/tip, saat sapması sınırı ve alt-pencere sayacı tutarsızlığı reddedilir. Hatalar değer, token veya dosya adını yansıtmaz.
 
-Brief alan tiplerini ve kategori sözlüğünü tamamen belirtmez. Aşağıdaki kodlamalar **AI 1'in geçici okuyucu sözleşmesidir**, ortak şema değişikliği veya ekip tarafından onaylanmış özellik tanımı değildir. AI 2 teslimiyle uyum sağlama notları [ayrı rapordadır](integration_notes_ai1.md).
+| Alanlar | Anlam / kodlama |
+| --- | --- |
+| `event_id`, `session_token`, `account_token` | Opak kimlik/gruplama; model girdisi değil. Hesap token'ı gerekmiyorsa boş olabilir. |
+| `event_ts_utc` | Geçerli ISO 8601 UTC `Z`; sıralama ve bölme denetimi, model girdisi değil |
+| `attempts_2m`, `attempts_1h` | Aynı hesapta `(t−120s,t]` ve `(t−3600s,t]` denemeleri; mevcut olay dâhil |
+| `distinct_accounts_2m` | Aynı geçici kaynakta 120 saniyedeki farklı hesaplar; kaynak anahtarı modele/CSV'ye girmez |
+| `failed_ratio_24h` | Önceden bilinen son 24 saatlik sonuçlarda başarısızlık oranı 0–1; mevcut olayın sonucu hariç |
+| `hour_deviation` | Sentetik/izinli geçmişteki olağan saate çevrimsel uzaklık, 0–12 saat |
+| `typical_weekday`, `device_managed`, `device_new` | Boolean 0/1; okuyucu true/false'u da normalleştirir |
+| `geo_velocity_kmh` | Negatif olmayan hız bağlamı; sentetik üretimde koordinat kullanılmaz |
+| `network_familiarity` | `familiar` veya `unfamiliar` kategorisi |
+| `asn_category` | `residential`, `business`, `cloud`, `vpn`, `unknown` kategorileri |
+| `is_suspicious` | Yalnız hedef etiket |
+| `attack_type` | Yalnız değerlendirme senaryosu; model tahmini veya giriş sonucu değil |
 
-| Alan | Demo okuyucusunun kabulü | Kullanım |
-| --- | --- | --- |
-| `event_id` | Boş olmayan, boşluksuz, en fazla 128 karakter; tekil | Kimlik; modele girmez |
-| `event_ts_utc` | UTC `YYYY-MM-DDTHH:mm:ss[.SSS]Z`; geçerli takvim zamanı | Sıralama; modele girmez |
-| `session_token` | Boş olmayan, boşluksuz, en fazla 128 karakter | Oturum gruplaması; modele girmez |
-| `account_token` | Opak metin, en fazla 128 karakter; boş olabilir | Hesap bağlamı; modele girmez |
-| `attempts_2m` | Negatif olmayan güvenli tamsayı veya boş | Özellik; 120 saniye |
-| `attempts_1h` | Negatif olmayan güvenli tamsayı veya boş | Özellik; 1 saat |
-| `distinct_accounts_2m` | Negatif olmayan güvenli tamsayı veya boş | Özellik; kaynak bağlamında farklı hesap |
-| `failed_ratio_24h` | 0–1 veya boş | Özellik; 24 saat |
-| `hour_deviation` | Negatif olmayan sayı veya boş | Özellik; saat sapması, çevrimsel anlam netleştirilecek |
-| `typical_weekday` | `0/1`, `false/true` veya boş | Özellik; 1 olağan gün varsayımı |
-| `geo_velocity_kmh` | Negatif olmayan sayı veya boş | Özellik; km/sa |
-| `network_familiarity` | 0–1 veya boş | Özellik; 1 tanıdık varsayımı |
-| `asn_category` | En fazla 64 karakterlik kategori veya boş | Özellik; sözlük henüz sabitlenmedi |
-| `device_managed` | `0/1`, `false/true` veya boş | Özellik |
-| `device_new` | `0/1`, `false/true` veya boş | Özellik |
-| `is_suspicious` | `0/1`, `false/true` veya boş | Yalnızca hedef etiket |
-| `attack_type` | En fazla 64 karakterlik kategori veya boş | Yalnızca değerlendirme metaverisi |
+Boş özellik `null` kalır. İçe aktarım tanınmayan kısa kategori metnini güvenli metin olarak koruyabilir; model bilinmeyen kategoride puan üretmez. Model çıkarımı mevcut olay dâhil sayaçları en az 1 kabul eder; 0 gibi desteklenmeyen değerler düşük risk sayılmaz. Kullanıcı adı/IP'nin opak alana yanlışlıkla konmadığı yalnız biçim kontrolünden ispatlanamaz.
 
-Boş özellik `null` olarak korunur. Eksik etiketli olay görüntülenebilir; bu, AI 3'ün etiketsiz veriyle denetimli eğitim yapabileceği anlamına gelmez. `account_token`ın opaklığı ve dosyanın sentetik oluşu biçim kontrolünden ispatlanamaz; uygun veri hazırlama sorumluluğu veri sahibindedir. Aynı şekilde sayaçların geçmişten doğru türetildiği bu demo tarafından doğrulanmaz.
+CSV'nin dışında, yalnız sentetik denetim için SHA-256 bağlı bir manifest vardır. Olayın split/episode/geçici kaynak/başarı bilgisi, önceki sentetik sonuçlar ve profil kökeni buradadır. Model bu alanları kullanmaz. Başarı ve spraying gruplaması bu manifest ile sentetik ortamda doğrulanabilir; gerçek müşteri ortamında IdP ve yerel kaynak korelasyonu gereklidir.
 
-## 5. Model entegrasyonu ve etiket sızıntısının önlenmesi
+## Pencere ve geçmiş
 
-`app/schema.js` içindeki `selectFeatures()` yalnızca aşağıdaki anahtarları çıkarır:
+Özellikler olay zamanına göre sıralı akıştan hesaplanır; aynı timestamp'teki önceki kayıtlar ingestion sırasıyla bilinir, sonraki kayıt görünmez. 24 saat oranı güncel olay sonucu eklenmeden hesaplanır. `attempts_2m <= attempts_1h` zorunludur. Cookie dönüşümleri hesap/kaynak sayacını sıfırlamaz.
 
-```text
-attempts_2m, attempts_1h, distinct_accounts_2m, failed_ratio_24h,
-hour_deviation, typical_weekday, geo_velocity_kmh,
-network_familiarity, asn_category, device_managed, device_new
-```
+30 günlük profil sentetik parametre olarak simüle edilir; gerçek 30 günlük olay geçmişi iddiası yoktur. Gerçek ortamda geçmiş yoksa doldurulmaz. `device_new` cookie yenilendi diye üretilmez; müşteri IdP'sinin güvenilir cihaz bağlamından gelmelidir. VPN konum sıçraması fiziksel seyahat veya saldırı kanıtı değildir.
 
-`event_id`, `session_token`, `account_token`, `event_ts_utc`, `is_suspicious` ve `attack_type` çağrıya taşınmaz. Ham zaman yerine zaten türetilmiş zaman özellikleri kullanılır. `attack_type` gerçek CSV görünümünde tahmin edilmiş saldırı adı gibi gösterilmez; `is_suspicious` puana çevrilmez.
+Sentetik fit/validation/test dönemleri ve hesapları üretimde ayrılır. Bölmeler arasında hesap, oturum, episode ve kaynak kesişimi yasaktır; en az 120 saniye zaman boşluğu doğrulanır. Bu ayrım aynı üretici şablonlarına özgü kolaylığı ortadan kaldırmaz; gerçek dünya genellemesi ayrıca sınanmalıdır.
 
-AI 3'ün bağlanacağı sınır `app/model-adapter.js` içindeki `predictRisk(features)` fonksiyonudur. Bugün daima `null` döner. Gelecekte müşteri içinde çalışan uygulama şu sonucu üretir:
+## Model sözleşmesi
+
+Modelin izinli girdileri yalnızca 11 CSV özelliğidir: `attempts_2m`, `attempts_1h`, `distinct_accounts_2m`, `failed_ratio_24h`, `hour_deviation`, `typical_weekday`, `geo_velocity_kmh`, `network_familiarity`, `asn_category`, `device_managed`, `device_new`.
+
+Kimlik, ham timestamp, hedef, attack_type veya manifest girdiye eklenmez. Kategoriler önceden tanımlı; sayısal standardizasyon sadece fit bölümünden öğrenilir. Çıkarımda bilinmeyen/eksik özellikler doldurulmaz; herhangi biri desteklenmiyorsa sonuç null'dır. JSON'daki median fit özeti olup çıkarımda imputation için kullanılmaz.
 
 ```ts
 type Prediction = null | {
-  risk_score: number;    // Sonlu tamsayı, 0–100; 100 en yüksek risk.
-  reasons: string[];    // En fazla 6 gerekçe; her biri 1–240 karakter.
-  model_version: string; // Boş olmayan, en fazla 80 karakter.
+  risk_score: number;     // Sonlu tamsayı 0–100.
+  reasons: string[];      // En çok 6 kısa gerekçe.
+  model_version: string; // Boş olmayan sürüm.
 };
 ```
 
-Gerekçeler yalnızca modele verilen özelliklerden ve modelin belgelenmiş açıklama yönteminden gelmelidir; etiket, saldırı metaverisi, kullanıcı adı veya başka ham veri içeremez. Gerekçe yoksa arayüz bunu açıkça belirtir. Model versiyonu veri kaydı içermez. UI, tüm değişken metni `textContent` ile işler; HTML çalıştırmaz. Belirtilen nedenler özellik katkısı yöntemi uygulanmadıkça SHAP veya nedensel açıklama gibi adlandırılmaz.
+Demo lojistik katsayılarıyla logit hesaplar, sigmoid sonucunu `floor(p*100+0.5)` ile 0–100 puana dönüştürür. Bu sınıf ağırlıklı skor kalibre saldırı olasılığı değildir. Gerekçeler pozitif özellik katkılarıdır; SHAP veya nedensellik değildir. UI gerekçeleri güvenli metin olarak işler.
 
-Model belirsiz/missing girdiyi işleyemiyorsa null döndürmelidir; sıfırla doldurma otomatik değildir. İleride yerel HTTP servisi seçilirse yalnızca müşteri ortamındaki uç nokta için CSP, erişim kontrolü, timeout ve veri saklama politikası birlikte uygulanmalıdır. Mevcut demo ağ çağrılarını özellikle kapalı tutar; bir dış servis URL'si eklemek bu mimariye uygun entegrasyon sayılmaz.
+Model JSON'u özellik sırası, katsayı boyutları, sonlu sayılar, kategori sözlüğü, eksiklik politikası ve sürüm bakımından doğrulanır. Artefakt checksum'ı kazara bozulmayı yakalar; imza veya kaynağın kimliğini doğrulama mekanizması değildir. Yerel sunucunun model dosyasını sunması CSV'nin sunucuya gönderilmesi anlamına gelmez. Model yok/bozuksa mock ekran kullanılabilir, CSV olaylarına uydurma puan verilmez.
 
-### Oturum puanlaması
+## Oturum ve aksiyon
 
-1. Olaylar `session_token` ile gruplanır; model her olayın sadece özelliklerini alır.
-2. **Tüm olaylar puanlandıysa**, en yüksek olay puanı oturum riski olur. Eşitlikte en son olay seçilir. Risk gerekçeleri ve sinyal çipleri aynı seçilmiş olaya aittir.
-3. Herhangi bir olayda model yoksa, hata varsa veya sonuç sözleşme dışıysa oturum puanı gösterilmez. Tam değerlendirilmemiş oturum düşük risk diye sunulmaz. Hata UI'da ayırt edilir.
-4. Oturumlar en son olay zamanına göre sıralanır. Bu özet, yalnızca yüklenen dosyanın kapsamıdır; oturumun tüm yaşamını veya canlı akışı temsil etmez.
+`session_token` yalnız uygulama gruplamasıdır. Tüm olayları puanlanan oturumda en yüksek olay puanı kullanılır; eşit puanda en son olay seçilir. Risk gerekçeleri/sinyaller aynı seçilmiş olaya aittir. Herhangi bir olay puansızsa oturum puansız kalır; kısmi değerlendirme tamamlanmış gibi gösterilmez. Ekran yalnız yüklenen dosyanın kapsamını temsil eder.
 
-En yüksek olay puanı bir MVP **entegrasyon kararıdır**; doğrulanmış bir oturum modeli değildir. AI 3 farklı toplulaştırma önerirse ayrı incelemeyle değiştirilmelidir. Çok olaylı oturumların riski bu yöntemle daha yüksek görünebilir.
-
-## 6. Aksiyon politikası
-
-| Risk | Ekran önerisi |
+| Puan | Öneri |
 | --- | --- |
-| Bilinmiyor / model hatası | Puan bekleniyor; karar üretilmez |
+| Bilinmiyor | Eksik bağlam/model durumunu incele; düşük risk varsayma |
 | 0–29 | İzlemeye devam et |
 | 30–69 | MFA öner |
 | 70–100 | MFA + insan incelemesi öner |
 
-Bu eşikler **demo varsayımıdır**; gerçek dünyada kalibre edilmiş eşikler değildir. Puan “% saldırı ihtimali” olarak sunulmaz. Ürün bir hesabı kilitlemez; demo IdP'ye komut göndermez veya gerçek MFA tetiklemez. Üretim entegrasyonunda müşteri güvenlik politikası ve yetkili operatör aksiyonu ayrı bir katmandır.
+30/70 demo politikası, model karşılaştırması için validation'da seçilen eşikten ayrıdır. Değerlendirme hem benchmark eşiğini hem gerçek arayüz politikasını raporlar. Oturum maksimumunun yanlış alarm davranışı olay metriklerinden farklı olabilir; ayrıca oturum özeti incelenir. Otomatik kilitleme ve gerçek MFA komutu yoktur.
 
-## 7. Geçmiş, saklama ve üretim sınırlamaları
+## Gizlilik, yaşam döngüsü ve kapsam
 
-Hedef özellik servisi iki dakikalık kaynak korelasyonunu pencere ve kabul edilen geç kalma süresi sonunda siler. 1 saat/24 saat yardımcı özetler için ayrı ve sınırlı süreli müşteri içi sayaçlar gerekir; bunlar ham olayların sınırsız saklanmasını gerektirmez. Hesap/ağ alışkanlığı geçmişinin kapsamı, saklama süresi ve yeterlilik ölçütü henüz kararlaştırılmamıştır. 30 günlük profil varmış gibi doldurulamaz.
+Sunucu yalnız `127.0.0.1` üzerinde çalışır; Host ve dosya allowlist'i vardır. Üçüncü taraf script/font/analitik yoktur. CSP bağlantıları yalnız aynı origin ile sınırlar; POST kabul edilmez. Log, cookie ve kalıcı browser storage oluşturulmaz. CSV bellekte tutulur; 5/10/15 dakika, sıfırlama ve sayfadan ayrılma referansları bırakır. Askı sonrası süre yeniden kontrol edilir. Fiziksel silme garanti edilmez.
 
-Demo bir loopback geliştirme sunucusudur. Üretim için tenant izolasyonu, yetkilendirme, TLS, anahtar yönetimi, denetim kaydı minimizasyonu, gecikme politikası, saldırgan kontrollü girdilere dayanıklılık, MFA yorgunluğu ve eşik kalibrasyonu ayrıca ele alınmalıdır. Demo bu özellikleri uygulamış gibi sunulmaz.
-
-Sentetik veriyle elde edilebilecek metrikler gerçek saldırgan davranışı veya gerçek müşteri başarısını kanıtlamaz. AI 1'in arayüz sayaçları da sınıflandırma metriği değildir. Şüpheli başarılı giriş, kaynak korelasyonu, NAT/VPN ve cihaz bağlamı sınırlamaları ayrıca [entegrasyon notunda](integration_notes_ai1.md) izlenir.
+Ayrıntılı dosya/sayaç/model yaşam döngüsü [retention_policy.md](retention_policy.md) içindedir. 120 saniyelik analiz penceresi, tarayıcı saklama süresi ve gerçek oturum cookie TTL'si farklıdır. Canlı IdP, üretim erişim kontrolü, çok kiracılı servis, gerçek cookie veya gerçek zamanlı TTL deposu bu statik yerel prototipte yoktur. Üretim kullanımı ve gerçek dünya etkinliği onayı bu teslimin sonucu değildir.

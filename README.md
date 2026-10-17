@@ -1,105 +1,110 @@
 # Ephemeral Login Sentinel
 
-Ham parola, gerçek kullanıcı adı, ham IP ve kalıcı cihaz parmak izi saklamadan giriş bağlamını değerlendirmek için hazırlanan **AI 1 mimari ve yerel demo teslimi**.
+Giriş olaylarından **oturum başına 0–100 risk puanı** üreten, yerelde çalışan bir MVP. **100 en yüksek risktir.** Yüksek risk MFA veya insan incelemesi önerir; otomatik hesap kilitleme ve gerçek MFA tetikleme yoktur.
 
-Oturum riski **0–100** aralığındadır; **100 en yüksek risktir**. Yüksek riskte MFA veya insan incelemesi önerilir. Otomatik hesap kilitleme bulunmaz.
+Bu entegrasyon AI 1–4 teslimlerini bir araya getirir: mimari/demo, 10.000 olaylık sentetik veri, çalışan eğitim/değerlendirme komutları, dört model karşılaştırması ve güvenlik testleri. Hazır demo modeli sentetik veriden gerçekten eğitilmiştir. Sonuçlar gerçek müşteri performansı veya kalibre saldırı olasılığı değildir.
 
-> **Durum:** Model bağlı değil. Açılıştaki dört kart elle yazılmış **MOCK arayüz önizlemesidir**; veri seti, eğitim çıktısı veya başarı metriği değildir. CSV içe aktarılabilir; gerçek model bağlanmadan bu CSV'ye puan verilmez.
+## Hızlı demo
 
-## Çalıştırma
-
-Python 3.10 veya üzeri yeterlidir. Paket kurulumu, API anahtarı, Node.js veya ağ bağlantısı gerekmez.
-
-Depo kökünde:
+**Python 3.10+ yeterlidir.** Demo için paket kurulumu, API anahtarı, Node.js veya internet bağlantısı gerekmez; eğitilmiş model JSON'u depoda bulunur.
 
 ```bash
 python3 app/serve.py
 ```
 
-Tarayıcıda **http://127.0.0.1:8000** adresini açın. Windows'ta uygun kurulumda `py -3 app/serve.py` kullanılabilir. Durdurmak için terminalde `Ctrl+C`.
+Tarayıcıda **http://127.0.0.1:8000** adresini açın. Port doluysa `python3 app/serve.py --port 8001` kullanın. Windows'ta `py -3 app/serve.py` kullanılabilir. Durdurmak için `Ctrl+C`.
 
-Port doluysa:
+1. Açılıştaki dört kart **MOCK** arayüz örnekleridir. Ekrandaki yerel model durumunu kontrol edin.
+2. **CSV içe aktar** ile `data/mvp_synthetic_logins.csv` dosyasını seçin.
+3. Gerçek eğitilmiş model bu CSV'yi tarayıcı içinde puanlar; olaylar 4.036 oturumda gruplanır. Model sürümü, risk nedenleri ve önerilen aksiyon görünür.
+4. Filtre, arama ve 50 satırlık sayfalama ile oturumları inceleyin. Herhangi bir olayı eksik/tanınmayan özellik yüzünden puanlanamayan oturum **puan bekliyor** kalır; düşük risk sayılmaz.
+5. Bellekte tutma süresini 5/10/15 dakika seçin. **Mock görünüm** sıfırlaması veya süre dolması içe aktarımın uygulama referanslarını bırakır. Kaynak CSV diskten silinmez.
+
+CSV **sunucuya yüklenmez**. Tarayıcı yalnızca aynı yerel sunucudan model JSON'unu alır. Sunucu depo/veri/manifest/model pickle dosyalarını paylaşmaz; sadece izinli web varlıkları ve doğrulanmış model JSON'u sunulur.
+
+## Eğitim ve değerlendirmeyi tekrar çalıştırma
+
+Tam geliştirme ortamı için **Python 3.13** kullanıldı. Proje kökünde:
 
 ```bash
-python3 app/serve.py --port 8001
+python3.13 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-optional.txt
 ```
 
-Bu durumda **http://127.0.0.1:8001** adresini açın. Sunucu yalnızca loopback'te dinler. `index.html` dosyasını doğrudan `file://` olarak açmayın; ES modülleri HTTP üzerinden sunulmalıdır. Depo kökünü genel bir dosya sunucusuyla paylaşmak yerine verilen sunucuyu kullanın; yalnızca demo varlıkları erişilebilir olur.
+Windows etkinleştirme komutu `.venv\Scripts\activate` olur. `requirements-optional.txt` XGBoost içindir; kurulu değilse karşılaştırma bunu açıkça atlar. Üç temel yaklaşım kural referansı, Logistic Regression ve Random Forest'tır. Bu teslimde XGBoost da kurularak değerlendirilmiştir. SHAP zorunlu değildir; demo lojistik özellik katkılarını açıklar.
 
-## Demo akışı
+Veri zaten depodadır. Aynı sentetik teslimi yeniden üretmek isterseniz:
 
-1. Genel görünümde **MOCK** uyarısını ve dört gösterim kartını görün.
-2. Tek hesaba yoğun deneme kartını seçin: 86/100 örnek risk, örnek nedenler ve **MFA + inceleme öner** aksiyonu görünür.
-3. Çok hesaba yayılım ve yeni bağlamdan başarılı giriş kartları arasında geçin. Puanların örnek olduğunu koruyun; bu kartlar gerçek olay değildir.
-4. Risk filtresini değiştirin veya `mock-session-03` arayın. Filtre seçimi değiştirir; üstteki sayaçlar ve dağılım tüm yüklü oturumların özetidir.
-5. **Veri sözleşmesi** ve **Gizlilik sınırı** görünümlerini inceleyin.
-6. AI 2'nin kullanıma hazır, onaylı sentetik CSV'si geldiğinde **CSV içe aktar** ile yerelden seçin. Bu teslim bir veri seti içermez. Gerçek müşteri dosyalarını AI sohbetine yüklemeyin.
-7. Geçerli CSV'de olaylar `session_token` ile gruplanır. Model bağlı olmadığı için risk **— / Puan bekleniyor** görünür; hedef etiket ve saldırı türü skora dönüştürülmez.
-8. Hatalı CSV değerleri loglanmadan reddedilir, önceki görünüm korunur. **Mock görünüm** düğmesi içe aktarılan kayıtlara uygulama referanslarını bırakır ve mock kartları geri getirir.
+```bash
+python src/data/generate_synthetic.py --rows 10000 --seed 42 --attack-rate 0.08
+```
 
-Öneriler yalnızca ekranda gösterilir. Demo gerçek MFA isteği, hesap kilitleme veya başka bir dış işlem yapmaz.
+Bu komut CSV ve denetim manifestini birlikte yazar. Gerçek kimlik, parola, IP, kesin konum veya dış veri kullanmaz. Başka seed/oran kullanırsanız model ve sonuçlar eski veriyle eşleşmez; eğitimi ve değerlendirmeyi yeniden çalıştırın.
 
-## CSV sözleşmesi
+```bash
+python -m src.models.train
+python -m src.models.evaluate
+```
+
+Eğitim CSV/manifest yoksa, hash uyuşmuyorsa veya bölmeler sızıntı içeriyorsa başlamaz. Ayrımlar **6.000 fit / 2.000 validation / 2.000 test** şeklindedir; hesap, oturum, kaynak ve episode ortaklığı yoktur, zaman aralıkları ayrıdır. Ön işleme yalnız fit bölümünden öğrenilir; eşik yalnız validation bölümünden seçilir. `evaluate` kaydedilmiş karşılaştırma modellerini yeniden eğitim yapmadan değerlendirir.
+
+Demo modeli **Logistic Regression**: küçük ve denetlenebilir JSON olarak tarayıcıda çalışabildiği için seçildi. RF/XGBoost daha iyi sentetik metrik verdiğinde bu raporda gizlenmez; demo modeli test sonuçlarına göre seçilmiş değildir. 30/70 arayüz politikası, validation'da seçilen değerlendirme eşiğinden ayrıdır.
+
+## Sonuçlar ve sınırlamalar
+
+[Model sonuçları](docs/model_results.md) PR-AUC/AP, ROC-AUC, precision, recall, confusion matrix, yanlış alarm, alt grup ve puanlama kapsamını içerir. [Güvenlik incelemesi](docs/security_review.md) kapatılan hataları ve kalan sınırları açıklar.
+
+Eksik geçmişi olan olaylar puanlanmaz. Özellikle normal seyahat/yeni cihaz ve VPN bağlamlarında yanlış alarmlar hâlâ vardır. Sentetik başarı gerçek dünya etkinliği anlamına gelmez. Gerçek IdP entegrasyonu, üretim kimlik doğrulama/TTL servisi ve müşteri verisi üzerinde doğrulama bu yerel prototipin kapsamı dışındadır.
+
+## Sabit CSV sözleşmesi
 
 ```csv
 event_id,event_ts_utc,session_token,account_token,attempts_2m,attempts_1h,distinct_accounts_2m,failed_ratio_24h,hour_deviation,typical_weekday,geo_velocity_kmh,network_familiarity,asn_category,device_managed,device_new,is_suspicious,attack_type
 ```
 
-- Tam 17 alan, aynı sıra, UTF-8 ve virgül ayırıcı gerekir. BOM ve CRLF desteklenir.
-- En fazla **2 MiB / 10.000 olay**. Yinelenen `event_id` ve geçersiz zaman/tip reddedilir.
-- Boş özellikler bilinmiyor (`null`) kalır; 30 günlük gerçek geçmiş varsayılmaz.
-- Üç kimlik, olay zamanı, hedef etiket ve saldırı metaverisi model girdisi değildir. Model sadece **11 izinli özelliği** alır.
-- Alan türleri ve kaynak/sayaç kapsamı için [mimari sözleşmesini](docs/architecture.md) ve [geçici entegrasyon kararlarını](docs/integration_notes_ai1.md) okuyun.
+17 alan ve sıraları değişmez. UTF-8, virgül ayırıcı, BOM ve CRLF desteklenir; demo sınırı 2 MiB / 10.000 olaydır. `network_familiarity` **familiar/unfamiliar** kategorisidir. Boolean alanlar 0/1, saat sapması 0–12 saat, başarısızlık oranı 0–1'dir. Boş özellik bilinmiyor olarak korunur.
 
-## Dosyalar ve sahiplik
+Model yalnızca 11 özellik alır. Kimlikler, ham olay zamanı, hedef etiket, saldırı metaverisi ve manifest alanları modele girmez. Manifest, CSV şemasını değiştirmeden sentetik başarı sonucu ve bölme/episode denetimini sağlar. Ayrıntılar [mimaride](docs/architecture.md) ve [veri sözlüğünde](docs/synthetic_data.md).
 
-```text
-README.md                       AI 1 — kurulum ve demo
-docs/
-  project_brief.md               Problem, amaç, MVP ve kapsam dışı işler
-  architecture.md                Akış, gizlilik, sabit şema ve model çıktısı
-  integration_notes_ai1.md        Şema değişmeden açık entegrasyon konuları
-app/
-  index.html / styles.css         Türkçe, duyarlı demo ekranı
-  main.js                       Ekran ve yerel CSV içe aktarımı
-  mock-view.js                  Yalnızca sabit sunum kartları
-  schema.js                     Parser, doğrulama, özellik allowlist'i
-  sessions.js                   Oturum gruplaması ve hata davranışı
-  model-adapter.js               AI 3 bağlantı sınırı; bugün null döner
-  serve.py                      Bağımlılıksız loopback statik sunucu
-  tests/                        Sözleşme ve sunucu sınırı testleri
-```
+## Testler
 
-Bu teslim yalnızca AI 1 dosyalarını içerir. Veri üretimi/araştırması, eğitim ve değerlendirme yapılmaz. Diğer AI'ların dosyaları değiştirilmez. AI 3 fiilen kullanılabilir CSV gelmeden eğitim veya metrik üretmemelidir.
-
-## Modeli bağlama
-
-AI 3'ün teslimi geldiğinde `app/model-adapter.js` içindeki `predictRisk(features)` müşteri ortamında çalışan çıkarıma bağlanır. Fonksiyon yalnızca 11 özellik alır ve `null` veya `{ risk_score, reasons, model_version }` döndürür. Ayrıntılı çıktı sözleşmesi [mimaride](docs/architecture.md) yer alır.
-
-Mevcut sunucu ağ isteklerini CSP ile kapatır (`connect-src 'none'`). Bir yerel API kullanılacaksa aynı müşteri sınırında kalacak şekilde sunucu/CSP ve yetkilendirme birlikte tasarlanmalıdır. Dış AI API'si veya uzaktaki model servisi eklemeyin.
-
-Tüm olaylar puanlandığında oturumun en yüksek olay puanı gösterilir. Herhangi bir olay puanlanamazsa oturum **bekliyor** kalır. 30 ve 70 eşikleri demo varsayımlarıdır; kalibrasyon veya gerçek dünya başarısı iddiası yoktur.
-
-## Kontroller
-
-Python ile statik sunucu ve gizlilik sınırı testleri:
+Python geliştirme ortamı etkin durumdayken:
 
 ```bash
-python3 -m unittest discover -s app/tests -p 'test_*.py' -v
+python -m unittest discover -s tests -v
+python -m unittest discover -s app/tests -p 'test_*.py' -v
 ```
 
-İsteğe bağlı JavaScript geliştirme kontrolü için Node.js 20+ kuruluysa:
+Tam JavaScript/DOM kontrolleri için Node.js 24 ve pnpm 12.14.0:
 
 ```bash
-node app/tests/contracts.test.mjs
+npm install --global pnpm@12.14.0
+pnpm --dir app install --frozen-lockfile
+pnpm --dir app test
 ```
 
-JavaScript kontrolleri CSV doğrulaması, eksik değer, etiket sızıntısı, model çıktısı, oturum toplulaştırma ve hata durumlarını kapsar. Node.js demoyu çalıştırmak için gerekli değildir. Testler model performansını ölçmez.
+Node PATH'te değilse Python entegrasyon testleri JavaScript kısmını açıkça atlayabilir; tam kontrol için Node'u PATH'e ekleyin. LinkeDOM yalnız geliştirme/test bağımlılığıdır; gerçek tarayıcıdaki görsel kontrolün yerine geçmez. CI aynı Python ve JavaScript kontrollerini çalıştıracak şekilde tanımlıdır; bu teslimde uzak CI çalışması başlatılmamıştır.
 
-## Gizlilik ve sınırlamalar
+## Teslim haritası
 
-CSV tarayıcı belleğinde işlenir; sunucuya yüklenmez, diske yazılmaz ve üçüncü taraflara gönderilmez. Cookie, web storage, telemetri veya fare/klavye kaydı yoktur. Sunucu erişim logu tutmaz. Kullanıcının seçtiği kaynak dosya kendi diskinde kalır; sıfırlama fiziksel bellek silme garantisi değildir.
+| Bölüm | Dosyalar |
+| --- | --- |
+| Ürün ve mimari | `docs/project_brief.md`, `docs/architecture.md`, `docs/retention_policy.md` |
+| Demo | `app/` — yerel çıkarım, CSV okuyucusu, oturum görünümü, ömür kontrolü |
+| Veri | `src/data/generate_synthetic.py`, `data/mvp_synthetic_logins.csv`, aynı dosyanın `.manifest.json` yan dosyası |
+| Veri belgeleri | `docs/synthetic_data.md`, `docs/data_source_audit.md` |
+| Modelleme | `src/models/train.py`, `src/models/evaluate.py`, `src/models/core.py`, yönlendirici notebook |
+| Model artefaktları | `models/demo_model.json`, `models/comparison_models.joblib` |
+| Değerlendirme | `docs/model_results.md`, `outputs/evaluation.json`, sentetik tahmin/parite dosyaları ve PR grafiği |
+| Güvenlik | `docs/test_plan.md`, `docs/security_review.md`, `docs/reviews/` ilk denetim kaydı |
+| Tekrar çalıştırma | `requirements*.txt`, `app/pnpm-lock.yaml`, `.github/workflows/tests.yml` |
 
-Bu bir üretim güvenlik sistemi değildir. Başarılı giriş sonucu, kaynak gruplaması ve cihaz yeniliğinin doğru türetilmesi müşteri IdP entegrasyonuna bağlıdır. CSV biçim kontrolü verinin gerçekten anonim/sentetik olduğunu kanıtlayamaz. Kalıcı cihaz izi, biyometri, sızdırılmış parola listeleri ve parola sızıntısı kontrolü MVP dışıdır. Sentetik çalışma sonuçları gerçek dünyada kanıtlanmış başarı olarak sunulamaz.
+## Gizlilik
+
+Gerçek kullanıcı kayıtlarını, ham parolaları, ham IP'leri ve sızdırılmış dosyaları AI sohbetine yüklemeyin. Kalıcı cihaz izi, fare/klavye biyometrisi, parola sızıntısı kontrolü ve sızdırılmış listelerle eşleştirme yoktur. Kullanıcı adı yerine gerektiğinde müşteri ortamında opak hesap anahtarı kullanılmalıdır.
+
+Demo cookie veya web storage oluşturmaz; erişim logu tutmaz. 120 saniyelik analiz penceresi ile dosyanın bellekte tutulma süresi farklıdır. Süre sonunda referans bırakma, fiziksel bellek silme garantisi değildir. Ayrıntılı uygulanan sınır: [veri yaşam döngüsü](docs/retention_policy.md).
 
 Lisans: [LICENSE](LICENSE).

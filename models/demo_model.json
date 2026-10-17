@@ -1,0 +1,173 @@
+{
+  "schema_version": "els-logistic-v1",
+  "model_version": "els-lr-41383a34524c-s42",
+  "synthetic_only": true,
+  "feature_columns": [
+    "attempts_2m",
+    "attempts_1h",
+    "distinct_accounts_2m",
+    "failed_ratio_24h",
+    "hour_deviation",
+    "typical_weekday",
+    "geo_velocity_kmh",
+    "network_familiarity",
+    "asn_category",
+    "device_managed",
+    "device_new"
+  ],
+  "feature_labels": {
+    "attempts_2m": "2 dakikadaki deneme sayısı",
+    "attempts_1h": "1 saatteki deneme sayısı",
+    "distinct_accounts_2m": "2 dakikadaki farklı hesap sayısı",
+    "failed_ratio_24h": "24 saatlik başarısızlık oranı",
+    "hour_deviation": "Olağan saatten sapma",
+    "typical_weekday": "Olağan gün bağlamı",
+    "geo_velocity_kmh": "Konum değişim hızı",
+    "network_familiarity": "Ağ aşinalığı",
+    "asn_category": "Ağ kategorisi",
+    "device_managed": "Yönetilen cihaz durumu",
+    "device_new": "Yeni cihaz bağlamı"
+  },
+  "missing_policy": "abstain",
+  "unknown_category_policy": "abstain",
+  "preprocessing": {
+    "numeric": [
+      {
+        "name": "attempts_2m",
+        "median": 2.0,
+        "mean": 2.6776893243519084,
+        "scale": 2.0152547159978145
+      },
+      {
+        "name": "attempts_1h",
+        "median": 2.0,
+        "mean": 3.0259236578893653,
+        "scale": 2.318826438379208
+      },
+      {
+        "name": "distinct_accounts_2m",
+        "median": 1.0,
+        "mean": 1.2355582771994285,
+        "scale": 1.142095293369576
+      },
+      {
+        "name": "failed_ratio_24h",
+        "median": 0.125,
+        "mean": 0.26896696407430093,
+        "scale": 0.32870621266750694
+      },
+      {
+        "name": "hour_deviation",
+        "median": 1.345556,
+        "mean": 3.2406009161053277,
+        "scale": 3.612511497977523
+      },
+      {
+        "name": "typical_weekday",
+        "median": 1.0,
+        "mean": 0.8036333945703205,
+        "scale": 0.3972489920713507
+      },
+      {
+        "name": "geo_velocity_kmh",
+        "median": 122.0,
+        "mean": 676.8783404776485,
+        "scale": 1327.2191071707302
+      },
+      {
+        "name": "device_managed",
+        "median": 1.0,
+        "mean": 0.639110022453562,
+        "scale": 0.48025868201727445
+      },
+      {
+        "name": "device_new",
+        "median": 0.0,
+        "mean": 0.2984282506634007,
+        "scale": 0.4575683881884578
+      }
+    ],
+    "categorical": [
+      {
+        "name": "network_familiarity",
+        "categories": [
+          "familiar",
+          "unfamiliar"
+        ]
+      },
+      {
+        "name": "asn_category",
+        "categories": [
+          "residential",
+          "business",
+          "cloud",
+          "vpn",
+          "unknown"
+        ]
+      }
+    ]
+  },
+  "transformed_feature_order": [
+    "attempts_2m",
+    "attempts_1h",
+    "distinct_accounts_2m",
+    "failed_ratio_24h",
+    "hour_deviation",
+    "typical_weekday",
+    "geo_velocity_kmh",
+    "device_managed",
+    "device_new",
+    "network_familiarity=familiar",
+    "network_familiarity=unfamiliar",
+    "asn_category=residential",
+    "asn_category=business",
+    "asn_category=cloud",
+    "asn_category=vpn",
+    "asn_category=unknown"
+  ],
+  "coefficients": [
+    1.3405274819637305,
+    -0.8123253484546166,
+    0.6799252876761118,
+    0.1348614316824873,
+    0.7579930053906774,
+    0.16879307546173491,
+    0.04615084766618582,
+    -1.344013162078037,
+    0.2779208144378033,
+    -0.593488608181644,
+    0.5794421550370097,
+    0.44131996370641663,
+    0.4019334634874914,
+    0.1771434572352982,
+    -0.6194762854908704,
+    -0.4149670520830446
+  ],
+  "intercept": -1.7248683233885083,
+  "threshold_policy": {
+    "mfa_score": 30,
+    "review_score": 70
+  },
+  "benchmark_threshold": {
+    "feasible": true,
+    "threshold": 0.7811561100999251,
+    "validation_recall": 0.5255474452554745,
+    "validation_fpr": 0.049059139784946235,
+    "validation_precision": 0.496551724137931,
+    "max_fpr": 0.05,
+    "min_recall": 0.5
+  },
+  "score_semantics": "uncalibrated_synthetic_probability",
+  "score_rounding": "floor(probability * 100 + 0.5)",
+  "explanation_semantics": "additive_log_odds_contribution_not_causality",
+  "training_data_sha256": "41383a34524cefb434a66608c74a6554bada4377968298c6d7b7a43e4168b625",
+  "seed": 42,
+  "sklearn_version": "1.9.1",
+  "deployment_selection": "Logistic regression chosen for transparent browser-only deployment, not best holdout score.",
+  "artifact_integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "python_json_sort_keys_utf8_excluding_artifact_integrity",
+    "digest": "63bb1561b144f33491ef90979c933f20d7ce117a50837e2016cb0d974c8bef4e",
+    "purpose": "accidental_corruption_not_authenticity"
+  }
+}

@@ -1,0 +1,1738 @@
+{
+  "scope": "synthetic_generator_holdout_only_not_real_world_performance",
+  "data_sha256": "41383a34524cefb434a66608c74a6554bada4377968298c6d7b7a43e4168b625",
+  "manifest_sha256": "b336ed637096e9bf29b30d8113d4c20f4b46973a91660e596e363f5136987ffb",
+  "feature_columns": [
+    "attempts_2m",
+    "attempts_1h",
+    "distinct_accounts_2m",
+    "failed_ratio_24h",
+    "hour_deviation",
+    "typical_weekday",
+    "geo_velocity_kmh",
+    "network_familiarity",
+    "asn_category",
+    "device_managed",
+    "device_new"
+  ],
+  "split_audit": {
+    "overlap_counts": {
+      "fit/validation:account_token": 0,
+      "fit/validation:session_token": 0,
+      "fit/validation:_episode": 0,
+      "fit/validation:_source": 0,
+      "fit/test:account_token": 0,
+      "fit/test:session_token": 0,
+      "fit/test:_episode": 0,
+      "fit/test:_source": 0,
+      "validation/test:account_token": 0,
+      "validation/test:session_token": 0,
+      "validation/test:_episode": 0,
+      "validation/test:_source": 0
+    },
+    "time_gaps_seconds": {
+      "fit/validation": 173888.0,
+      "fit/test": 1037870.0,
+      "validation/test": 179212.0
+    },
+    "splits": {
+      "fit": {
+        "rows": 6000,
+        "accounts": 342,
+        "episodes": 1805,
+        "sources": 1805,
+        "start_utc": "2025-01-01T00:06:27+00:00",
+        "end_utc": "2025-01-08T23:55:27+00:00"
+      },
+      "validation": {
+        "rows": 2000,
+        "accounts": 115,
+        "episodes": 584,
+        "sources": 584,
+        "start_utc": "2025-01-11T00:13:35+00:00",
+        "end_utc": "2025-01-18T22:26:25+00:00"
+      },
+      "test": {
+        "rows": 2000,
+        "accounts": 116,
+        "episodes": 598,
+        "sources": 598,
+        "start_utc": "2025-01-21T00:13:17+00:00",
+        "end_utc": "2025-01-28T23:54:11+00:00"
+      }
+    }
+  },
+  "coverage_by_split": {
+    "fit": {
+      "total_rows": 6000,
+      "eligible_rows": 4899,
+      "abstentions": 1101
+    },
+    "test": {
+      "total_rows": 2000,
+      "eligible_rows": 1631,
+      "abstentions": 369
+    },
+    "validation": {
+      "total_rows": 2000,
+      "eligible_rows": 1625,
+      "abstentions": 375
+    }
+  },
+  "threshold_selection": "validation only: maximize recall subject to per-model saved max_fpr/min_recall constraints; infeasibility explicit",
+  "unavailable_models": {},
+  "portable_parity_max_probability_error": 3.3306690738754696e-16,
+  "models": {
+    "rule_baseline": {
+      "eligible_rows": 1631,
+      "positives": 131,
+      "negatives": 1500,
+      "pr_auc_average_precision": 0.4622883914237975,
+      "roc_auc": 0.707297709923664,
+      "threshold": null,
+      "precision": null,
+      "recall": null,
+      "false_positive_rate": null,
+      "confusion_matrix": null,
+      "total_rows": 2000,
+      "abstentions": 369,
+      "coverage": 0.8155,
+      "validation_threshold_selection": {
+        "feasible": false,
+        "threshold": null,
+        "reason": "fpr_recall_constraints_infeasible",
+        "max_fpr": 0.05,
+        "min_recall": 0.5
+      },
+      "subgroups": {
+        "brute_force": {
+          "eligible_rows": 64,
+          "positives": 64,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 64,
+          "abstentions": 0,
+          "coverage": 1.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "cold_start": {
+          "eligible_rows": 0,
+          "positives": 0,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 92,
+          "abstentions": 92,
+          "coverage": 0.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "night_shift": {
+          "eligible_rows": 127,
+          "positives": 0,
+          "negatives": 127,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 147,
+          "abstentions": 20,
+          "coverage": 0.8639455782312925,
+          "demo_mfa_fpr": 0.0,
+          "demo_review_fpr": 0.0
+        },
+        "normal": {
+          "eligible_rows": 706,
+          "positives": 0,
+          "negatives": 706,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 791,
+          "abstentions": 85,
+          "coverage": 0.8925410872313527,
+          "demo_mfa_fpr": 0.0,
+          "demo_review_fpr": 0.0
+        },
+        "password_spraying": {
+          "eligible_rows": 31,
+          "positives": 31,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 48,
+          "abstentions": 17,
+          "coverage": 0.6458333333333334,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "suspicious_success": {
+          "eligible_rows": 36,
+          "positives": 36,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 48,
+          "abstentions": 12,
+          "coverage": 0.75,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "travel_new_device": {
+          "eligible_rows": 166,
+          "positives": 0,
+          "negatives": 166,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 203,
+          "abstentions": 37,
+          "coverage": 0.8177339901477833,
+          "demo_mfa_fpr": 0.28313253012048195,
+          "demo_review_fpr": 0.28313253012048195
+        },
+        "user_error": {
+          "eligible_rows": 331,
+          "positives": 0,
+          "negatives": 331,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 368,
+          "abstentions": 37,
+          "coverage": 0.8994565217391305,
+          "demo_mfa_fpr": 0.015105740181268883,
+          "demo_review_fpr": 0.015105740181268883
+        },
+        "vpn_new_device": {
+          "eligible_rows": 170,
+          "positives": 0,
+          "negatives": 170,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 239,
+          "abstentions": 69,
+          "coverage": 0.7112970711297071,
+          "demo_mfa_fpr": 0.32941176470588235,
+          "demo_review_fpr": 0.32941176470588235
+        },
+        "normal_with_vpn": {
+          "eligible_rows": 421,
+          "positives": 0,
+          "negatives": 421,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 536,
+          "abstentions": 115,
+          "coverage": 0.7854477611940298,
+          "demo_mfa_fpr": 0.19477434679334918,
+          "demo_review_fpr": 0.19477434679334918
+        },
+        "normal_new_device": {
+          "eligible_rows": 489,
+          "positives": 0,
+          "negatives": 489,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 660,
+          "abstentions": 171,
+          "coverage": 0.740909090909091,
+          "demo_mfa_fpr": 0.22085889570552147,
+          "demo_review_fpr": 0.22085889570552147
+        },
+        "normal_unfamiliar_network": {
+          "eligible_rows": 558,
+          "positives": 0,
+          "negatives": 558,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": null,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 651,
+          "abstentions": 93,
+          "coverage": 0.8571428571428571,
+          "demo_mfa_fpr": 0.1935483870967742,
+          "demo_review_fpr": 0.1935483870967742
+        }
+      },
+      "demo_policy": {
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.4622883914237975,
+          "roc_auc": 0.707297709923664,
+          "threshold": 0.295,
+          "precision": 0.35714285714285715,
+          "recall": 0.4580152671755725,
+          "false_positive_rate": 0.072,
+          "confusion_matrix": [
+            [
+              1392,
+              108
+            ],
+            [
+              71,
+              60
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.4622883914237975,
+          "roc_auc": 0.707297709923664,
+          "threshold": 0.695,
+          "precision": 0.35714285714285715,
+          "recall": 0.4580152671755725,
+          "false_positive_rate": 0.072,
+          "confusion_matrix": [
+            [
+              1392,
+              108
+            ],
+            [
+              71,
+              60
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        }
+      },
+      "session_policy": {
+        "aggregation": "max_integer_event_score; any_unscored_event_abstains_entire_session",
+        "evaluation_label": "max event target label; never an inference input",
+        "total_sessions": 811,
+        "scored_sessions": 537,
+        "abstained_sessions": 274,
+        "coverage": 0.6621454993834772,
+        "multievent_sessions": 429,
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.5080783726711395,
+          "roc_auc": 0.7153715579026783,
+          "threshold": 0.3,
+          "precision": 0.29473684210526313,
+          "recall": 0.509090909090909,
+          "false_positive_rate": 0.13900414937759337,
+          "confusion_matrix": [
+            [
+              415,
+              67
+            ],
+            [
+              27,
+              28
+            ]
+          ]
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.5080783726711395,
+          "roc_auc": 0.7153715579026783,
+          "threshold": 0.7,
+          "precision": 0.29473684210526313,
+          "recall": 0.509090909090909,
+          "false_positive_rate": 0.13900414937759337,
+          "confusion_matrix": [
+            [
+              415,
+              67
+            ],
+            [
+              27,
+              28
+            ]
+          ]
+        }
+      }
+    },
+    "logistic_regression": {
+      "eligible_rows": 1631,
+      "positives": 131,
+      "negatives": 1500,
+      "pr_auc_average_precision": 0.6264551250309579,
+      "roc_auc": 0.9059185750636131,
+      "threshold": 0.7811561100999251,
+      "precision": 0.44571428571428573,
+      "recall": 0.5954198473282443,
+      "false_positive_rate": 0.06466666666666666,
+      "confusion_matrix": [
+        [
+          1403,
+          97
+        ],
+        [
+          53,
+          78
+        ]
+      ],
+      "total_rows": 2000,
+      "abstentions": 369,
+      "coverage": 0.8155,
+      "validation_threshold_selection": {
+        "feasible": true,
+        "threshold": 0.7811561100999251,
+        "validation_recall": 0.5255474452554745,
+        "validation_fpr": 0.049059139784946235,
+        "validation_precision": 0.496551724137931,
+        "max_fpr": 0.05,
+        "min_recall": 0.5
+      },
+      "subgroups": {
+        "brute_force": {
+          "eligible_rows": 64,
+          "positives": 64,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 1.0,
+          "recall": 0.640625,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              23,
+              41
+            ]
+          ],
+          "total_rows": 64,
+          "abstentions": 0,
+          "coverage": 1.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "cold_start": {
+          "eligible_rows": 0,
+          "positives": 0,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 92,
+          "abstentions": 92,
+          "coverage": 0.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "night_shift": {
+          "eligible_rows": 127,
+          "positives": 0,
+          "negatives": 127,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.03937007874015748,
+          "confusion_matrix": [
+            [
+              122,
+              5
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 147,
+          "abstentions": 20,
+          "coverage": 0.8639455782312925,
+          "demo_mfa_fpr": 0.25984251968503935,
+          "demo_review_fpr": 0.05511811023622047
+        },
+        "normal": {
+          "eligible_rows": 706,
+          "positives": 0,
+          "negatives": 706,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.028328611898016998,
+          "confusion_matrix": [
+            [
+              686,
+              20
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 791,
+          "abstentions": 85,
+          "coverage": 0.8925410872313527,
+          "demo_mfa_fpr": 0.18271954674220964,
+          "demo_review_fpr": 0.05099150141643059
+        },
+        "password_spraying": {
+          "eligible_rows": 31,
+          "positives": 31,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 1.0,
+          "recall": 0.7096774193548387,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              9,
+              22
+            ]
+          ],
+          "total_rows": 48,
+          "abstentions": 17,
+          "coverage": 0.6458333333333334,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "suspicious_success": {
+          "eligible_rows": 36,
+          "positives": 36,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 1.0,
+          "recall": 0.4166666666666667,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              21,
+              15
+            ]
+          ],
+          "total_rows": 48,
+          "abstentions": 12,
+          "coverage": 0.75,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "travel_new_device": {
+          "eligible_rows": 166,
+          "positives": 0,
+          "negatives": 166,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.2289156626506024,
+          "confusion_matrix": [
+            [
+              128,
+              38
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 203,
+          "abstentions": 37,
+          "coverage": 0.8177339901477833,
+          "demo_mfa_fpr": 0.5060240963855421,
+          "demo_review_fpr": 0.2891566265060241
+        },
+        "user_error": {
+          "eligible_rows": 331,
+          "positives": 0,
+          "negatives": 331,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.02416918429003021,
+          "confusion_matrix": [
+            [
+              323,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 368,
+          "abstentions": 37,
+          "coverage": 0.8994565217391305,
+          "demo_mfa_fpr": 0.22658610271903323,
+          "demo_review_fpr": 0.045317220543806644
+        },
+        "vpn_new_device": {
+          "eligible_rows": 170,
+          "positives": 0,
+          "negatives": 170,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.15294117647058825,
+          "confusion_matrix": [
+            [
+              144,
+              26
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 239,
+          "abstentions": 69,
+          "coverage": 0.7112970711297071,
+          "demo_mfa_fpr": 0.4117647058823529,
+          "demo_review_fpr": 0.22941176470588234
+        },
+        "normal_with_vpn": {
+          "eligible_rows": 421,
+          "positives": 0,
+          "negatives": 421,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.07363420427553444,
+          "confusion_matrix": [
+            [
+              390,
+              31
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 536,
+          "abstentions": 115,
+          "coverage": 0.7854477611940298,
+          "demo_mfa_fpr": 0.26128266033254155,
+          "demo_review_fpr": 0.12114014251781473
+        },
+        "normal_new_device": {
+          "eligible_rows": 489,
+          "positives": 0,
+          "negatives": 489,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.18200408997955012,
+          "confusion_matrix": [
+            [
+              400,
+              89
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 660,
+          "abstentions": 171,
+          "coverage": 0.740909090909091,
+          "demo_mfa_fpr": 0.4703476482617587,
+          "demo_review_fpr": 0.24948875255623723
+        },
+        "normal_unfamiliar_network": {
+          "eligible_rows": 558,
+          "positives": 0,
+          "negatives": 558,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7811561100999251,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.13978494623655913,
+          "confusion_matrix": [
+            [
+              480,
+              78
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 651,
+          "abstentions": 93,
+          "coverage": 0.8571428571428571,
+          "demo_mfa_fpr": 0.4283154121863799,
+          "demo_review_fpr": 0.1989247311827957
+        }
+      },
+      "demo_policy": {
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.6264551250309579,
+          "roc_auc": 0.9059185750636131,
+          "threshold": 0.295,
+          "precision": 0.2318271119842829,
+          "recall": 0.9007633587786259,
+          "false_positive_rate": 0.26066666666666666,
+          "confusion_matrix": [
+            [
+              1109,
+              391
+            ],
+            [
+              13,
+              118
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.6264551250309579,
+          "roc_auc": 0.9059185750636131,
+          "threshold": 0.695,
+          "precision": 0.3776824034334764,
+          "recall": 0.6717557251908397,
+          "false_positive_rate": 0.09666666666666666,
+          "confusion_matrix": [
+            [
+              1355,
+              145
+            ],
+            [
+              43,
+              88
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        }
+      },
+      "session_policy": {
+        "aggregation": "max_integer_event_score; any_unscored_event_abstains_entire_session",
+        "evaluation_label": "max event target label; never an inference input",
+        "total_sessions": 811,
+        "scored_sessions": 537,
+        "abstained_sessions": 274,
+        "coverage": 0.6621454993834772,
+        "multievent_sessions": 429,
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.650489519964169,
+          "roc_auc": 0.8843832516031687,
+          "threshold": 0.3,
+          "precision": 0.25125628140703515,
+          "recall": 0.9090909090909091,
+          "false_positive_rate": 0.3091286307053942,
+          "confusion_matrix": [
+            [
+              333,
+              149
+            ],
+            [
+              5,
+              50
+            ]
+          ]
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.650489519964169,
+          "roc_auc": 0.8843832516031687,
+          "threshold": 0.7,
+          "precision": 0.36363636363636365,
+          "recall": 0.7272727272727273,
+          "false_positive_rate": 0.14522821576763487,
+          "confusion_matrix": [
+            [
+              412,
+              70
+            ],
+            [
+              15,
+              40
+            ]
+          ]
+        }
+      }
+    },
+    "random_forest": {
+      "eligible_rows": 1631,
+      "positives": 131,
+      "negatives": 1500,
+      "pr_auc_average_precision": 0.7290170314604104,
+      "roc_auc": 0.9446005089058525,
+      "threshold": 0.6772436569118596,
+      "precision": 0.6040268456375839,
+      "recall": 0.6870229007633588,
+      "false_positive_rate": 0.03933333333333333,
+      "confusion_matrix": [
+        [
+          1441,
+          59
+        ],
+        [
+          41,
+          90
+        ]
+      ],
+      "total_rows": 2000,
+      "abstentions": 369,
+      "coverage": 0.8155,
+      "validation_threshold_selection": {
+        "feasible": true,
+        "threshold": 0.6772436569118596,
+        "validation_recall": 0.5109489051094891,
+        "validation_fpr": 0.04704301075268817,
+        "validation_precision": 0.5,
+        "max_fpr": 0.05,
+        "min_recall": 0.5
+      },
+      "subgroups": {
+        "brute_force": {
+          "eligible_rows": 64,
+          "positives": 64,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 1.0,
+          "recall": 0.8125,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              12,
+              52
+            ]
+          ],
+          "total_rows": 64,
+          "abstentions": 0,
+          "coverage": 1.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "cold_start": {
+          "eligible_rows": 0,
+          "positives": 0,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 92,
+          "abstentions": 92,
+          "coverage": 0.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "night_shift": {
+          "eligible_rows": 127,
+          "positives": 0,
+          "negatives": 127,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.047244094488188976,
+          "confusion_matrix": [
+            [
+              121,
+              6
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 147,
+          "abstentions": 20,
+          "coverage": 0.8639455782312925,
+          "demo_mfa_fpr": 0.16535433070866143,
+          "demo_review_fpr": 0.03937007874015748
+        },
+        "normal": {
+          "eligible_rows": 706,
+          "positives": 0,
+          "negatives": 706,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.014164305949008499,
+          "confusion_matrix": [
+            [
+              696,
+              10
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 791,
+          "abstentions": 85,
+          "coverage": 0.8925410872313527,
+          "demo_mfa_fpr": 0.10764872521246459,
+          "demo_review_fpr": 0.014164305949008499
+        },
+        "password_spraying": {
+          "eligible_rows": 31,
+          "positives": 31,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 1.0,
+          "recall": 0.5806451612903226,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              13,
+              18
+            ]
+          ],
+          "total_rows": 48,
+          "abstentions": 17,
+          "coverage": 0.6458333333333334,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "suspicious_success": {
+          "eligible_rows": 36,
+          "positives": 36,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 1.0,
+          "recall": 0.5555555555555556,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              16,
+              20
+            ]
+          ],
+          "total_rows": 48,
+          "abstentions": 12,
+          "coverage": 0.75,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "travel_new_device": {
+          "eligible_rows": 166,
+          "positives": 0,
+          "negatives": 166,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.25301204819277107,
+          "confusion_matrix": [
+            [
+              124,
+              42
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 203,
+          "abstentions": 37,
+          "coverage": 0.8177339901477833,
+          "demo_mfa_fpr": 0.4759036144578313,
+          "demo_review_fpr": 0.22289156626506024
+        },
+        "user_error": {
+          "eligible_rows": 331,
+          "positives": 0,
+          "negatives": 331,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.0030211480362537764,
+          "confusion_matrix": [
+            [
+              330,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 368,
+          "abstentions": 37,
+          "coverage": 0.8994565217391305,
+          "demo_mfa_fpr": 0.1027190332326284,
+          "demo_review_fpr": 0.0030211480362537764
+        },
+        "vpn_new_device": {
+          "eligible_rows": 170,
+          "positives": 0,
+          "negatives": 170,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              170,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 239,
+          "abstentions": 69,
+          "coverage": 0.7112970711297071,
+          "demo_mfa_fpr": 0.2,
+          "demo_review_fpr": 0.0
+        },
+        "normal_with_vpn": {
+          "eligible_rows": 421,
+          "positives": 0,
+          "negatives": 421,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.0166270783847981,
+          "confusion_matrix": [
+            [
+              414,
+              7
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 536,
+          "abstentions": 115,
+          "coverage": 0.7854477611940298,
+          "demo_mfa_fpr": 0.1377672209026128,
+          "demo_review_fpr": 0.009501187648456057
+        },
+        "normal_new_device": {
+          "eligible_rows": 489,
+          "positives": 0,
+          "negatives": 489,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.11042944785276074,
+          "confusion_matrix": [
+            [
+              435,
+              54
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 660,
+          "abstentions": 171,
+          "coverage": 0.740909090909091,
+          "demo_mfa_fpr": 0.28629856850715746,
+          "demo_review_fpr": 0.09815950920245399
+        },
+        "normal_unfamiliar_network": {
+          "eligible_rows": 558,
+          "positives": 0,
+          "negatives": 558,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.6772436569118596,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.08960573476702509,
+          "confusion_matrix": [
+            [
+              508,
+              50
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 651,
+          "abstentions": 93,
+          "coverage": 0.8571428571428571,
+          "demo_mfa_fpr": 0.23655913978494625,
+          "demo_review_fpr": 0.08422939068100359
+        }
+      },
+      "demo_policy": {
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.7290170314604104,
+          "roc_auc": 0.9446005089058525,
+          "threshold": 0.295,
+          "precision": 0.3146067415730337,
+          "recall": 0.8549618320610687,
+          "false_positive_rate": 0.16266666666666665,
+          "confusion_matrix": [
+            [
+              1256,
+              244
+            ],
+            [
+              19,
+              112
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.7290170314604104,
+          "roc_auc": 0.9446005089058525,
+          "threshold": 0.695,
+          "precision": 0.6214285714285714,
+          "recall": 0.6641221374045801,
+          "false_positive_rate": 0.035333333333333335,
+          "confusion_matrix": [
+            [
+              1447,
+              53
+            ],
+            [
+              44,
+              87
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        }
+      },
+      "session_policy": {
+        "aggregation": "max_integer_event_score; any_unscored_event_abstains_entire_session",
+        "evaluation_label": "max event target label; never an inference input",
+        "total_sessions": 811,
+        "scored_sessions": 537,
+        "abstained_sessions": 274,
+        "coverage": 0.6621454993834772,
+        "multievent_sessions": 429,
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.7035028532575658,
+          "roc_auc": 0.9227838551490004,
+          "threshold": 0.3,
+          "precision": 0.3333333333333333,
+          "recall": 0.8727272727272727,
+          "false_positive_rate": 0.1991701244813278,
+          "confusion_matrix": [
+            [
+              386,
+              96
+            ],
+            [
+              7,
+              48
+            ]
+          ]
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.7035028532575658,
+          "roc_auc": 0.9227838551490004,
+          "threshold": 0.7,
+          "precision": 0.66,
+          "recall": 0.6,
+          "false_positive_rate": 0.035269709543568464,
+          "confusion_matrix": [
+            [
+              465,
+              17
+            ],
+            [
+              22,
+              33
+            ]
+          ]
+        }
+      }
+    },
+    "xgboost": {
+      "eligible_rows": 1631,
+      "positives": 131,
+      "negatives": 1500,
+      "pr_auc_average_precision": 0.8088883998895687,
+      "roc_auc": 0.9579898218829517,
+      "threshold": 0.7371474504470825,
+      "precision": 0.6012269938650306,
+      "recall": 0.7480916030534351,
+      "false_positive_rate": 0.043333333333333335,
+      "confusion_matrix": [
+        [
+          1435,
+          65
+        ],
+        [
+          33,
+          98
+        ]
+      ],
+      "total_rows": 2000,
+      "abstentions": 369,
+      "coverage": 0.8155,
+      "validation_threshold_selection": {
+        "feasible": true,
+        "threshold": 0.7371474504470825,
+        "validation_recall": 0.5547445255474452,
+        "validation_fpr": 0.049059139784946235,
+        "validation_precision": 0.5100671140939598,
+        "max_fpr": 0.05,
+        "min_recall": 0.5
+      },
+      "subgroups": {
+        "brute_force": {
+          "eligible_rows": 64,
+          "positives": 64,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 1.0,
+          "recall": 0.859375,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              9,
+              55
+            ]
+          ],
+          "total_rows": 64,
+          "abstentions": 0,
+          "coverage": 1.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "cold_start": {
+          "eligible_rows": 0,
+          "positives": 0,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": null,
+          "recall": null,
+          "false_positive_rate": null,
+          "confusion_matrix": null,
+          "total_rows": 92,
+          "abstentions": 92,
+          "coverage": 0.0,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "night_shift": {
+          "eligible_rows": 127,
+          "positives": 0,
+          "negatives": 127,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.06299212598425197,
+          "confusion_matrix": [
+            [
+              119,
+              8
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 147,
+          "abstentions": 20,
+          "coverage": 0.8639455782312925,
+          "demo_mfa_fpr": 0.14960629921259844,
+          "demo_review_fpr": 0.09448818897637795
+        },
+        "normal": {
+          "eligible_rows": 706,
+          "positives": 0,
+          "negatives": 706,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.018413597733711047,
+          "confusion_matrix": [
+            [
+              693,
+              13
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 791,
+          "abstentions": 85,
+          "coverage": 0.8925410872313527,
+          "demo_mfa_fpr": 0.09631728045325778,
+          "demo_review_fpr": 0.024079320113314446
+        },
+        "password_spraying": {
+          "eligible_rows": 31,
+          "positives": 31,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 1.0,
+          "recall": 0.7419354838709677,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              8,
+              23
+            ]
+          ],
+          "total_rows": 48,
+          "abstentions": 17,
+          "coverage": 0.6458333333333334,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "suspicious_success": {
+          "eligible_rows": 36,
+          "positives": 36,
+          "negatives": 0,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 1.0,
+          "recall": 0.5555555555555556,
+          "false_positive_rate": null,
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              16,
+              20
+            ]
+          ],
+          "total_rows": 48,
+          "abstentions": 12,
+          "coverage": 0.75,
+          "demo_mfa_fpr": null,
+          "demo_review_fpr": null
+        },
+        "travel_new_device": {
+          "eligible_rows": 166,
+          "positives": 0,
+          "negatives": 166,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.25903614457831325,
+          "confusion_matrix": [
+            [
+              123,
+              43
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 203,
+          "abstentions": 37,
+          "coverage": 0.8177339901477833,
+          "demo_mfa_fpr": 0.5060240963855421,
+          "demo_review_fpr": 0.30120481927710846
+        },
+        "user_error": {
+          "eligible_rows": 331,
+          "positives": 0,
+          "negatives": 331,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.0030211480362537764,
+          "confusion_matrix": [
+            [
+              330,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 368,
+          "abstentions": 37,
+          "coverage": 0.8994565217391305,
+          "demo_mfa_fpr": 0.09063444108761329,
+          "demo_review_fpr": 0.01812688821752266
+        },
+        "vpn_new_device": {
+          "eligible_rows": 170,
+          "positives": 0,
+          "negatives": 170,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.0,
+          "confusion_matrix": [
+            [
+              170,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 239,
+          "abstentions": 69,
+          "coverage": 0.7112970711297071,
+          "demo_mfa_fpr": 0.21176470588235294,
+          "demo_review_fpr": 0.0
+        },
+        "normal_with_vpn": {
+          "eligible_rows": 421,
+          "positives": 0,
+          "negatives": 421,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.026128266033254157,
+          "confusion_matrix": [
+            [
+              410,
+              11
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 536,
+          "abstentions": 115,
+          "coverage": 0.7854477611940298,
+          "demo_mfa_fpr": 0.1496437054631829,
+          "demo_review_fpr": 0.030878859857482184
+        },
+        "normal_new_device": {
+          "eligible_rows": 489,
+          "positives": 0,
+          "negatives": 489,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.12269938650306748,
+          "confusion_matrix": [
+            [
+              429,
+              60
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 660,
+          "abstentions": 171,
+          "coverage": 0.740909090909091,
+          "demo_mfa_fpr": 0.294478527607362,
+          "demo_review_fpr": 0.14314928425357873
+        },
+        "normal_unfamiliar_network": {
+          "eligible_rows": 558,
+          "positives": 0,
+          "negatives": 558,
+          "pr_auc_average_precision": null,
+          "roc_auc": null,
+          "threshold": 0.7371474504470825,
+          "precision": 0.0,
+          "recall": null,
+          "false_positive_rate": 0.0985663082437276,
+          "confusion_matrix": [
+            [
+              503,
+              55
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "total_rows": 651,
+          "abstentions": 93,
+          "coverage": 0.8571428571428571,
+          "demo_mfa_fpr": 0.22043010752688172,
+          "demo_review_fpr": 0.10931899641577061
+        }
+      },
+      "demo_policy": {
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.8088883998895687,
+          "roc_auc": 0.9579898218829517,
+          "threshold": 0.295,
+          "precision": 0.3247863247863248,
+          "recall": 0.8702290076335878,
+          "false_positive_rate": 0.158,
+          "confusion_matrix": [
+            [
+              1263,
+              237
+            ],
+            [
+              17,
+              114
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 1631,
+          "positives": 131,
+          "negatives": 1500,
+          "pr_auc_average_precision": 0.8088883998895687,
+          "roc_auc": 0.9579898218829517,
+          "threshold": 0.695,
+          "precision": 0.5380434782608695,
+          "recall": 0.7557251908396947,
+          "false_positive_rate": 0.056666666666666664,
+          "confusion_matrix": [
+            [
+              1415,
+              85
+            ],
+            [
+              32,
+              99
+            ]
+          ],
+          "total_rows": 2000,
+          "abstentions": 369,
+          "coverage": 0.8155
+        }
+      },
+      "session_policy": {
+        "aggregation": "max_integer_event_score; any_unscored_event_abstains_entire_session",
+        "evaluation_label": "max event target label; never an inference input",
+        "total_sessions": 811,
+        "scored_sessions": 537,
+        "abstained_sessions": 274,
+        "coverage": 0.6621454993834772,
+        "multievent_sessions": 429,
+        "mfa_or_review_score_ge_30": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.8253695892189759,
+          "roc_auc": 0.9502829121086382,
+          "threshold": 0.3,
+          "precision": 0.3893129770992366,
+          "recall": 0.9272727272727272,
+          "false_positive_rate": 0.16597510373443983,
+          "confusion_matrix": [
+            [
+              402,
+              80
+            ],
+            [
+              4,
+              51
+            ]
+          ]
+        },
+        "review_score_ge_70": {
+          "eligible_rows": 537,
+          "positives": 55,
+          "negatives": 482,
+          "pr_auc_average_precision": 0.8253695892189759,
+          "roc_auc": 0.9502829121086382,
+          "threshold": 0.7,
+          "precision": 0.6190476190476191,
+          "recall": 0.7090909090909091,
+          "false_positive_rate": 0.04979253112033195,
+          "confusion_matrix": [
+            [
+              458,
+              24
+            ],
+            [
+              16,
+              39
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "versions": {
+    "numpy": "2.5.4",
+    "sklearn": "1.9.1"
+  },
+  "seed": 42
+}
