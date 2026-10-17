@@ -1,0 +1,30 @@
+{
+  "files": {
+    "data/calibration.csv.gz": "ccfdcffca36a9e4a71c6e85943a137b7d11104d9d5f0e1fcdab6e31e7caeba72",
+    "data/calibration.manifest.json.gz": "837f1d2437655443278719df22f739f6360cfcfbd6ce0dbeca393a494055634f",
+    "data/fit.csv.gz": "51d16621f983392e7bdd3f4ac98ba60bbd09fae1b4d4caf30918352d1adf15f2",
+    "data/fit.manifest.json.gz": "ca99ddbdb8867f4424b95ffd8e7451a86fe6ae6d9a47b1b04d5be2d1bc8492ea",
+    "data/selection.csv.gz": "bbfaf48adc7a077b476cf9396fa14cbd7dc7ce07076b4ef2296f3a89b8b9d577",
+    "data/selection.manifest.json.gz": "1d150b64fd64a575a9ebb0c340a4a364997ef300731ad2a595226129196d2a0a",
+    "data/tune_a.csv.gz": "ee560d9c76a8c5fcc59281d9c611f75a7f20e75ab1ff8c4cef63acfb9de9b698",
+    "data/tune_a.manifest.json.gz": "ed01ccd09fd5c079d6bddf40661f1df01c6f5f2c0ebc608adea52bd35f4f3d1a",
+    "data/tune_b.csv.gz": "0ed846e0fe8de20d8db08a806042d7945ec2302c9783797d92519c0efdfc2a6a",
+    "data/tune_b.manifest.json.gz": "77fb2eaa23de8a96b1bb14882a190b40475aab334762f046c1ea9172f74c6d95",
+    "models/tuned_base.json": "f45c16d3ba7d6b8fe981a0328333b22716181feb295578097c9c834c56ce7737",
+    "models/tuned_sequence.json": "048e05124279f69ae809c1950c412bc993c6701964f4a7624da7676db4e7a4c8",
+    "reports/development.json": "918662a8e54d1c891dae68027e6febc7fbdef187998471a4df77b9cb60926858"
+  },
+  "holdouts_generated": false,
+  "protocol_digest": "a4d437608082a7a691e1c033cdc2cedd86fa60f6cdca0c11a1183a1654814389",
+  "selected": {
+    "tuned_base": "base_raw-c10-none",
+    "tuned_sequence": "sequence_log-c10-none"
+  },
+  "source_sha256": {
+    "src/data/generate_synthetic.py": "59a39c788df2fc60aac534c76df071896f387b7fc87e4cff8583eda88faf2aed",
+    "src/models/tuned_runtime.py": "5276a139df9448ea952f26c9284c3444e3e9b16ccca11767fe46b57651bf3666",
+    "src/models/tuning_features.py": "84ecafe58c8069425eca0a792e0075249adc2c6a18d3211c1cc383383ef84efd",
+    "src/runtime/risk.py": "b250fff4438772d8cea83516ef725b808becda6d28c8e053e618bdb972c0e2bc"
+  },
+  "winner": "tuned_sequence"
+}

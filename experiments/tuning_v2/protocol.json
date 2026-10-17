@@ -1,0 +1,148 @@
+{
+  "C": [
+    10.0
+  ],
+  "baseline_sha256": {
+    "data/mvp_synthetic_logins.csv": "41383a34524cefb434a66608c74a6554bada4377968298c6d7b7a43e4168b625",
+    "data/mvp_synthetic_logins.manifest.json": "b336ed637096e9bf29b30d8113d4c20f4b46973a91660e596e363f5136987ffb",
+    "models/demo_model.json": "a13373a72028088f455683d3d7bcfc2d38caee82006a7fa1448819657f160051",
+    "models/reliability_policy.json": "f5816c78b0b2f68d4985d6b399a9f4e37ca53b123216689887cbe017a58f3691"
+  },
+  "boosting": {
+    "learning_rate": [
+      0.05,
+      0.1
+    ],
+    "max_depth": [
+      2,
+      3
+    ],
+    "min_samples_leaf": [
+      30,
+      100
+    ],
+    "n_estimators": 100
+  },
+  "calibration": "positive-slope sigmoid on a separate cohort; unweighted C=1",
+  "class_weights": [
+    "none"
+  ],
+  "cohorts": [
+    {
+      "attack_rate": 0.08,
+      "name": "fit",
+      "namespace": "v2",
+      "rows": 24000,
+      "seed": 1001,
+      "start": "2026-01-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "tune_a",
+      "namespace": "v2",
+      "rows": 6000,
+      "seed": 1211,
+      "start": "2026-02-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "tune_b",
+      "namespace": "v2",
+      "rows": 6000,
+      "seed": 1307,
+      "start": "2026-03-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "calibration",
+      "namespace": "v2",
+      "rows": 8000,
+      "seed": 1401,
+      "start": "2026-04-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "selection",
+      "namespace": "v2",
+      "rows": 18000,
+      "seed": 1503,
+      "start": "2026-05-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "holdout_a",
+      "namespace": "v2",
+      "rows": 16000,
+      "seed": 1601,
+      "start": "2026-06-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "holdout_b",
+      "namespace": "v2",
+      "rows": 16000,
+      "seed": 1709,
+      "start": "2026-07-01T00:00:00Z"
+    }
+  ],
+  "constraints": {
+    "mfa": {
+      "max_fpr": 0.05,
+      "min_recall": 0.5
+    },
+    "review": {
+      "max_fpr": 0.01,
+      "min_recall": 0.25
+    }
+  },
+  "previous_evidence_use": "V1 final failure motivated this new study; v1 cohorts are consumed and not final validation for v2.",
+  "previous_experiments": [
+    "experiments/tuning_v1"
+  ],
+  "promotion": {
+    "benign_subgroup_max_fpr": {
+      "mfa": 0.05,
+      "review": 0.01
+    },
+    "both_final_cohorts_required": true,
+    "max_brier_regression": 0.002,
+    "min_session_ap_gain_vs_current": 0.02,
+    "minimum_benign_subgroup_sessions": 30,
+    "minimum_scored_negative_sessions": 500,
+    "minimum_scored_positive_sessions": 50,
+    "model_and_full_runtime_must_meet_targets": true,
+    "unknown_sessions": "retain review fallback; report total workload separately; never count abstentions as correct"
+  },
+  "scope": "New independent random cohorts from the SAME authored generator; not independent real-world validation. Current labels and auth outcomes never enter candidate vectors.",
+  "selection_objective": "Worst then mean tuning-cohort session recall at <=5% overall and per-benign-subgroup FPR; then mean session AP and stable ID.",
+  "selection_subgroup_margins": {
+    "mfa": 0.03,
+    "review": 0.005
+  },
+  "sequence_change": "Success after >=3 failures requires BOTH new/unfamiliar context AND unusual hour/velocity to recommend MFA. Other floors unchanged.",
+  "sequence_policy": "corroborated_context_v3",
+  "source_sha256": {
+    "src/data/generate_synthetic.py": "59a39c788df2fc60aac534c76df071896f387b7fc87e4cff8583eda88faf2aed",
+    "src/models/calibrate_reliability.py": "66cfee7a5c189d0fab4e143152d584f6b042b65007a4c9ef4dc1896e48e1f535",
+    "src/models/core.py": "ccbfbf904e3d8198e745c2d270db3a537c0353d2d07ef272522038f45639a9b7",
+    "src/models/evaluate.py": "fbadde81023bd540e170cc266b8ef130b50884dccebd1e136416f3615a8e4ad1",
+    "src/models/tune.py": "d4765a7d6e6926fde8aa184483475da1efc4707648f393ce4acb76fab8e68d34",
+    "src/models/tune_followup.py": "e7dc61df1c040618ff11dbd3dd97bca00daac37d7126784a8210fd938df87b4d",
+    "src/models/tuned_runtime.py": "2f9aa22a5036530eca929b27a5f52cc97445c43eee2ac6435fe7866f3a7cad3d",
+    "src/models/tuning_features.py": "84ecafe58c8069425eca0a792e0075249adc2c6a18d3211c1cc383383ef84efd",
+    "src/runtime/insights.py": "1ed2cbd1a57aab7edcf44210e3a8a5bca5c226f058c639119ad182e2a86bb528",
+    "src/runtime/risk.py": "eb846c4c6df6fd9fbba7af6b0f0748661d933edb6e006d7d9911aa8c0c8616d6"
+  },
+  "synthetic_only": true,
+  "threshold_selection": "Frozen integer thresholds must pass model AND runtime Wilson targets, plus tighter selection subgroup FPR margins; no fallback.",
+  "variants": [
+    "base_raw",
+    "sequence_log"
+  ],
+  "version": "els-tuning-v2",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.1"
+  }
+}

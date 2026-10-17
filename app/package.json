@@ -3,9 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/contracts.test.mjs && node tests/model-integration.test.mjs && node tests/ui.test.mjs"
+    "test": "node tests/contracts.test.mjs && node tests/model-integration.test.mjs && node tests/ui.test.mjs && node tests/login-engine.test.mjs && node tests/company-ui.test.mjs && node tests/company-ui.test.mjs --unavailable && node tests/company-ui.test.mjs --reference-unavailable && node tests/password-risk.test.mjs && node tests/reliability-api.test.mjs && node tests/insights.test.mjs && node tests/assurance.test.mjs",
+    "test:browser": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "linkedom": "0.18.13"
   },
   "packageManager": "pnpm@12.14.0"

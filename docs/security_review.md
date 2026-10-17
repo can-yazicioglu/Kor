@@ -1,121 +1,73 @@
-# AI 4 — Birleşik MVP güvenlik ve bağımsız doğrulama sonucu
+# Security review — current integrated prototype
 
-**Tarih:** 17 Ekim 2026 · **Çalışma dalı:** `integration/full-mvp`
+This review covers the local server-scored demo, authenticated shadow-event interface, contextual policy, calibration extension and isolated tuning studies. It is not production certification or demonstrated real-world effectiveness. The [initial branch audit](reviews/security_review_2026-10-17_initial.md) and historical CSV/model reports remain separate records.
 
-AI 1–4 teslimleri birleştirildi; ilk denetimdeki çalışmayı engelleyen veri, model ve demo sözleşmesi hataları giderildi. Yerel sentetik demo çalışıyor. **Bu sonuç üretim güvenliği veya gerçek dünyada tespit başarısı onayı değildir.** Özellikle normal seyahat/yeni cihaz bağlamındaki yanlış alarmlar devam ediyor.
+## Implemented and verified boundaries
 
-İlk salt okunur branch denetimi [tarihsel raporda](reviews/security_review_2026-10-17_initial.md) saklanmıştır. Kullanıcının sonraki “dört AI'ın bütün eksiklerini tamamla ve test et” talebiyle düzeltme, sentetik veri üretimi ve eğitim kapsamı açılmıştır. Bu belge düzeltilmiş birleşik çalışma ağacını değerlendirir; eski branch'lerin kendiliğinden güncellendiği veya remote'a push edildiği anlamına gelmez.
+| Area | Current behaviour |
+|---|---|
+| Original model leakage | Exactly eleven model features; identity/target/outcome/password metadata excluded |
+| Candidate leakage and release | Separate 21-input allowlist with prior-login features only; grouped/time-separated phases, frozen artifacts and bounded JSON inference; blocked candidate cannot be enabled through the release loader |
+| Event trust | Provider-neutral adapter validates the exact schema before transport; HMAC producer authentication binds path, timestamp, nonce and body; browser outcome claims rejected |
+| Role separation | Producer key cannot review/read metrics; distinct reviewer key cannot ingest events; equal keys reject startup |
+| Credential/MFA decisions | Owned by the local fictional server verifier; public demo credentials only; random challenge ID binds MFA to the current successful login/session; stale challenges rejected |
+| Failed-request context mutation | Fixed: rejected login/simulation cannot change an existing MFA challenge; challenge context is captured immutably and regression-tested |
+| Password semantics | Failed weak-value submission does not reveal the account password; no fixed additive bonus in the current flow |
+| Sequence evidence | Two-minute failure ratios, failed-account/source breadth, supported gap/burst statistics, streaks and corroborated context; successful shared-network traffic does not inflate failing-source/account counts |
+| Missing evidence | Current score remains null; real streams have a 120-second startup observation requirement; no invented history or low-risk default |
+| Threshold feasibility | Explicit unavailable thresholds, limited data quality and review recommendation; no silent 30/70 fallback |
+| Calibration/artifact binding | Validation-account fitting/selection separation, integrity checks and exact policy-to-model-file binding |
+| MFA evidence | Isolated by account/session; retains peak and unresolved sequence evidence; independent feedback labels required |
+| HTTP boundaries | Loopback Host restriction, same-origin demo checks, browser-Origin rejection on trusted routes, duplicate security-header rejection, 16 KiB headers/strict JSON body, no credential echo/logs, bounded browser response streaming |
+| Replay/expiry | Signature freshness, all future event times rejected, nonce/event duplicate rejection, account-bound session UUIDs, no late-event mutation, bounded retention and periodic idle cleanup |
+| Capacity | 32 demo handles, 500 events/demo, separate 1,000 demo / 4,000 trusted budgets; 16 HTTP workers, eight-second absolute connection deadlines, bounded nonce cache and isolated admission buckets |
+| Concurrency | Password checks outside the shared ingestion lock; reset/expiry cancels in-flight results; demo mutations can be disabled for shadow-only use |
+| Interactive password throttling | Server-enforced exponential 1–60 second delay, monotonic deadline, HTTP 429/Retry-After before password checking; rejected early requests neither extend the delay nor manufacture risk events |
+| Reset/async handling | Idempotent reset, stale UI results ignored, no automatic credential retries, server expiry authoritative |
+| Pilot instrumentation | Reviewer-authenticated aggregate coverage/score/subgroup/feedback metrics; public status exposes readiness only; no automatic real enforcement |
+| Evidence workbench | Identifier-free, token-scoped diagnostic response; fixed field/rule vocabularies and bounded values; same-account/session deltas; shared live volume rules; no extra retained history or change to scores/deadlines |
+| Password verifier | Salted scrypt public fixture, four concurrent verification slots, no retained submitted-value hash |
+| Resource authorization | Server-owned employee role, two-minute grant bounded by demo expiry, every request checked; restricted resource, extra role claims and stale grants denied |
+| Decision receipt | One current HMAC-SHA-256 receipt and random per-demo key, domain separation, tamper/cross-scope/stale/reset checks; no persistent history |
+| Optional TLS | TLS 1.3 only, certificate/hostname-verified adapter, actual-scheme Origin check, no silent HTTP fallback |
+| Release comparison / CI | Deterministic SHA-256 runtime inventory, commit-pinned Actions, locked JS dependencies, actual Chromium desktop/mobile flows |
 
-## 1. İncelenen teslim ve yöntem
+Checksums detect corruption, not authenticity. Shared HMAC authenticates a configured producer, not its upstream IdP implementation. Public dictionary hashes are not safe customer-password storage. The local demo remains synthetic and exposes no protected company resource.
 
-Kaynak snapshot'lar: A1 `590802c718341cef62428a57dbb83561ff7a4d0e`, a2 `ca44fccf96df108f8882d21b41e045b98df229dc`, a3 `8fee079990f028cd0dcfe7d82350fa38b634f7cc`. Kaynak branch'ler korunmuştur.
+The current hardening regression suite exercises stale MFA challenge replay, separate reviewer/producer permissions, adapter rejection before socket creation, reset races during password checking, reserved event budgets, invalid-authentication throttle isolation, ambiguous HTTP headers and slow request headers/bodies. The unchanged trained features and CSV baseline do not acquire extra identifiers or target leakage. New timing parameters are descriptive, with no invented numeric weight.
 
-- CSV: `data/mvp_synthetic_logins.csv`, **10.000 olay / 4.036 oturum / 573 hesap / 800 şüpheli etiket**.
-- CSV SHA-256: `41383a34524cefb434a66608c74a6554bada4377968298c6d7b7a43e4168b625`.
-- Veri kökeni: yalnız yerel sentetik üretici v2; üçüncü taraf veri dosyası veya gerçek müşteri kaydı alınmamıştır.
-- Model: `els-lr-41383a34524c-s42`, `models/demo_model.json`; gerçek sentetik eğitimden taşınabilir lojistik model.
-- Bölmeler: 6.000 fit / 2.000 validation / 2.000 test. Kimlik, zaman ve episode denetimi eğitimden önce yapılır.
-- Yöntem: kod/kontrat incelemesi, ayrı veri denetimi, mevcut artefaktlarla çıkarım eşliği, hata enjeksiyonu, HTTP ve DOM davranış testleri. Denetim testleri modeli yeniden eğitmez.
+Design guidance reviewed: [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html), [OWASP Denial of Service Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html), and [Python HTTP server deployment limitations](https://docs.python.org/3/library/http.server.html). Exponential throttling design was also checked against the [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login-throttling). The controls tested here do not establish conformance or production certification.
 
-Kaynak araştırmasının kapsamı ve lisans kayıtları [veri kaynağı denetiminde](data_source_audit.md); veri semantiği [sentetik veri belgesinde](synthetic_data.md) bulunur.
+Verification recorded on 2026-10-17: **200 Python discovery tests**, **13 static/HTTP server tests**, **111 JavaScript checks** and **8 actual Chromium desktop/mobile scenarios** passed. Python includes real HTTP/TLS, authorization, scrypt capacity, receipt tamper/expiry, causal feature extraction, model parity, split and release guards. Browser scenarios cover sign-in/MFA, resource denial, altered receipts, attacks, backoff, missing history, reset and keyboard navigation. Screenshots were inspected; document overflow was checked at 320/390/768/1280/1440 px. `git diff --check` passed. Original baseline/v2 CSV and password-reference hashes remain unchanged. The earlier isolated model experiments remain frozen; this extension did not retrain them. Dependency audits reported no known advisories for 20 installed Python packages and the locked JS dependency tree, with no skipped Python packages. These scans are database snapshots, not proof of absence of vulnerabilities. [Audit summary](../outputs/dependency_audit_summary.json).
 
-## 2. İlk bulguların kapanışı
+The workbench is explanatory instrumentation, not a novel-algorithm or accuracy claim. Shorter-window replay excludes context/MFA and carried session rules, and can gain a spraying alert when older successful traffic expires. Incomplete or evicted supporting histories are disclosed. Review fallback and unavailable score deltas remain explicit. Lifecycle counts are application-state observations, never physical-erasure attestations. Inspection tests verify that records, scores, labels and deadlines are not rewritten; reset/expiry and unverifiable responses clear the new UI evidence.
 
-| İlk bulgu | Son durum | Düzeltme ve kanıt |
-| --- | --- | --- |
-| A4-01 · ağ aşinalığı tip uyuşmazlığı | **Kapandı** | CSV, eğitim ve JS `familiar/unfamiliar` kullanıyor. Gerçek 10.000 olay demo okuyucusundan geçiyor. 17 alanlı şema değişmedi. |
-| A4-02 · çalışmayan A3 kolonları / geceyi saldırı sayan baseline | **Kapandı** | Ortak şemaya bağlı eğitim/değerlendirme script'leri, üç saldırı örüntüsünü kapsayan açık kural referansı ve çıktıları temiz notebook var. Gece/VPN/yeni cihaz tek başına kural alarmı değil. |
-| A4-03 · sezgisel kimlik dışlama | **Kapandı** | Python ve JS aynı tam 11 özellik allowlist'ini kullanıyor. Kimlik, etiket ve metaveri değişikliği tahmini değiştirmiyor; yasak özellik kabul edilmiyor. |
-| A4-04 · tutarsız ve nedensel olmayan pencereler | **Kapandı, sentetik akış kapsamıyla** | Hesap ve kaynak sayaçları sıralı geçmişten hesaplanıyor; bağımsız test yeniden hesaplıyor. `attempts_2m > attempts_1h` yok. Mevcut/gelecek sonuç 24 saat oranına girmiyor. |
-| A4-05 · zor normal durumlar ve eksiklik yokluğu | **Veri/test açığı kapandı; yanlış alarm sınırı açık** | VPN, seyahat/yeni cihaz, gece, yanlış parola ve cold-start var. Alt grup FPR ve çekimserlik raporlanıyor; başarı iddiası yapılmıyor. |
-| A4-06 · model/demo bağlantısı yokluğu | **Kapandı** | Sürüm, tamsayı puan ve katkı gerekçeleri taşıyan yerel JSON çıkarımı bağlı. 10.000 olayda Python–JS tam puan/gerekçe eşliği. |
-| A4-07 · uygun eşik yokken sessiz 50 varsayımı | **Kapandı** | Validation kısıtları sağlanmazsa `feasible=false`, `threshold=null`. Kural referansında bu durum gerçekten raporlanıyor; başarısız seçim metriği uydurulmuyor. |
-| A4-08 · silme ve notebook kalıcılığı belirsizliği | **Demo kapsamında kapandı** | 5/10/15 dakika, sıfırlama ve sayfadan ayrılma ile referans bırakma; askı sonrası son tarih kontrolü. Notebook ham satır göstermiyor. Dosya, cookie ve sayaç ömürleri ayrı belgeleniyor. |
+## Remaining findings, ordered by priority
 
-Son çapraz incelemede ayrıca giderilen hatalar:
+**P1 — Tuned candidate misses a required attack scenario; release blocked.** Two studies evaluated 54 configurations on separate synthetic cohorts. V2 improved aggregate AP/Brier and passed its predeclared aggregate gates, but a subsequent attack-specific audit found **0/108 and 0/115** detections of scored suspicious-success sessions. This is distinct from success after preceding failures. A new, explicitly post-evaluation coverage guard rejects promotion, the release receipt is blocked, and the default remains the original model. Do not present aggregate gate success as MVP acceptance. A future study must predeclare per-attack targets and include independently designed, trustworthy context. [Full evidence](model_tuning.md).
 
-- Gece yarısından farklı üretim başlangıcında gelecekteki sentetik profil/ısınma verisinin okunabilmesi: başlangıç zamanı testi eklendi; varsayılan teslimin hash'i değişmedi.
-- Modelde sonlu katsayı değişmesine rağmen eski checksum ile puan üretilebilmesi: Python ve HTTP model sunumunda SHA-256 doğrulama var. Eksik/bozuk dosya kontrollü biçimde reddediliyor.
-- Eksik `model_version` nedeniyle Python'da `KeyError`: bozuk model puan üretmiyor.
-- Bütün test zamanları `NaT` olduğunda zaman ayrımı kontrolünün atlanması: boş/geçersiz zamanlar reddediliyor.
-- Bozuk HTTP hedefinde `urlsplit` hatası ve varsayılan istemci adresi logu: kontrollü 400; sunucunun hata/access logları kapalı.
-- Raporun değiştirilebilir validation hedeflerini sabit yazması: gerçek çalıştırma ayarları rapora aktarılıyor.
+**P1 — Decision targets remain infeasible.** The calibration/selection split cannot achieve the predefined MFA FPR ≤5% with recall ≥50%, or review FPR ≤1% with recall ≥25%. Both selected thresholds are null. The conservative runtime recommends review for every event; numeric scores remain available for complete contexts. This prevents an unsupported low-risk decision but is unsuitable for low-friction production use. Do not claim false alarms were solved.
 
-Checksum imza değildir. Dosyayı ve checksum'ı birlikte değiştiren saldırganın özgünlüğünü doğrulamaz; yerel güvenilen model dağıtımı varsayımı sürer.
+**P1 — Combined-context safeguard has substantial benign overlap; demo-only.** A new rule handles successful password logins from a new device/unfamiliar network with unusual time or velocity without needing previous failures. Consumed-cohort regression matches 60/108 and 48/115 scored suspicious-success sessions, but also roughly 48–49% of benign VPN/new-device and 51–54% of benign travel/new-device sessions. It therefore remains a labelled demonstration experiment and is disabled on trusted ingestion. It does not qualify the blocked candidate or establish customer accuracy. [Measured tradeoff](datathon_demo.md#tested-experimental-rule-and-its-tradeoff).
 
-## 3. Gizlilik ve sızıntı kararları
+**P1 — Real identity-provider and deployment verification are not connected.** The user chose a general interface because the provider is undecided. The generic helper only signs/transports events. A future customer-side adapter must authenticate provider signatures/issuer/audience, derive trustworthy outcomes/context, manage its keys and enforce tenant isolation. Optional TLS is implemented, but hardened production ingress, certificate operations and resource supervision are not validated. Trusted ingestion remains disabled without a configured secret and has no enforcement actions. IBM Z execution, Secure Execution attestation, HSM key custody and quantum-safe integration are not implemented claims.
 
-| Kontrol | Sonuç / sınır |
-| --- | --- |
-| Gerçek kullanıcı adı, ham parola/IP, sızdırılmış liste | **İncelenen artefaktlarda bulgu yok.** Üretici ve gizlilik testleri incelendi; gerçek veri dosyası kullanılmadı. Biçim/örüntü kontrolü tek başına anonimlik kanıtı değildir. |
-| Kimlik/etiket modele girişi | **Geçti.** `event_id`, `event_ts_utc`, `session_token`, `account_token`, `is_suspicious`, `attack_type` ve manifest alanları özellik dışında. |
-| Eğitim/test kullanıcı ve zincir sızıntısı | **Geçti, bu sentetik teslimde.** Her bölme çiftinde hesap, oturum, episode ve kaynak kesişimi 0. En az 120 saniyelik zaman boşluğu zorunlu. |
-| Ön işleme / eşik sızıntısı | **Geçti.** Ölçekleme fit'te; eşik validation'da. Holdout ile model/hyperparametre seçilmedi. |
-| Senaryo bağımsızlığı | Aynı episode bölünmüyor; **aynı üreticinin senaryo şablonları tüm bölmelerde var.** Bilinmeyen üretici veya gerçek saldırı genellemesi doğrulanmadı. |
-| Gelecek bilgi / pencere | **Geçti, sentetik akışta.** `(t−120s,t]`, aynı zamanlı olaylarda bilinen ingestion sırası ve mevcut sonuçtan önce 24 saat oranı. Cookie dönüşümü hesap/kaynak sayacını sıfırlamıyor. |
-| Müşteri verisinin dışarı çıkışı | **İncelenen akışta yok.** CSV File API ile bellekte işleniyor; tek fetch aynı origin'den model GET. Harici API/telemetri/CSV upload yok. |
-| Sunucu dosya sınırı | **Geçti.** Loopback + Host/dosya allowlist; CSV/manifest/joblib dizinleri sunulmuyor; POST reddediliyor. |
-| Kalıcı cihaz izi / biyometri / browser storage | **İncelenen uygulamada yok.** Form/arama etkileşimleri davranış kaydına çevrilmiyor; cookie oluşturulmuyor. |
-| Eksik geçmiş / model yokluğu | **Geçti.** Puan 0 yapılmıyor. Oturumdaki tek bir eksik olay tüm oturumu puansız/inceleme durumunda tutuyor. |
-| Silme | **Uygulama referansı bırakma testleri geçti.** Fiziksel bellek/disk silme garantisi veya gerçek IdP TTL servisi yok. |
-| Otomatik kilitleme | **Yok.** MFA ve insan incelemesi yalnız öneri; gerçek kimlik sağlayıcısına işlem gönderilmiyor. |
-| Sentetik performansın sunumu | UI ve belgeler mock, sentetik model ve gerçek dünya iddiasını ayırıyor. Puan kalibre saldırı olasılığı olarak sunulmuyor. |
+The exponential password delay applies only within the fictional demo handle. Reset/new demos can start fresh; synthetic scenario replay is separate from interactive verification. A real deployment must enforce shared account throttling in its upstream verifier, independent of browser-controlled demo handles. The shadow ingestion interface cannot retroactively throttle a completed authentication. The 60-second cap is a prototype policy choice, not a validated usability/security optimum.
 
-30 günlük geçmiş yalnız sentetik profildir. `device_new`, cookie değişiminden türetilen kalıcı parmak izi değildir. CSV'de giriş başarı alanı yoktur; şüpheli başarılı girişin başarı sonucu yalnız sentetik denetim manifestinde sınanır, gerçek IdP başarısı doğrulanmış sayılamaz.
+**P2 — Evaluation is synthetic and partly reused.** Baseline fit/validation/test accounts/sessions/sources/episodes remain disjoint, but the two internal validation partitions share 57 episodes and 57 sources. The existing test set was previously inspected, so new results are regression comparisons. Brier improved from 0.1156 to 0.0466 and ECE from 0.1785 to 0.0189; these do not establish real-world calibration. Fresh software challenge tests are not independent empirical customer accuracy validation. A new untouched, customer-local pilot is required.
 
-## 4. Yanlış alarm, kapsam ve öncelikli kalan sınırlar
+**P2 — Generalization, coverage and reference limits remain.** Missing history abstains; the base regression still has 274 unscored sessions out of 811. The public password reference is limited, a near match is not confirmed breach exposure, and unknown/no-match are not safety guarantees. No full breach corpus, persistent fingerprinting or biometric tracking is introduced.
 
-Tam metrikler, dört yaklaşımın karşılaştırması ve paydaları [model sonuçlarında](model_results.md) ve `outputs/evaluation.json` içindedir. Aşağıdakiler **demo Logistic Regression** modeline aittir.
+New tuning final cohorts were generated only after freezing the respective model and thresholds, with earlier cohorts audited for identity overlap. They are now consumed; all share the same generator. V2 scored about 67% of sessions. Its 0.20–0.35% false-positive rate applies only to scored normal sessions; including missing-context review produces roughly 33.4–33.6% normal-session escalation. These figures do not establish customer calibration or resolve missing-history costs. The prior baseline validation-overlap finding above still applies to the baseline, not the new phase design.
 
-Testin 2.000 olayından **1.631'i puanlanır, 369'u çekimserdir**. 811 test oturumundan **537'si puanlanır, 274'ü çekimserdir**. Çekimserlik doğru negatif veya başarılı tespit sayılmaz; puansız incelemeler operasyon yükünü ayrıca artırabilir.
+**P2 — Monitoring is a foundation, not a completed pilot.** Short-window, independently reviewed metrics and descriptive distribution changes are implemented. Reviews can be biased/incomplete; no automated retraining occurs. Statistical drift detection and durable aggregate pilot reporting need an explicit customer operating policy before deployment.
 
-| Politika | Olay FPR | Oturum FPR | Oturum recall |
-| --- | ---: | ---: | ---: |
-| Puan ≥30 · MFA/inceleme | %26,07 | %30,91 | %90,91 |
-| Puan ≥70 · inceleme | %9,67 | %14,52 | %72,73 |
+**P3 — Broader accessibility/platform review remains.** Chromium desktop/mobile flows, keyboard focus and selected responsive widths were checked visually. Screen-reader evaluation, other browsers and IBM Z operating environments remain unverified; these checks are not WCAG certification.
 
-Validation'da seçilen ayrı benchmark eşiğinde LR olay FPR **%6,47**, recall **%59,54**. Bu eşik demo 30/70 politikası değildir; daha iyi görünen benchmark değerleri gerçek UI yanlış alarm oranının yerine kullanılamaz.
+## Retention and demonstration
 
-| Öncelik | Açık sınır | Düzeltme / sonraki doğrulama |
-| --- | --- | --- |
-| **P1 · üretim kullanımını engeller** | Demo oturumlarında MFA ve inceleme yanlış alarmı yüksek. Normal seyahat/yeni cihaz olaylarında ≥30 FPR %50,60, VPN/yeni cihazda %41,18. | Üretim kullanımından önce müşteri içi bağımsız validation, oturum düzeyinde eşik seçimi ve kabul edilebilir alarm bütçesi belirlenmeli. Mevcut holdout'a bakıp eşik oynatılmamalı; yeni bağımsız değerlendirme gerekir. |
-| **P2** | Şüpheli başarılı giriş benchmark recall %41,67; bazı spraying olaylarında bağlam eksik. | Gerçek IdP başarı bağlamı ve kaynak korelasyonu müşteri içinde bağlanmalı; yeni veriyle kapsam/çekimserlik ayrı ölçülmeli. |
-| **P2** | Model ve şablonlar tamamen sentetik; gerçek kalibrasyon/drift/kurumsal NAT davranışı bilinmiyor. | Gerçek veriyi dışarı çıkarmadan müşteri ortamında doğrulama tasarlanmalı. Bu rapordan gerçek başarı oranı çıkarılmamalı. |
-| **P2 · kapsam dışı üretim bileşeni** | Canlı IdP, kısa ömürlü gerçek cookie ve sürekli TTL özellik servisi uygulanmadı. | [Yaşam döngüsü](retention_policy.md) gereksinimleri o bileşenler yapılınca ayrıca test edilmeli; mevcut demo belleği bunların yerine geçmez. |
-| **P3 · doğrulama sınırı** | Gerçek tarayıcı görsel/erişilebilirlik kontrolü bu ortamda yapılamadı. | İnsan tarafından masaüstü/dar ekran, klavye ve ekran okuyucu kontrolü tamamlanmalı. DOM testi görsel test olarak sunulmaz. |
+Company form values clear immediately and are processed only by the loopback verifier. Trusted events contain no credentials. No customer files/logs are persisted; cleanup is bounded and periodic, without a physical memory-wipe claim. [Retention](retention_policy.md) specifies limits.
 
-Bu açık noktalar gizlenmemiştir. Yerel prototipin çalışması ve sözleşme güvenliği doğrulanmış olsa da “yanlış alarm sorunu tamamen çözüldü” veya “üretime hazır” denemez.
+The historical CSV page preserves the old +25/+10 experiment, which increased ≥30 session FPR from 30.91% to 43.78%. It is labelled historical and must not be confused with the current server policy. Neither old nor new results are proof of a real customer breach detector.
 
-## 5. Çalıştırılan testler
-
-| Test grubu | Sonuç |
-| --- | --- |
-| `tests/test_data.py` | **12 geçti**: nedensel sayaçların bağımsız yeniden hesabı, şema, provenance, ayrım, TTL, başlangıç/sınır durumları |
-| `tests/test_models.py` | **22 geçti**: özellik/etiket sınırı, fit-only ön işleme, eşikler, ayrım, hata/eksiklik, katkılar, oturum politikası |
-| `tests/test_demo_integration.py` | **3 geçti**: gerçek teslim entegrasyonu ve 10.000 olayın Python–JS puan/gerekçe eşliği |
-| `app/tests/test_server.py` | **11 geçti**: HTTP, Host/dosya sınırı, upload reddi, headers/logs, bozuk model/URL |
-| Entegrasyon içinden çalıştırılan JS | **17 sözleşme + 10 model/yaşam döngüsü + 12 DOM kontrolü geçti** |
-| Notebook | 5 kod hücresi derlendi; execution_count/outputs boş, ham satır önizlemesi yok |
-| Canlı loopback smoke | `/`, `/main.js`, `/demo-model.json` 200; veri/joblib yolları 404; POST 501; model sürümü/headers doğrulandı |
-| Çalışma ağacı | `git diff --check` geçti |
-
-**Toplam 48 Python testi**. 39 JS/DOM kontrolü, Python entegrasyon testlerinin çağırdığı alt kontrollerdir; birbirinden bağımsız 87 uçtan uca senaryo gibi sayılmamalıdır. Testler model yeniden eğitmez. Canlı smoke 8001 portunda çalıştırıldı ve sunucu kapatıldı; 8000 meşgul olduğunda sunucu anlaşılır hata verdi, mevcut sürece dokunulmadı.
-
-Tam komutlar [README](../README.md#testler) içindedir. CI tanımı eklendi; uzak GitHub Actions çalışması veya push yapılmadı.
-
-## 6. Demo sırasında kullanılabilecek altı senaryo
-
-`python3 app/serve.py` ile açın; port doluysa `--port 8001`. Başlangıç kartlarının **MOCK** olduğunu gösterin. Ardından mevcut `data/mvp_synthetic_logins.csv` dosyasını içe aktarın; yerel model sürümünü doğrulayın. Filtreyi tüm risklerde tutup aşağıdaki **sentetik oturum anahtarını** arayın.
-
-Örnekler yeni üretilmemiştir: mevcut test bölmesinde her senaryonun kronolojik ilk tam puanlanabilir oturumu; N3 için ilk eksik bağlamlı oturum seçilmiştir. Bunlar gösterim örnekleridir, toplu başarı ölçümü değildir. CSV/model değişirse beklenen sonuç da değişebilir.
-
-| Senaryo | Arama anahtarı (yalnız sentetik) | Beklenen mevcut sonuç |
-| --- | --- | --- |
-| N1 · birkaç yanlış parola | `ses_4732fbbf41fbbfe4e20247fe44e42a9e` | 6 olay; puan **3**, izleme. Yanlış parola etiketi otomatik saldırı sayılmıyor. |
-| N2 · normal VPN/yeni cihaz | `ses_4923b8b94e83f9b0d80e274702492c6c` | 1 olay; puan **8**, izleme. Bu örnek genel VPN FPR sorununu ortadan kaldırmaz. |
-| N3 · seyahat/yeni cihaz/eksik bağlam | `ses_f5f25006e2cf2461e70fd0a9c4fb5e08` | 4 olay; **puan bekliyor**, eksik bağlam incelemesi. 0 risk gösterilmemeli. |
-| S1 · brute force | `ses_5475680d64569902d078c89038af43c7` | 8 olay; puan **99**, MFA + inceleme. |
-| S2 · password spraying | `ses_37cfe3f491af5982e97167defc800429` | 1 olay; puan **95**, MFA + inceleme. Kaynak yayılımı özellikte; kaynak token'ı model girdisi değil. |
-| S3 · şüpheli başarılı giriş | `ses_0193c3cae5df6e92b1f51190fc1282ca` | 2 olay; puan **74**, MFA + inceleme. Başarı bilgisi modelden bağımsız sentetik manifestte. |
-
-Sonra aramayı temizleyip sayfalama/filtreyi deneyin, 5 dakikalık tutma süresini seçin ve süre sonu davranışını gösterin. “Mock görünüm” sıfırlaması da veriyi bırakır. Model bulunamazsa CSV oturumlarına örnek puan kopyalanmamalıdır. Ağ gözleminde CSV upload veya harici hedef olmamalıdır; yalnız yerel model/uygulama dosyaları okunur. Hiçbir adım hesap kilitlemez veya gerçek MFA başlatmaz.
+Follow [company_demo.md](company_demo.md) and [runtime_integration.md](runtime_integration.md). Present the scope, unresolved threshold target and provider integration explicitly. Do not describe the system as perfect, production-ready, a complete breach search or a deployed real-MFA service.

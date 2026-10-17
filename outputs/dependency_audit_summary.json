@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-17",
+  "javascript": {
+    "metadata": {
+      "dependencies": 1,
+      "devDependencies": 23,
+      "optionalDependencies": 14,
+      "totalDependencies": 38,
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 0,
+        "info": 0,
+        "low": 0,
+        "moderate": 0
+      }
+    },
+    "tool": "pnpm audit"
+  },
+  "python": {
+    "known_vulnerabilities": 0,
+    "packages": 20,
+    "skipped": [],
+    "tool": "pip-audit"
+  },
+  "scope": "Local development dependencies; advisory database snapshot, not a guarantee of absence of vulnerabilities."
+}

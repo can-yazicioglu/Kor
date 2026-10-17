@@ -1,12 +1,13 @@
 import { selectFeatures } from './schema.js';
 import { validatePrediction } from './model-adapter.js';
+import { applyPasswordRisk, assessmentFromFlags } from './password-risk.js';
 
 export async function buildSessions(events, predict, { active = () => true, yieldControl = null } = {}) {
   const groups = new Map();
   let processed = 0;
   for (const event of events) {
     if (yieldControl && processed++ % 250 === 0) await yieldControl();
-    if (!active()) throw new Error('İçe aktarma iptal edildi.');
+    if (!active()) throw new Error('Import cancelled.');
     let group = groups.get(event.session_token);
     if (!group) {
       group = { id: event.session_token, events: [], latest: event, score: null, reasons: [], modelVersion: null, scoredEvent: null, unscored: 0, error: false, mock: false };
@@ -15,7 +16,9 @@ export async function buildSessions(events, predict, { active = () => true, yiel
     group.events.push(event);
     if (Date.parse(event.event_ts_utc) > Date.parse(group.latest.event_ts_utc)) group.latest = event;
     try {
-      const prediction = validatePrediction(await predict(selectFeatures(event)));
+      const base = validatePrediction(await predict(selectFeatures(event)));
+      const hasPasswordFlags = Object.hasOwn(event, 'password_in_blocklist');
+      const prediction = hasPasswordFlags ? applyPasswordRisk(base, assessmentFromFlags(event.password_in_blocklist, event.password_near_blocklist)) : base;
       if (prediction === null) { group.unscored++; continue; }
       if (group.score === null || prediction.risk_score > group.score ||
           (prediction.risk_score === group.score && Date.parse(event.event_ts_utc) > Date.parse(group.scoredEvent.event_ts_utc))) {

@@ -72,9 +72,9 @@ def evaluate(args):
     # Only load the repository's own locally generated bundle. Joblib/pickle is not an upload format.
     bundle = joblib.load(args.model_dir / "comparison_models.joblib")
     if bundle.get("data_sha256") != sha256_file(args.data) or bundle.get("manifest_sha256") != sha256_file(args.manifest):
-        raise ValueError("Modelin veri/manifest özeti değişmiş; önce açıkça yeniden eğitim yapın.")
+        raise ValueError("The model data/manifest checksum has changed; explicitly retrain before evaluation.")
     if bundle.get("feature_columns") != FEATURES or bundle.get("split_audit") != audit:
-        raise ValueError("Model özellik veya bölme sözleşmesi değişmiş.")
+        raise ValueError("The model feature or split contract has changed.")
     test = frame[frame._split == "test"].copy().reset_index(drop=True)
     eligible = test._eligible.to_numpy(dtype=bool)
     x = select_features(test.loc[test._eligible])
@@ -155,108 +155,102 @@ def number(value):
 
 
 def write_report(report, path):
-    lines = ["# AI 3 — Modelleme ve sentetik değerlendirme", "",
-        "Bu sonuçlar **yalnızca teslim edilen sentetik üreticinin ayrılmış test bölümüne** aittir. "
-        "Gerçek müşteri performansı, kalibre saldırı olasılığı veya gerçek dünyada kanıtlanmış başarı değildir. "
-        "Aynı üreticinin şablonları tüm bölmelerde bulunduğu için şablondan bağımsız genelleme doğrulanmamıştır.", "",
-        "## Tekrar çalıştırma", "", "```bash", ".venv/bin/python -m src.models.train", ".venv/bin/python -m src.models.evaluate",
+    lines = ["# AI 3 — Modelling and synthetic evaluation", "",
+        "These results describe **only the held-out test split of the delivered synthetic generator**. "
+        "They are not real customer performance, calibrated attack probabilities or proven real-world effectiveness. "
+        "Generator templates appear in every split, so generalization beyond those templates has not been validated. "
+        "This report evaluates the original 11-feature behaviour model; any additional password-risk policy is a separate application layer, not a trained input or part of these metrics.", "",
+        "## Reproduce", "", "```bash", ".venv/bin/python -m src.models.train", ".venv/bin/python -m src.models.evaluate",
         ".venv/bin/python -m unittest discover -s tests -p 'test_models.py' -v", "```", "",
-        "İlk komut teslim edilmiş CSV ve SHA-256 eşleşen sentetik manifest yoksa eğitimden önce durur. "
-        "İkinci komut yeniden eğitim yapmadan yerelde oluşturulmuş modeli değerlendirir. "
-        "`comparison_models.joblib` yalnızca bu projede üretilmiş güvenilen dosyadır; dışarıdan gelen pickle/joblib yüklemeyin. "
-        "Tarayıcı yalnızca `models/demo_model.json` kullanır; müşteri CSV'si sunucuya yüklenmez. "
-        "Model JSON bütünlük özeti Python çıkarımında ve demo sunucusunda doğrulanır; SHA-256 özeti "
-        "kazara değişikliği yakalar, imza veya kaynak doğrulaması değildir.", "",
+        "Training stops before fitting if the delivered CSV or its checksum-matched synthetic manifest is missing. "
+        "Evaluation uses the saved local model without retraining. `comparison_models.joblib` is a trusted artifact created by this project; "
+        "do not load external pickle/joblib files. The browser uses only `models/demo_model.json`; customer CSV files are never uploaded. "
+        "Python inference and the demo server check the model JSON checksum. This detects accidental corruption, not authenticity or a signature.", "",
         f"CSV SHA-256: `{report['data_sha256']}`.", "",
-        "## Özellik ve bölme sınırı", "",
-        "Girdi yalnızca sabit 11 özellik allowlist'idir. `event_id`, `event_ts_utc`, `session_token`, "
-        "`account_token`, `is_suspicious`, `attack_type` ve tüm manifest metaverisi girdiden dışlanır. "
-        "Kimlikler yalnızca ayrım denetiminde, etiket yalnızca hedef/değerlendirmede kullanılır. "
-        "Ölçekleme sadece `fit` üzerinde öğrenilir; kategoriler veri sözleşmesinde önceden sabittir. "
-        "Eksik geçmişi olan veya desteklenmeyen herhangi bir özelliği olan satır puanlanmaz; 0 risk sayılmaz, imputasyon yapılmaz. "
-        "JSON'daki median yalnızca fit özeti olarak taşınır ve çıkarımda kullanılmaz.", "",
-        "| Bölme | Tüm satırlar | Puanlanabilir | Çekimser | Hesap | Episode |", "|---|---:|---:|---:|---:|---:|"]
+        "## Feature and split boundaries", "",
+        "Inputs use an exact 11-feature allowlist. `event_id`, `event_ts_utc`, `session_token`, `account_token`, "
+        "`is_suspicious`, `attack_type` and all manifest metadata are excluded. Identifiers are used only for split audits; "
+        "the target is used only for supervised fitting and evaluation. Scaling is fitted only on `fit`; category vocabularies "
+        "are fixed by the data contract. A row with any missing history or unsupported feature abstains. It is not assigned zero risk "
+        "and no missing values are imputed. Exported medians are fit summaries only and are not used during inference.", "",
+        "| Split | Total rows | Scorable | Abstentions | Accounts | Episodes |", "|---|---:|---:|---:|---:|---:|"]
     for split in ("fit", "validation", "test"):
         cov, audit = report["coverage_by_split"][split], report["split_audit"]["splits"][split]
         lines.append(f"| {split} | {cov['total_rows']} | {cov['eligible_rows']} | {cov['abstentions']} | {audit['accounts']} | {audit['episodes']} |")
-    lines += ["", "Bütün bölme çiftlerinde ortak hesap, oturum, episode ve sentetik kaynak sayısı **0**. "
-        "Zaman sırası ve en az 120 saniyelik boşluk eğitim başlamadan doğrulanır. "
-        "30 günlük geçmiş yalnızca sentetik manifestte simüle edilir; gerçek kullanıcı geçmişi varsayılmaz.", "",
-        "## Karşılaştırma ve eşikler", "",
-        "Kural referansı: 2 dakikada ≥8 hesap denemesi ve başarısızlık oranı ≥0,5 → 0,85; "
-        "2 dakikada ≥8 farklı hesap → 0,80; yeni cihaz + yabancı ağ + ≥4 saat sapma + ≥600 km/saat → 0,75; "
-        "aksi → 0,05. Birden çok kuralın maksimumu alınır. VPN veya yeni cihaz tek başına kural alarmı oluşturmaz.", "",
-        "LR: C=1, dengeli sınıf ağırlığı, en çok 2000 iterasyon. RF: 160 ağaç, derinlik 8, yaprak en az 8, "
-        "dengeli sınıf ağırlığı. Kurulu XGBoost: 150 ağaç, derinlik 3, öğrenme 0,05; sınıf ağırlığı yalnız fit'ten. "
-        f"Seed {report['seed']}; model/hyperparametreler test sonuçlarına göre seçilmez.", "",
-        "Karar eşiği yalnız validation üzerinde her modelin JSON sonuçlarında kaydedilen `max_fpr` / `min_recall` "
-        "koşulları altında en yüksek recall "
-        "(eşitlikte daha düşük FPR) için seçilir. Uygun eşik yoksa `feasible=false`, `threshold=null`; "
-        "sessiz 50 puan varsayımı yoktur. Bu koşul test kümesinde garanti değildir. PR-AUC burada "
-        "`average_precision_score` (Average Precision), trapezoid alanı değildir. Eşik metriklerinin paydası yalnız puanlanabilir satırlardır.", "",
-        "| Model | PR-AUC/AP | ROC-AUC | Precision | Recall | FPR | Eşik | TN / FP / FN / TP |", "|---|---:|---:|---:|---:|---:|---:|---|"]
+    lines += ["", "Account, session, episode and synthetic source overlap is **zero** for every pair of splits. "
+        "Chronology and a gap of at least 120 seconds are checked before fitting. The 30-day history is simulated only in the synthetic manifest; "
+        "no real user history is assumed.", "",
+        "## Model comparison and thresholds", "",
+        "Rule baseline: at least 8 account attempts in 2 minutes and failure ratio at least 0.5 → 0.85; "
+        "at least 8 distinct accounts in 2 minutes → 0.80; new device + unfamiliar network + at least 4 hours of deviation "
+        "+ location-change speed of at least 600 km/h → 0.75; otherwise → 0.05. The largest applicable score is used. "
+        "A VPN or a new device alone does not trigger the rule baseline.", "",
+        "LR: C=1, balanced class weights, up to 2,000 iterations. RF: 160 trees, maximum depth 8, minimum leaf size 8, "
+        "balanced class weights. Installed XGBoost: 150 trees, depth 3, learning rate 0.05; class weighting comes only from fit data. "
+        f"Seed {report['seed']}; neither models nor hyperparameters are selected using holdout results.", "",
+        "Decision thresholds are selected on validation only, maximizing recall subject to each saved `max_fpr` / `min_recall` constraint "
+        "and preferring lower FPR on ties. If no threshold is feasible, `feasible=false` and `threshold=null`; there is no silent 50-point fallback. "
+        "Validation constraints are not guaranteed on the test split. PR-AUC here means `average_precision_score` (Average Precision), "
+        "not trapezoidal area. Threshold metrics use only scorable rows in their denominators.", "",
+        "| Model | PR-AUC/AP | ROC-AUC | Precision | Recall | FPR | Threshold | TN / FP / FN / TP |", "|---|---:|---:|---:|---:|---:|---:|---|"]
     for name, result in report["models"].items():
         matrix = result["confusion_matrix"]
         cells = "—" if matrix is None else " / ".join(str(n) for row in matrix for n in row)
         lines.append(f"| {name} | {number(result['pr_auc_average_precision'])} | {number(result['roc_auc'])} | {number(result['precision'])} | {number(result['recall'])} | {number(result['false_positive_rate'])} | {number(result['threshold'])} | {cells} |")
     constraints = report["models"]["logistic_regression"]["validation_threshold_selection"]
-    lines.append(f"\nBu çalıştırmanın validation hedefleri: FPR ≤{constraints['max_fpr']:.2%}, recall ≥{constraints['min_recall']:.2%}.")
+    lines.append(f"\nValidation targets for this run: FPR ≤{constraints['max_fpr']:.2%}, recall ≥{constraints['min_recall']:.2%}.")
     baseline_policy = report["models"]["rule_baseline"]["demo_policy"]
     baseline_mfa = baseline_policy["mfa_or_review_score_ge_30"]
     baseline_review = baseline_policy["review_score_ge_70"]
     if baseline_mfa["confusion_matrix"] == baseline_review["confusion_matrix"]:
         cells = " / ".join(str(n) for row in baseline_mfa["confusion_matrix"] for n in row)
-        lines.append("\nKural referansının mevcut 30/70 demo politikaları aynı kararları verir: "
+        lines.append("\nThe rule baseline makes the same decisions under the existing 30/70 demo policies: "
             f"precision **{number(baseline_mfa['precision'])}**, recall **{number(baseline_mfa['recall'])}**, "
             f"FPR **{number(baseline_mfa['false_positive_rate'])}**, TN / FP / FN / TP **{cells}**. "
-            "Bunlar önceden tanımlanmış demo politikası metrikleridir; seçilmiş validation eşiği veya "
-            "uygun eşik bulunamadığında kullanılan sessiz bir varsayılan değildir. Validation kısıtlarının "
-            "sağlanamaması karşılaştırma tablosunda hâlâ boş eşik/metrik olarak gösterilir.")
+            "These are predefined demo-policy metrics, not a selected validation threshold or a silent fallback after infeasibility. "
+            "The comparison table retains missing threshold metrics because the validation constraints were infeasible.")
     for name, reason in report["unavailable_models"].items():
-        lines.append(f"\n{name} çalıştırılmadı: {reason}.")
+        lines.append(f"\n{name} was not run: {reason}.")
     lr = report["models"]["logistic_regression"]
-    lines += ["", "## Demo modeli ve açıklamalar", "",
-        "**Logistic Regression** tarayıcıda küçük, denetlenebilir bir JSON ile yerel çalışabildiği için demo modeli olarak seçildi. "
-        "Bu seçim en iyi test metriğine dayanmıyor. 0–100 puan, sınıf ağırlıklı LR sigmoid çıktısının "
-        "`floor(p*100+0.5)` ile yuvarlanmasıdır; saldırının gerçek olasılığı olarak yorumlanmamalıdır. "
-        "Üç en büyük pozitif özellik katkısı log-odds cinsinden gerekçedir; SHAP veya nedensellik iddiası yoktur.", "",
-        "UI politikası: 0–29 izleme, 30–69 MFA önerisi, 70–100 MFA + inceleme önerisi; otomatik hesap kilidi yok. "
-        "Bu ürün politikası validation'da seçilen benchmark eşiğinden ayrıdır. Puanlanamayan olay inceleme gerektirir; "
-        "düşük risk varsayılmaz. Testte puan ≥30 MFA/inceleme için FPR " + number(lr["demo_policy"]["mfa_or_review_score_ge_30"]["false_positive_rate"]) +
-        ", puan ≥70 inceleme için FPR " + number(lr["demo_policy"]["review_score_ge_70"]["false_positive_rate"]) + ".", "",
-        f"Taşınabilir Python çıkarımı ile sklearn arasındaki test maksimum olasılık farkı: `{report['portable_parity_max_probability_error']:.3g}`. "
-        "`outputs/parity_cases.json` gerçek sentetik CSV'den seçilmiş özellikler ve beklenen sonuçlarla JavaScript eşliğini sınar.", "",
-        "## Oturum düzeyinde demo doğrulaması", "",
-        "Üstteki metrikler **olay** düzeyindedir. Demo oturum puanını puanlanabilir olayların yuvarlanmış "
-        "puanlarının maksimumu olarak gösterir; herhangi bir olay puanlanamıyorsa tüm oturum puan bekler/inceleme önerir. "
-        "Aşağıdaki bağımsız denetimde oturum hedefi, yalnız değerlendirme için olay hedeflerinin maksimumudur. "
-        "Çekimser oturumlar aşağıdaki puan eşiklerinin paydasında yoktur; doğru negatif veya kaçırılan saldırı sayılmaz.", "",
-        f"LR test oturumları: {lr['session_policy']['total_sessions']} toplam, {lr['session_policy']['scored_sessions']} puanlanan, "
-        f"{lr['session_policy']['abstained_sessions']} çekimser; {lr['session_policy']['multievent_sessions']} birden çok olay içeriyor.", "",
-        "| Oturum politikası | FPR | Recall | TN / FP / FN / TP |", "|---|---:|---:|---|"]
-    for key, label in [("mfa_or_review_score_ge_30", "Puan ≥30 MFA/inceleme"), ("review_score_ge_70", "Puan ≥70 inceleme")]:
+    lines += ["", "## Demo model and explanations", "",
+        "**Logistic Regression** is selected for the demo because it runs locally in the browser using a small, inspectable JSON artifact. "
+        "This deployment choice is not based on the best holdout metric. The 0–100 score is the class-weighted LR sigmoid output rounded "
+        "with `floor(p*100+0.5)`; it must not be interpreted as the true probability of an attack. Explanations list the three largest "
+        "positive feature contributions in log-odds units. They are neither SHAP values nor causal explanations.", "",
+        "Base behaviour-score policy: 0–29 monitor, 30–69 recommend MFA, 70–100 recommend MFA and review; there is no automatic account lock. "
+        "This product policy is separate from the validation-selected benchmark threshold. Unscorable events require review rather than a low-risk assumption. "
+        "On scorable test events, the FPR is " + number(lr["demo_policy"]["mfa_or_review_score_ge_30"]["false_positive_rate"]) +
+        " at score ≥30 and " + number(lr["demo_policy"]["review_score_ge_70"]["false_positive_rate"]) + " at score ≥70.", "",
+        f"Maximum held-out probability difference between portable Python inference and sklearn: `{report['portable_parity_max_probability_error']:.3g}`. "
+        "`outputs/parity_cases.json` checks JavaScript parity using feature-only selections from the actual delivered synthetic CSV and their expected results.", "",
+        "## Session-level demo audit", "",
+        "The metrics above are at **event** level. The demo session score is the maximum rounded event score. If any event is unscorable, "
+        "the entire session abstains and requires review. For this independent evaluation only, the session target is the maximum event target. "
+        "Abstaining sessions are excluded from the score-threshold denominator and are not counted as true negatives or missed attacks.", "",
+        f"LR test sessions: {lr['session_policy']['total_sessions']} total, {lr['session_policy']['scored_sessions']} scored, "
+        f"{lr['session_policy']['abstained_sessions']} abstained; {lr['session_policy']['multievent_sessions']} contain multiple events.", "",
+        "| Session policy | FPR | Recall | TN / FP / FN / TP |", "|---|---:|---:|---|"]
+    for key, label in [("mfa_or_review_score_ge_30", "Score ≥30: MFA/review"), ("review_score_ge_70", "Score ≥70: review")]:
         item = lr["session_policy"][key]
         cells = " / ".join(str(n) for row in item["confusion_matrix"] for n in row) if item["confusion_matrix"] else "—"
         lines.append(f"| {label} | {number(item['false_positive_rate'])} | {number(item['recall'])} | {cells} |")
-    lines += ["", "## Normal zor durumlar ve saldırı alt grupları", "",
-        "Aşağıdaki LR sonuçları validation'da seçilen benchmark eşiğindedir. Desteği olmayan sınıf metriği `—` gösterilir. "
-        "Çekimser satırlar metrik dışında kalır ve ayrıca sayılır; bunları başarılı tespit veya doğru negatif saymak hatalıdır.", "",
-        "MFA/inceleme FPR sütunları gerçek UI'nın 30/70 puan politikasındaki olay yanlış alarm oranlarını gösterir.", "",
-        "| Alt grup | Toplam | Puanlanan | Çekimser | Benchmark FPR | Recall | ≥30 FPR | ≥70 FPR |", "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    lines += ["", "## Challenging normal contexts and attack subgroups", "",
+        "The LR benchmark results below use the validation-selected threshold. Metrics without class support are shown as `—`. "
+        "Abstentions are excluded from metrics and counted separately; they must not be counted as successful detections or true negatives. "
+        "The ≥30/≥70 columns show event-level FPR under the base behaviour-score UI policy.", "",
+        "| Subgroup | Total | Scored | Abstentions | Benchmark FPR | Recall | ≥30 FPR | ≥70 FPR |", "|---|---:|---:|---:|---:|---:|---:|---:|"]
     for name, subgroup in lr["subgroups"].items():
         lines.append(f"| {name} | {subgroup['total_rows']} | {subgroup['eligible_rows']} | {subgroup['abstentions']} | {number(subgroup['false_positive_rate'])} | {number(subgroup['recall'])} | {number(subgroup['demo_mfa_fpr'])} | {number(subgroup['demo_review_fpr'])} |")
-    lines += ["", "## Kalan sınırlar ve dosyalar", "",
-        "Özellikle şüpheli başarılı girişin gerçek IdP başarı kaydı CSV'den bağımsız doğrulanamaz; sentetik manifestteki "
-        "auth_success yalnız test denetimidir. Yakın/sınır saldırılar ve normal VPN/seyahat bağlamları çakışabilir. "
-        "Yanlış alarmlar ve kaçırılan örnekler var; bu prototip üretim güvenlik kontrolü değildir. "
-        "Model gerçek müşteri verisiyle doğrulanmamıştır, kalibrasyon ve drift izleme yapılmamıştır.", "",
-        "`outputs/evaluation.json` tüm modellerin destek, çekimserlik, alt grup, confusion matrix ve politika metriklerini içerir. "
-        "`outputs/holdout_predictions.csv` sadece sentetik event_id korelasyonu ve puan/status taşır; hesap/oturum, "
-        "timestamp, hedef etiketi ve saldırı metaverisi yazılmaz. `models/comparison_models.joblib` yerel yeniden "
-        "değerlendirme içindir. `models/demo_model.json` müşteri/olay kayıtları içermeyen taşınabilir parametrelerdir. "
-        "Bu sentetik geliştirme dosyaları depoda kalabilir; müşteri verisiyle notebook, CSV veya tahmin export'u "
-        "bu çalışma akışının kapsamı değildir. Manifest/CSV özeti değişirse değerlendirme durur.", "",
-        "![Sentetik PR karşılaştırması](../outputs/precision_recall.png)", ""]
+    lines += ["", "## Remaining limitations and artifacts", "",
+        "The CSV cannot independently establish a successful real IdP login; manifest `auth_success` is synthetic audit metadata only. "
+        "Borderline attacks overlap with normal VPN and travel contexts. False alarms and missed examples remain. This prototype is not a "
+        "production security control and has not been validated on real customer data. Probability calibration and drift monitoring are not implemented.", "",
+        "`outputs/evaluation.json` contains support, abstentions, subgroup metrics, confusion matrices and policy metrics for all compared models. "
+        "`outputs/holdout_predictions.csv` contains only synthetic event correlation IDs, scores and status; it excludes accounts, sessions, timestamps, "
+        "target labels and attack metadata. `models/comparison_models.joblib` supports local reevaluation. `models/demo_model.json` contains portable "
+        "parameters without customer/event records. Synthetic development artifacts may remain in the repository; customer notebook/CSV/prediction "
+        "exports are outside this workflow. Evaluation stops if the data or manifest checksum changes.", "",
+        "![Synthetic precision-recall comparison](../outputs/precision_recall.png)", ""]
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
 

@@ -1,0 +1,34 @@
+{
+  "files": {
+    "data/calibration.csv.gz": "50d324f0d21a11663bc253f63a0d4dce8f0a07168694784ba7b3bb94c837142d",
+    "data/calibration.manifest.json.gz": "59cefa33311c72de99382078c60ba06bd4634140009ba6656e3799f92d2cd546",
+    "data/fit.csv.gz": "7ba53c5dbf98d00600df29f466c984a0ab30f2bac5c54031b6366246f567c39b",
+    "data/fit.manifest.json.gz": "ba019ef628b23dd1ebe5820f74801f5762fc23925ce8f9443fbdbbdcfd91b098",
+    "data/selection.csv.gz": "bf2cc969df7ee506de4691a3d95a5cf944d1893b8afac7c2f8a5f7e93bc432d4",
+    "data/selection.manifest.json.gz": "259a2c979ed411f47e0985c1e3c3e7235836370935ae04f25def22c06fdd58d0",
+    "data/tune_a.csv.gz": "e3576b16f43f73deee7670eea19b2e8ba820f66ece57b578d9e5e3c95d66690a",
+    "data/tune_a.manifest.json.gz": "80bdb7cefd20e6b7933c1fec11f187ecbebe000c3d8c5071563af0d4edfaf149",
+    "data/tune_b.csv.gz": "a9b67fe59a2f93fec6da30335da8669ba1e873cc6522a641d949dbdbc2a81279",
+    "data/tune_b.manifest.json.gz": "e9d31df7c0ea3e10f206ba55012190838fa11657404b2216ea9346e5bfa9b7e1",
+    "models/tuned_base.json": "603c7c0a010b9ccdeff36566511c559120740ccb5fea033215d52c6f21a49a8f",
+    "models/tuned_sequence.json": "07b3e6a5f7f857de3ba5ba0a4c70999352d96f23251793cbe871bcaf13f35dad",
+    "reports/development.json": "818d841437a7c0cb23da39ba0a4644bc7253356e76fc2a018ca12583c8a02dbd",
+    "source_snapshot/src/data/generate_synthetic.py": "59a39c788df2fc60aac534c76df071896f387b7fc87e4cff8583eda88faf2aed",
+    "source_snapshot/src/models/calibrate_reliability.py": "66cfee7a5c189d0fab4e143152d584f6b042b65007a4c9ef4dc1896e48e1f535",
+    "source_snapshot/src/models/core.py": "ccbfbf904e3d8198e745c2d270db3a537c0353d2d07ef272522038f45639a9b7",
+    "source_snapshot/src/models/evaluate.py": "fbadde81023bd540e170cc266b8ef130b50884dccebd1e136416f3615a8e4ad1",
+    "source_snapshot/src/models/tune.py": "d4765a7d6e6926fde8aa184483475da1efc4707648f393ce4acb76fab8e68d34",
+    "source_snapshot/src/models/tune_followup.py": "e7dc61df1c040618ff11dbd3dd97bca00daac37d7126784a8210fd938df87b4d",
+    "source_snapshot/src/models/tuned_runtime.py": "2f9aa22a5036530eca929b27a5f52cc97445c43eee2ac6435fe7866f3a7cad3d",
+    "source_snapshot/src/models/tuning_features.py": "84ecafe58c8069425eca0a792e0075249adc2c6a18d3211c1cc383383ef84efd",
+    "source_snapshot/src/runtime/insights.py": "1ed2cbd1a57aab7edcf44210e3a8a5bca5c226f058c639119ad182e2a86bb528",
+    "source_snapshot/src/runtime/risk.py": "eb846c4c6df6fd9fbba7af6b0f0748661d933edb6e006d7d9911aa8c0c8616d6"
+  },
+  "holdouts_generated": false,
+  "protocol_digest": "80f17d4dcffd58b807363273a09eeede9148a92f15252e078c91046578ba12d6",
+  "selected": {
+    "tuned_base": "base_raw-boosted-d3-l30-r0.1",
+    "tuned_sequence": "sequence_log-boosted-d3-l100-r0.1"
+  },
+  "winner": "tuned_sequence"
+}

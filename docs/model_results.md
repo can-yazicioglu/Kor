@@ -1,8 +1,8 @@
-# AI 3 — Modelleme ve sentetik değerlendirme
+# AI 3 — Modelling and synthetic evaluation
 
-Bu sonuçlar **yalnızca teslim edilen sentetik üreticinin ayrılmış test bölümüne** aittir. Gerçek müşteri performansı, kalibre saldırı olasılığı veya gerçek dünyada kanıtlanmış başarı değildir. Aynı üreticinin şablonları tüm bölmelerde bulunduğu için şablondan bağımsız genelleme doğrulanmamıştır.
+These results describe **only the held-out test split of the delivered synthetic generator**. They are not real customer performance, calibrated attack probabilities or proven real-world effectiveness. Generator templates appear in every split, so generalization beyond those templates has not been validated. This report evaluates the original 11-feature behaviour model; any additional password-risk policy is a separate application layer, not a trained input or part of these metrics.
 
-## Tekrar çalıştırma
+## Reproduce
 
 ```bash
 .venv/bin/python -m src.models.train
@@ -10,67 +10,65 @@ Bu sonuçlar **yalnızca teslim edilen sentetik üreticinin ayrılmış test bö
 .venv/bin/python -m unittest discover -s tests -p 'test_models.py' -v
 ```
 
-İlk komut teslim edilmiş CSV ve SHA-256 eşleşen sentetik manifest yoksa eğitimden önce durur. İkinci komut yeniden eğitim yapmadan yerelde oluşturulmuş modeli değerlendirir. `comparison_models.joblib` yalnızca bu projede üretilmiş güvenilen dosyadır; dışarıdan gelen pickle/joblib yüklemeyin. Tarayıcı yalnızca `models/demo_model.json` kullanır; müşteri CSV'si sunucuya yüklenmez. Model JSON bütünlük özeti Python çıkarımında ve demo sunucusunda doğrulanır; SHA-256 özeti kazara değişikliği yakalar, imza veya kaynak doğrulaması değildir.
+Training stops before fitting if the delivered CSV or its checksum-matched synthetic manifest is missing. Evaluation uses the saved local model without retraining. `comparison_models.joblib` is a trusted artifact created by this project; do not load external pickle/joblib files. The browser uses only `models/demo_model.json`; customer CSV files are never uploaded. Python inference and the demo server check the model JSON checksum. This detects accidental corruption, not authenticity or a signature.
 
 CSV SHA-256: `41383a34524cefb434a66608c74a6554bada4377968298c6d7b7a43e4168b625`.
 
-## Özellik ve bölme sınırı
+## Feature and split boundaries
 
-Girdi yalnızca sabit 11 özellik allowlist'idir. `event_id`, `event_ts_utc`, `session_token`, `account_token`, `is_suspicious`, `attack_type` ve tüm manifest metaverisi girdiden dışlanır. Kimlikler yalnızca ayrım denetiminde, etiket yalnızca hedef/değerlendirmede kullanılır. Ölçekleme sadece `fit` üzerinde öğrenilir; kategoriler veri sözleşmesinde önceden sabittir. Eksik geçmişi olan veya desteklenmeyen herhangi bir özelliği olan satır puanlanmaz; 0 risk sayılmaz, imputasyon yapılmaz. JSON'daki median yalnızca fit özeti olarak taşınır ve çıkarımda kullanılmaz.
+Inputs use an exact 11-feature allowlist. `event_id`, `event_ts_utc`, `session_token`, `account_token`, `is_suspicious`, `attack_type` and all manifest metadata are excluded. Identifiers are used only for split audits; the target is used only for supervised fitting and evaluation. Scaling is fitted only on `fit`; category vocabularies are fixed by the data contract. A row with any missing history or unsupported feature abstains. It is not assigned zero risk and no missing values are imputed. Exported medians are fit summaries only and are not used during inference.
 
-| Bölme | Tüm satırlar | Puanlanabilir | Çekimser | Hesap | Episode |
+| Split | Total rows | Scorable | Abstentions | Accounts | Episodes |
 |---|---:|---:|---:|---:|---:|
 | fit | 6000 | 4899 | 1101 | 342 | 1805 |
 | validation | 2000 | 1625 | 375 | 115 | 584 |
 | test | 2000 | 1631 | 369 | 116 | 598 |
 
-Bütün bölme çiftlerinde ortak hesap, oturum, episode ve sentetik kaynak sayısı **0**. Zaman sırası ve en az 120 saniyelik boşluk eğitim başlamadan doğrulanır. 30 günlük geçmiş yalnızca sentetik manifestte simüle edilir; gerçek kullanıcı geçmişi varsayılmaz.
+Account, session, episode and synthetic source overlap is **zero** for every pair of splits. Chronology and a gap of at least 120 seconds are checked before fitting. The 30-day history is simulated only in the synthetic manifest; no real user history is assumed.
 
-## Karşılaştırma ve eşikler
+## Model comparison and thresholds
 
-Kural referansı: 2 dakikada ≥8 hesap denemesi ve başarısızlık oranı ≥0,5 → 0,85; 2 dakikada ≥8 farklı hesap → 0,80; yeni cihaz + yabancı ağ + ≥4 saat sapma + ≥600 km/saat → 0,75; aksi → 0,05. Birden çok kuralın maksimumu alınır. VPN veya yeni cihaz tek başına kural alarmı oluşturmaz.
+Rule baseline: at least 8 account attempts in 2 minutes and failure ratio at least 0.5 → 0.85; at least 8 distinct accounts in 2 minutes → 0.80; new device + unfamiliar network + at least 4 hours of deviation + location-change speed of at least 600 km/h → 0.75; otherwise → 0.05. The largest applicable score is used. A VPN or a new device alone does not trigger the rule baseline.
 
-LR: C=1, dengeli sınıf ağırlığı, en çok 2000 iterasyon. RF: 160 ağaç, derinlik 8, yaprak en az 8, dengeli sınıf ağırlığı. Kurulu XGBoost: 150 ağaç, derinlik 3, öğrenme 0,05; sınıf ağırlığı yalnız fit'ten. Seed 42; model/hyperparametreler test sonuçlarına göre seçilmez.
+LR: C=1, balanced class weights, up to 2,000 iterations. RF: 160 trees, maximum depth 8, minimum leaf size 8, balanced class weights. Installed XGBoost: 150 trees, depth 3, learning rate 0.05; class weighting comes only from fit data. Seed 42; neither models nor hyperparameters are selected using holdout results.
 
-Karar eşiği yalnız validation üzerinde her modelin JSON sonuçlarında kaydedilen `max_fpr` / `min_recall` koşulları altında en yüksek recall (eşitlikte daha düşük FPR) için seçilir. Uygun eşik yoksa `feasible=false`, `threshold=null`; sessiz 50 puan varsayımı yoktur. Bu koşul test kümesinde garanti değildir. PR-AUC burada `average_precision_score` (Average Precision), trapezoid alanı değildir. Eşik metriklerinin paydası yalnız puanlanabilir satırlardır.
+Decision thresholds are selected on validation only, maximizing recall subject to each saved `max_fpr` / `min_recall` constraint and preferring lower FPR on ties. If no threshold is feasible, `feasible=false` and `threshold=null`; there is no silent 50-point fallback. Validation constraints are not guaranteed on the test split. PR-AUC here means `average_precision_score` (Average Precision), not trapezoidal area. Threshold metrics use only scorable rows in their denominators.
 
-| Model | PR-AUC/AP | ROC-AUC | Precision | Recall | FPR | Eşik | TN / FP / FN / TP |
+| Model | PR-AUC/AP | ROC-AUC | Precision | Recall | FPR | Threshold | TN / FP / FN / TP |
 |---|---:|---:|---:|---:|---:|---:|---|
 | rule_baseline | 0.4623 | 0.7073 | — | — | — | — | — |
 | logistic_regression | 0.6265 | 0.9059 | 0.4457 | 0.5954 | 0.0647 | 0.7812 | 1403 / 97 / 53 / 78 |
 | random_forest | 0.7290 | 0.9446 | 0.6040 | 0.6870 | 0.0393 | 0.6772 | 1441 / 59 / 41 / 90 |
 | xgboost | 0.8089 | 0.9580 | 0.6012 | 0.7481 | 0.0433 | 0.7371 | 1435 / 65 / 33 / 98 |
 
-Bu çalıştırmanın validation hedefleri: FPR ≤5.00%, recall ≥50.00%.
+Validation targets for this run: FPR ≤5.00%, recall ≥50.00%.
 
-Kural referansının mevcut 30/70 demo politikaları aynı kararları verir: precision **0.3571**, recall **0.4580**, FPR **0.0720**, TN / FP / FN / TP **1392 / 108 / 71 / 60**. Bunlar önceden tanımlanmış demo politikası metrikleridir; seçilmiş validation eşiği veya uygun eşik bulunamadığında kullanılan sessiz bir varsayılan değildir. Validation kısıtlarının sağlanamaması karşılaştırma tablosunda hâlâ boş eşik/metrik olarak gösterilir.
+The rule baseline makes the same decisions under the existing 30/70 demo policies: precision **0.3571**, recall **0.4580**, FPR **0.0720**, TN / FP / FN / TP **1392 / 108 / 71 / 60**. These are predefined demo-policy metrics, not a selected validation threshold or a silent fallback after infeasibility. The comparison table retains missing threshold metrics because the validation constraints were infeasible.
 
-## Demo modeli ve açıklamalar
+## Demo model and explanations
 
-**Logistic Regression** tarayıcıda küçük, denetlenebilir bir JSON ile yerel çalışabildiği için demo modeli olarak seçildi. Bu seçim en iyi test metriğine dayanmıyor. 0–100 puan, sınıf ağırlıklı LR sigmoid çıktısının `floor(p*100+0.5)` ile yuvarlanmasıdır; saldırının gerçek olasılığı olarak yorumlanmamalıdır. Üç en büyük pozitif özellik katkısı log-odds cinsinden gerekçedir; SHAP veya nedensellik iddiası yoktur.
+**Logistic Regression** is selected for the demo because it runs locally in the browser using a small, inspectable JSON artifact. This deployment choice is not based on the best holdout metric. The 0–100 score is the class-weighted LR sigmoid output rounded with `floor(p*100+0.5)`; it must not be interpreted as the true probability of an attack. Explanations list the three largest positive feature contributions in log-odds units. They are neither SHAP values nor causal explanations.
 
-UI politikası: 0–29 izleme, 30–69 MFA önerisi, 70–100 MFA + inceleme önerisi; otomatik hesap kilidi yok. Bu ürün politikası validation'da seçilen benchmark eşiğinden ayrıdır. Puanlanamayan olay inceleme gerektirir; düşük risk varsayılmaz. Testte puan ≥30 MFA/inceleme için FPR 0.2607, puan ≥70 inceleme için FPR 0.0967.
+Base behaviour-score policy: 0–29 monitor, 30–69 recommend MFA, 70–100 recommend MFA and review; there is no automatic account lock. This product policy is separate from the validation-selected benchmark threshold. Unscorable events require review rather than a low-risk assumption. On scorable test events, the FPR is 0.2607 at score ≥30 and 0.0967 at score ≥70.
 
-Taşınabilir Python çıkarımı ile sklearn arasındaki test maksimum olasılık farkı: `3.33e-16`. `outputs/parity_cases.json` gerçek sentetik CSV'den seçilmiş özellikler ve beklenen sonuçlarla JavaScript eşliğini sınar.
+Maximum held-out probability difference between portable Python inference and sklearn: `3.33e-16`. `outputs/parity_cases.json` checks JavaScript parity using feature-only selections from the actual delivered synthetic CSV and their expected results.
 
-## Oturum düzeyinde demo doğrulaması
+## Session-level demo audit
 
-Üstteki metrikler **olay** düzeyindedir. Demo oturum puanını puanlanabilir olayların yuvarlanmış puanlarının maksimumu olarak gösterir; herhangi bir olay puanlanamıyorsa tüm oturum puan bekler/inceleme önerir. Aşağıdaki bağımsız denetimde oturum hedefi, yalnız değerlendirme için olay hedeflerinin maksimumudur. Çekimser oturumlar aşağıdaki puan eşiklerinin paydasında yoktur; doğru negatif veya kaçırılan saldırı sayılmaz.
+The metrics above are at **event** level. The demo session score is the maximum rounded event score. If any event is unscorable, the entire session abstains and requires review. For this independent evaluation only, the session target is the maximum event target. Abstaining sessions are excluded from the score-threshold denominator and are not counted as true negatives or missed attacks.
 
-LR test oturumları: 811 toplam, 537 puanlanan, 274 çekimser; 429 birden çok olay içeriyor.
+LR test sessions: 811 total, 537 scored, 274 abstained; 429 contain multiple events.
 
-| Oturum politikası | FPR | Recall | TN / FP / FN / TP |
+| Session policy | FPR | Recall | TN / FP / FN / TP |
 |---|---:|---:|---|
-| Puan ≥30 MFA/inceleme | 0.3091 | 0.9091 | 333 / 149 / 5 / 50 |
-| Puan ≥70 inceleme | 0.1452 | 0.7273 | 412 / 70 / 15 / 40 |
+| Score ≥30: MFA/review | 0.3091 | 0.9091 | 333 / 149 / 5 / 50 |
+| Score ≥70: review | 0.1452 | 0.7273 | 412 / 70 / 15 / 40 |
 
-## Normal zor durumlar ve saldırı alt grupları
+## Challenging normal contexts and attack subgroups
 
-Aşağıdaki LR sonuçları validation'da seçilen benchmark eşiğindedir. Desteği olmayan sınıf metriği `—` gösterilir. Çekimser satırlar metrik dışında kalır ve ayrıca sayılır; bunları başarılı tespit veya doğru negatif saymak hatalıdır.
+The LR benchmark results below use the validation-selected threshold. Metrics without class support are shown as `—`. Abstentions are excluded from metrics and counted separately; they must not be counted as successful detections or true negatives. The ≥30/≥70 columns show event-level FPR under the base behaviour-score UI policy.
 
-MFA/inceleme FPR sütunları gerçek UI'nın 30/70 puan politikasındaki olay yanlış alarm oranlarını gösterir.
-
-| Alt grup | Toplam | Puanlanan | Çekimser | Benchmark FPR | Recall | ≥30 FPR | ≥70 FPR |
+| Subgroup | Total | Scored | Abstentions | Benchmark FPR | Recall | ≥30 FPR | ≥70 FPR |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | brute_force | 64 | 64 | 0 | — | 0.6406 | — | — |
 | cold_start | 92 | 0 | 92 | — | — | — | — |
@@ -85,10 +83,10 @@ MFA/inceleme FPR sütunları gerçek UI'nın 30/70 puan politikasındaki olay ya
 | normal_new_device | 660 | 489 | 171 | 0.1820 | — | 0.4703 | 0.2495 |
 | normal_unfamiliar_network | 651 | 558 | 93 | 0.1398 | — | 0.4283 | 0.1989 |
 
-## Kalan sınırlar ve dosyalar
+## Remaining limitations and artifacts
 
-Özellikle şüpheli başarılı girişin gerçek IdP başarı kaydı CSV'den bağımsız doğrulanamaz; sentetik manifestteki auth_success yalnız test denetimidir. Yakın/sınır saldırılar ve normal VPN/seyahat bağlamları çakışabilir. Yanlış alarmlar ve kaçırılan örnekler var; bu prototip üretim güvenlik kontrolü değildir. Model gerçek müşteri verisiyle doğrulanmamıştır, kalibrasyon ve drift izleme yapılmamıştır.
+The CSV cannot independently establish a successful real IdP login; manifest `auth_success` is synthetic audit metadata only. Borderline attacks overlap with normal VPN and travel contexts. False alarms and missed examples remain. This prototype is not a production security control and has not been validated on real customer data. Probability calibration and drift monitoring are not implemented.
 
-`outputs/evaluation.json` tüm modellerin destek, çekimserlik, alt grup, confusion matrix ve politika metriklerini içerir. `outputs/holdout_predictions.csv` sadece sentetik event_id korelasyonu ve puan/status taşır; hesap/oturum, timestamp, hedef etiketi ve saldırı metaverisi yazılmaz. `models/comparison_models.joblib` yerel yeniden değerlendirme içindir. `models/demo_model.json` müşteri/olay kayıtları içermeyen taşınabilir parametrelerdir. Bu sentetik geliştirme dosyaları depoda kalabilir; müşteri verisiyle notebook, CSV veya tahmin export'u bu çalışma akışının kapsamı değildir. Manifest/CSV özeti değişirse değerlendirme durur.
+`outputs/evaluation.json` contains support, abstentions, subgroup metrics, confusion matrices and policy metrics for all compared models. `outputs/holdout_predictions.csv` contains only synthetic event correlation IDs, scores and status; it excludes accounts, sessions, timestamps, target labels and attack metadata. `models/comparison_models.joblib` supports local reevaluation. `models/demo_model.json` contains portable parameters without customer/event records. Synthetic development artifacts may remain in the repository; customer notebook/CSV/prediction exports are outside this workflow. Evaluation stops if the data or manifest checksum changes.
 
-![Sentetik PR karşılaştırması](../outputs/precision_recall.png)
+![Synthetic precision-recall comparison](../outputs/precision_recall.png)

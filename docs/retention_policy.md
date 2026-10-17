@@ -1,36 +1,30 @@
-# Veri yaşam döngüsü ve silme sınırı
+# Retention and deletion
 
-Bu politika yerel MVP'nin uygulanan davranışını açıklar. Ham parola, kullanıcı adı, IP, kesin konum veya kalıcı cihaz parmak izi hiçbir bileşene verilmez. Opak kimlikler de ilişkilendirilebilir veri kabul edilir. Gerçek müşteri kayıtları AI sohbetine yüklenmez.
+This policy distinguishes synthetic development files, historical CSV memory, current demo state and trusted shadow events. Reference release is not physical memory wiping.
 
-| Veri | Nerede tutulur? | Ömür / bırakma davranışı |
-| --- | --- | --- |
-| İçe aktarılan CSV, olaylar ve oturum özetleri | Yalnızca tarayıcı belleği | Kullanıcının seçtiği 5, 10 veya 15 dakika. Süre dolması, sıfırlama, sayfadan ayrılma veya yeni başarılı içe aktarım eski referansları bırakır. |
-| Model JSON'u | Yerel statik dosya; tarayıcı belleğinde çıkarım parametreleri | Model artefaktı sürümle tutulur; müşteri olayı içermez. HTTP yanıtı `no-store` kullanır. |
-| CSV kaynak dosyası | Kullanıcının yerel diski | Tarayıcı bu dosyayı değiştirmez veya silmez. Kullanıcının dosya yaşam döngüsüne tabidir. |
-| `data/` içindeki CSV ve denetim manifesti | Geliştirme deposu | Açıkça sentetik, yeniden üretilebilir test artefaktları olarak kalıcıdır. Gerçek müşteri verisi yerine kullanılamaz. |
-| `models/` ve `outputs/` | Yerel geliştirme deposu | Yalnızca sentetik eğitimden model/özet/örnek çıktılar. Verinin hash'i ve model sürümüyle izlenir; müşteri çıktıları burada tutulmaz. |
-| Erişim logları | Oluşturulmaz | Demo HTTP sunucusu adres, istek yolu veya CSV içeriği loglamaz. |
-| Cookie / web storage / biyometri | Kullanılmaz | Demo cookie, localStorage, sessionStorage, IndexedDB veya fare/klavye davranış kaydı oluşturmaz. |
+| Data | Retention | Removal |
+|---|---|---|
+| Historical imported CSV and derived cards | Selected 5/10/15 minutes in browser memory | Expiry checks, reset, page departure; suspended tabs recheck on return |
+| Demo username/password/MFA code | Transient request/verification only | Form cleared immediately; server does not store/log raw values or event-password hashes |
+| Demo handle, derived context/events/results | Hard five-minute demo lifetime; 500 events per demo; 32 demos | Synchronous expiry on access, explicit reset and server cleanup |
+| Trusted events, result/peak and human-review labels | Rolling five minutes | Ingest/snapshot/feedback expiry and server cleanup |
+| Successful signed-request nonces | 120 seconds; at most 10,000 | Server cleanup; new requests rejected at capacity |
+| All retained events across demos and trusted stream | At most 5,000; separate 1,000 demo / 4,000 trusted budgets | New work rejected at capacity; no silent event dropping to undercount attacks |
+| MFA challenge binding | One random challenge ID per pending sign-in; at most 120 seconds and five failed checks | Replaced by the next valid login/simulation, consumed on success/exhaustion, reset or expiry |
+| Admission counters | Fixed process-level channel buckets; one bucket per live demo | Process buckets reset on restart, demo bucket removed on expiry/reset; no client addresses or credential data |
+| Interactive password backoff | Failure count and monotonic retry deadline per demo; delay capped at 60 seconds | Successful password verification resets it; demo reset/expiry removes it, within the unchanged five-minute lifetime |
+| Current decision receipt | One allowlisted payload, MAC and random per-demo key in RAM; no identity fields or retained chain | New decision replaces it. Reset/expiry removes key and receipt references within the five-minute scope; no physical wiping claim |
+| Demo authorization | Fixed employee role derived from server state and an expiry time | Resource checks enforce at most 120 seconds, bounded by demo expiry; new failed verification, reset and expiry revoke the grant |
+| Public credential verifier | Published fixture salt and scrypt verifier in source | Deliberate static demo fixture, not a hash of a collected customer password; no submitted-password hash is retained |
+| Evidence workbench response | On-demand aggregate diagnostics; only the current response is held in browser memory within the same demo lifetime | Replaced on refresh; cleared on reset, expiry, departure or unverifiable response; no second server history |
+| Public model/policy/reference, synthetic CSV/evaluation artifacts | Versioned development files | Explicit project artifact management; never customer records |
 
-Uygulama zamanlayıcı yanında mutlak son kullanım zamanını kontrol eder; sekme görünürlüğü değişince ve kullanıcı veriyle etkileşime geçince süreyi yeniden denetler. Tarayıcı askıdayken JavaScript çalışamayabilir. Yeniden etkinleştiğinde süresi dolmuş veriye erişimden önce referanslar bırakılır. Bu davranış işletim sistemi belleğinin, swap'in, crash dump'ın veya tarayıcı iç kopyalarının fiziksel silindiği garantisi değildir.
+The server cleanup daemon checks about once per second. An idle server therefore releases expired application references when the cleanup thread next runs, subject to scheduler/process availability. Access checks enforce expiry immediately; stopped/suspended processes cannot promise wall-clock memory wiping. Restart clears all event/handle/feedback state.
 
-## Pencere ve oturum süresi
+Two-minute counts use the exclusive left boundary `(t−120,t]`; demo sessions rotate after two minutes. An active source stays correlated across the rolling window; its token rotates after two minutes of inactivity and is always deleted at the five-minute demo deadline. MFA expires at the earlier of two minutes from challenge creation or the session boundary, with at most five failed code attempts; a stale challenge ID cannot validate a later sign-in. Human-review labels expire with their event. Long-window aggregates may be supplied by a trusted customer adapter, but this runtime does not invent a 24-hour history from five minutes of retained data.
 
-**120 saniyelik analiz penceresi, dosyanın bellekte tutulma süresinden farklıdır.** Sentetik üretici hesap bazında `(t−120 saniye, t]` ve `(t−1 saat, t]` sayaçları, geçici ortak kaynak bazında farklı hesap sayısı üretir. Başarısızlık oranı mevcut olayın sonucunu kullanmadan önceki 24 saatlik sentetik sonuçlardan hesaplanır.
+No cookies, local/session storage, IndexedDB, external analytics, remote password lookup or customer export files are created. Company requests go to the same loopback server; CSV import remains browser-only. The browser attempts reset on page departure, but delivery is not guaranteed, so server TTL is authoritative. A failed/aborted response does not prove the request was never processed. Credentials are never automatically retried.
 
-Sentetik manifestte kaynak ve oturum anahtarlarının ömrü en fazla 120 saniye olarak modellenir; aynı episode içindeki cookie dönüşümleri hesap/kaynak sayacını sıfırlamaz. Kaynak anahtarları ve gerçek giriş sonucu yalnızca denetim manifestinde bulunur; model özellikleri değildir. Manifestteki tokenlar gerçek cookie olarak kullanılmamalıdır.
+The evidence workbench's 30/60/120-second rows are analytical views at the latest event's timestamp, not new retention settings. Refreshing its token-scoped inventory extends no deadline. Displayed countdowns estimate when application-state expiry is due; they do not attest to physical memory erasure. Identity map entry counts can overlap identifiers retained in event records and must not be described as distinct people or devices.
 
-Bu MVP bir canlı IdP veya sürekli olay toplama servisi içermez. Üretim bağlantısında rastgele, kısa ömürlü `Secure`/`HttpOnly` cookie, müşteri içi kaynak anahtarı ve gerçek TTL depolaması müşteri ortamında uygulanmalıdır. Canlı sayaçların süresi şu kapsamlarla ayrı yönetilmelidir:
-
-- Kaynak korelasyonu: 120 saniye ve açıkça kararlaştırılmış geç olay toleransı.
-- Hesap deneme sayacı: 1 saate kadar gerekli özet; daha uzun ham olay tutma zorunluluğu yoktur.
-- Başarısızlık oranı: en fazla gerekli 24 saatlik sonuç özeti.
-- Alışkanlık geçmişi: mevcut ve izin verilen veri varsa; 30 günlük gerçek geçmiş varmış gibi doldurulmaz.
-
-## Ağ sınırı
-
-Tarayıcı yalnızca aynı yerel sunucudaki model JSON'unu GET ile alır. CSV ve özellikler HTTP isteği oluşturmaz; çıkarım JavaScript ile tarayıcı içinde yapılır. Sunucu loopback'e bağlıdır, izinli dosya yolları dışını ve POST yüklemelerini reddeder. Model dosyasının dışarıdan alınması, uzak API kullanımı veya gerçek müşteri çıktılarının depoya eklenmesi mevcut MVP'nin desteklediği akış değildir.
-
-## Doğrulama
-
-`app/tests/` süre sınırı, sıfırlama, askı sonrası zaman kontrolü, sunucu dosya sınırı ve yükleme reddini; `tests/` sentetik kaynak/oturum ömrünü ve pencere sınırlarını sınar. Uygulama referansı bırakma ile fiziksel silme ayrı değerlendirilir. Gerçek IdP/TTL servisi olmadığı için bu belge onun güvenlik onayı değildir.
+The prototype stores public reference hashes, which provide no confidentiality for dictionary entries. They are not customer password hashes. Real IdP verifier/password storage and customer-side aggregate retention are outside this process and require their own explicit policies. The generic signed transport does not itself erase upstream provider logs.

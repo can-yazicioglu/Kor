@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sentinel security demonstration: customer-local AI, expiring evidence and server-verified access. Synthetic accounts only.">
+  <meta name="color-scheme" content="light">
+  <title>Sentinel / Vela Security Desk</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./company.css">
+  <script type="module" src="./company.js"></script>
+</head>
+<body>
+  <a href="#login-main" class="skip-link">Skip to sign in</a>
+  <header class="demo-bar"><a href="./company.html" class="sentinel-wordmark"><img src="./icon.svg" width="27" height="27" alt=""> SENTINEL <span>/ security desk</span></a><span class="demo-badge">SYNTHETIC DEMO</span><a href="./datathon.html" class="back-link">Datathon field guide</a><a href="./">Historical analytics ↗</a></header>
+  <nav class="desk-nav" aria-label="Demo sections"><a href="#login-main" aria-current="page">Employee portal</a><a href="#console-title">Risk monitor</a><a href="#security-desk">Security lab</a><a href="#insights-title">Evidence &amp; privacy</a><span>LOCAL PROCESSING / 120s WINDOW / 300s RETENTION</span></nav>
+  <main class="demo-layout" id="login-main">
+    <section class="company-stage" aria-label="Vela employee portal">
+      <div class="company-top"><a href="./company.html" class="vela-brand" aria-label="Vela demo home"><span class="vela-mark" aria-hidden="true">v.</span> vela<span class="brand-dot" aria-hidden="true">■</span></a><span class="portal-label">EMPLOYEE SERVICES / FICTIONAL COMPANY</span></div>
+      <div class="stage-body">
+        <div class="stage-intro"><span class="eyebrow">VELA INTRANET / ACCESS GATEWAY</span><h1>Your workspace.<br><em>A more careful welcome.</em></h1><p>Sign in to the fictional employee portal. Sentinel evaluates the context locally, explains the evidence and recommends the next verification step.</p><div class="stage-tags"><span>No automatic account lock</span><span>No persistent fingerprint</span></div></div>
+        <div class="login-card">
+          <div id="login-panel">
+            <div class="card-heading"><span class="small-icon" aria-hidden="true">↗</span><span class="small-label">YOUR VELA WORKSPACE</span></div>
+            <h2>Employee sign-in</h2><p class="card-subtitle">Use the public test account to open the demonstration.</p>
+            <form id="login-form" autocomplete="off">
+              <label for="username">Username</label><input id="username" type="text" value="demo" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="32" required aria-describedby="credentials-hint">
+              <label for="password">Password</label><input id="password" type="password" autocomplete="new-password" placeholder="Enter the demo password" maxlength="256" required aria-describedby="credentials-hint password-synthetic-notice">
+              <button id="sign-in" class="primary-button" type="submit">Sign in <span aria-hidden="true">→</span></button>
+            </form>
+            <div id="login-feedback" class="feedback" role="status" aria-live="polite">Use the demonstration account below.</div>
+            <div id="login-backoff" class="feedback" role="status" aria-live="polite" hidden></div>
+            <div class="demo-credentials" id="credentials-hint"><div><span>YOUR DEMO PASS</span><p><code>demo</code> <span>/</span> <code>VelaDemo!42</code></p></div><button type="button" id="fill-demo">Fill in ↗</button></div>
+            <p class="synthetic-note" id="password-synthetic-notice">Public demo credentials only. Submitted values go to the local customer server for transient verification, never to an AI or remote service. Never enter a real password.</p>
+          </div>
+          <div id="mfa-panel" hidden>
+            <span class="panel-symbol" aria-hidden="true">◇</span><p class="eyebrow">ONE MORE STEP · DEMO</p><h2>A little extra assurance.</h2><p class="card-subtitle">This sign-in context calls for another check. The local server decides whether this sample flow requires MFA.</p>
+            <form id="mfa-form" autocomplete="off"><label for="mfa-code">Demo verification code</label><input id="mfa-code" type="text" inputmode="numeric" autocomplete="off" maxlength="6" pattern="[0-9]{6}" placeholder="6-digit demo code" required><p class="code-hint">Presentation code: <strong>123456</strong> · Synthetic identity provider; code verification runs on the local server.</p><button id="mfa-submit" class="primary-button" type="submit">Complete verification <span aria-hidden="true">→</span></button></form>
+            <p id="mfa-feedback" role="status" class="feedback">Additional verification was recommended. The account was not locked.</p><button id="back-to-login" type="button" class="text-button">← Back to sign in</button>
+          </div>
+          <div id="workspace-panel" hidden>
+            <div class="welcome-check" aria-hidden="true">✓</div><p class="eyebrow">YOU'RE IN · VELA DEMO</p><h2>Hello, Demo.</h2><p id="welcome-note" class="card-subtitle">Your sign-in is complete. Your workspace is ready.</p>
+            <div class="workspace-preview"><div><span>ON THE HORIZON</span><strong>Something wonderful</strong><p>Product team · 8 demo members</p></div><div class="project-progress"><span></span></div><div class="task-row"><span class="task-check">✓</span> Design review <small>Complete</small></div><div class="task-row"><span class="task-check">○</span> Team catch-up <small>14:30</small></div></div>
+            <button id="sign-out" type="button" class="primary-button">Sign out <span aria-hidden="true">↗</span></button><p class="code-hint">A fictional workspace. No real company information.</p>
+          </div>
+          <div class="secured-by"><span class="secure-dot"></span> Sign-in insights by <strong>Sentinel</strong></div>
+        </div>
+        <section class="demo-runbook" aria-labelledby="runbook-title"><p class="eyebrow">PRESENTATION / APPROX. 4 MINUTES</p><h2 id="runbook-title">Follow the evidence.</h2>
+          <ol><li><strong>Verify a sign-in.</strong> Fill the public credentials, then use the demo MFA code.</li><li><strong>Change the context.</strong> Replay brute force or load a suspicious-success example.</li><li><strong>Challenge the evidence.</strong> Alter a copy of the current decision receipt in the security lab.</li><li><strong>Test the boundary.</strong> Open the employee resource, then attempt the restricted audit console.</li><li><strong>Reset.</strong> Remove the demo records, authorization and receipt key together.</li></ol>
+          <p class="runbook-note">The baseline currently recommends review even for normal logins because validated thresholds are unavailable. The tuned candidate remains blocked. This demo makes that limitation visible.</p><a href="./datathon.html">Read the judging brief and measured limitations →</a>
+        </section>
+      </div>
+      <footer class="company-footer"><span>Vela · A fictional company</span><span>Ephemeral Login Sentinel / Research prototype</span></footer>
+      <div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
+    </section>
+    <aside class="sentinel-console" aria-labelledby="console-title">
+      <div class="console-heading"><div><p class="eyebrow">OPERATIONS / LIVE DEMO EVIDENCE</p><h2 id="console-title">Session risk monitor</h2></div><span class="live-badge"><i></i> Local</span></div>
+      <p class="console-intro">Model score, verification and policy are separate signals. A low score alone does not grant access.</p>
+      <div class="model-line" id="company-model-status" role="status">Connecting to the local verification service…</div>
+      <section class="risk-card" id="live-risk" data-level="idle" aria-labelledby="risk-title">
+        <div class="risk-top"><h3 id="risk-title">Current risk</h3><span id="risk-label">Ready when you are</span></div>
+        <div class="risk-number"><strong id="risk-score">—</strong><span>/ 100</span><div class="risk-arrow" aria-hidden="true">↗</div></div>
+        <div class="session-peak-line"><span>Session peak</span><strong id="session-peak">—</strong><small>Historical maximum, separate from the current decision</small></div>
+        <div class="risk-track" aria-hidden="true"><div id="risk-fill"></div></div>
+        <p id="risk-action" role="status" aria-live="polite">Start with a demonstration sign-in.</p>
+        <ul id="live-reasons" class="risk-reasons"><li>The local server evaluates behavior, data quality and verification state before making a decision.</li></ul>
+        <div class="live-signals"><div><strong id="attempt-count">—</strong><span>attempts / 2 min</span></div><div><strong id="account-count">—</strong><span>accounts / 2 min</span></div><div><strong id="source-count">—</strong><span>sources / 2 min</span></div><div><strong id="failure-count">—</strong><span>consecutive failures</span></div></div>
+        <p class="signal-note">Counters and current risk describe the latest attempt. Session peak is historical, not a frozen current decision. Context is synthetic. Success after failures: <strong id="success-after-failures">Unknown</strong>.</p>
+      </section>
+      <section class="quality-card" aria-labelledby="quality-title"><div class="section-title"><h3 id="quality-title">How much context is available?</h3><span id="data-quality">Not evaluated</span></div><p id="data-quality-note">Missing context is never treated as zero risk.</p><div class="verification-line"><span class="synthetic-chip">SIMULATED IDENTITY PROVIDER</span><strong id="verification-status">Not verified</strong></div><p id="policy-version" class="policy-note">No evaluated policy result yet.</p></section>
+      <section class="password-risk-card" aria-labelledby="password-risk-title"><div class="section-title"><h3 id="password-risk-title">Reference-list match</h3><span id="password-match" class="match-badge">Not checked</span></div><div class="password-breakdown"><div><span>Base behavior model</span><strong id="base-risk-score">—</strong></div><span class="breakdown-plus" aria-hidden="true">·</span><div><span>Credential weakness</span><strong id="credential-strength">Unknown</strong></div></div><p id="password-check-note">Credential weakness is separate from behavioral risk. No fixed score is added. This bounded reference set cannot prove safety; the local server performs the check.</p><span class="synthetic-chip">PUBLIC PASSWORD REFERENCE</span><div class="password-demo-actions"><button id="fill-common" type="button">Try a common password</button><button id="fill-similar" type="button">Try a variation</button></div></section>
+      <section class="scenario-section" aria-labelledby="scenario-title"><div class="section-title"><h3 id="scenario-title">Change the story.</h3><span>DEMO CONTROLS</span></div>
+        <label class="context-label" for="login-context">Sign-in context<select id="login-context"><option value="familiar">Familiar device and network</option><option value="unfamiliar">New device and unfamiliar network</option><option value="vpn">Legitimate VPN use</option><option value="travel">Legitimate travel</option><option value="new_device">A new device</option><option value="unusual_success">New device + new network + unusual context</option><option value="cold_start">Cold start / missing history</option></select></label>
+        <button id="prepare-unusual" class="text-button" type="button">Load suspicious-success example →</button><p id="context-guard-status" class="signal-note">The context safeguard is evaluated after a server-verified login. It does not add score points.</p><p class="signal-note">EXPERIMENTAL DEMO RULE · Combined legitimate changes can also trigger it. Disabled on trusted ingestion; <a href="./datathon.html#rule-results">see measured tradeoffs</a>.</p>
+        <div class="scenario-grid"><button id="run-brute" type="button" class="scenario-button"><span aria-hidden="true">↻</span><strong>Brute force</strong><small>20 failed attempts · one account</small></button><button id="run-spray" type="button" class="scenario-button"><span aria-hidden="true">⋮</span><strong>Password spraying</strong><small>18 accounts · one source</small></button><button id="run-distributed" type="button" class="scenario-button"><span aria-hidden="true">⋰</span><strong>Distributed attempts</strong><small>12 attempts · multiple synthetic sources</small></button></div>
+        <p id="simulation-status" class="simulation-status" role="status">Bounded batches run on the local server using public presets. No remote network attack is performed.</p>
+      </section>
+      <section class="event-section" aria-labelledby="events-title"><div class="section-title"><h3 id="events-title">The latest activity</h3><span id="event-total">0 EVENTS</span></div><ol id="attempt-timeline"><li class="empty-event">Your first sign-in will appear here.</li></ol></section>
+      <section class="review-feedback" aria-labelledby="review-title"><div class="section-title"><h3 id="review-title">Review the latest synthetic event</h3><span>FEEDBACK ONLY</span></div><div class="review-actions"><button id="feedback-normal" type="button" disabled>Mark normal</button><button id="feedback-suspicious" type="button" disabled>Mark suspicious</button></div><p id="feedback-status">Review labels do not grant access or change authentication.</p></section>
+      <div class="console-bottom"><span id="demo-lifetime">Automatically clears after 5 minutes.</span><button id="reset-company" type="button">Reset demo ↺</button></div>
+      <p id="scope-copy" class="scope-note">Server-scored demo with synthetic context, not production authentication. Public demo credentials reach only the local customer verifier, are never logged or retained, and are not model inputs. Risk is not an attack probability. No automatic account locking. Server session state expires after five minutes.</p>
+    </aside>
+    <section id="security-desk" class="assurance-section" aria-labelledby="assurance-title">
+      <div class="insights-heading"><div><p class="eyebrow">SECURITY BY DESIGN / INTERACTIVE CHECKS</p><h2 id="assurance-title">Trust, with something to inspect.</h2><p>These checks run in the local service. They do not certify an identity provider, production deployment or IBM Z hardware.</p></div><a href="./datathon.html#ibm-z">IBM Z integration path →</a></div>
+      <div class="assurance-grid">
+        <section class="assurance-card"><div class="control-label">C / CONFIDENTIALITY</div><h3>Keep less. Expose less.</h3><p>Transient credentials, opaque identifiers and bounded RAM. No client telemetry, IP log or persistent device fingerprint.</p><dl><dt>Transport</dt><dd id="transport-status">Not checked</dd><dt>Public fixture verifier</dt><dd>scrypt · 32 MiB · p=3</dd><dt>Demo retention</dt><dd>5 minutes; refresh does not extend it</dd></dl><p class="insight-note">Local HTTP is not encrypted transport. Optional TLS 1.3 is available. Submitted password hashes are never retained.</p></section>
+        <section class="assurance-card"><div class="control-label">I / INTEGRITY</div><h3>Challenge a decision receipt.</h3><p id="receipt-status" class="assurance-state" role="status">Waiting for a decision</p><code id="receipt-digest" class="receipt-code">A decision creates an ephemeral HMAC receipt.</code><button id="check-receipt" type="button" class="desk-button">Test altered receipt</button><p id="proof-result" role="status" aria-live="polite">Record an event, then test an altered copy of its receipt.</p><p class="insight-note">HMAC-SHA-256, random key per demo. Only the current receipt is held; reset removes the key. This is not encryption or protection from a compromised server.</p></section>
+        <section class="assurance-card"><div class="control-label">A / AVAILABILITY</div><h3>Bound the work.</h3><p>Reject excess work before expensive verification. Authentication delays grow with repeated wrong passwords.</p><dl><dt>Password-verification slots</dt><dd>4 concurrent operations</dd><dt>HTTP worker / deadline limits</dt><dd>16 workers / 8 seconds</dd><dt>Interactive delay</dt><dd>1 → 2 → 4 → 8 → 16 → 32 → 60s</dd></dl><p class="insight-note">Caps limit this process; they do not replace upstream throttling, high availability or DDoS protection. Resetting a public demo can clear its local password streak.</p></section>
+        <section class="assurance-card"><div class="control-label">ACCESS / AUTHENTICATION &amp; AUTHORIZATION</div><h3>Verify on the server.</h3><dl><dt>Current role</dt><dd id="access-role">Anonymous</dd><dt>Authorization lifetime</dt><dd id="access-ttl">No active workspace grant.</dd></dl><div class="desk-actions"><button id="open-resource" type="button" class="desk-button">Employee resource</button><button id="try-restricted" type="button" class="desk-button">Try restricted console</button></div><p id="resource-result" role="status" aria-live="polite">The public employee fixture never receives administrator access.</p><p class="insight-note">Deny by default. The server checks the current grant and fixed employee role on every resource request. Public demo MFA is an illustration, not a real second factor.</p></section>
+      </div>
+      <div class="crypto-strip"><strong>CRYPTO INVENTORY</strong><span>scrypt / password verifier</span><span>HMAC-SHA-256 / authenticated messages</span><span>SHA-256 / artifact checksums</span><span>Optional TLS 1.3 / transport</span><a href="./datathon.html#crypto">Quantum-safe readiness: planned, not implemented →</a></div>
+    </section>
+    <section class="insights-section" aria-labelledby="insights-title">
+      <div class="insights-heading"><div><h2 id="insights-title">Evidence &amp; privacy workbench</h2><p id="insights-age">No evaluated event.</p></div><button id="refresh-insights" type="button">Refresh evidence</button></div>
+      <div class="insights-grid">
+        <section class="insight-card" aria-labelledby="history-title"><h3 id="history-title">01 · How much history matters?</h3>
+          <p>Replay three volume rules over 30, 60 and 120 seconds, ending at the latest event. The live model still uses 120 seconds.</p>
+          <div class="insight-table-wrap"><table class="insight-table"><caption>Observed failures and triggered rules</caption><thead><tr><th scope="col">History</th><th scope="col">Account failures / attempts</th><th scope="col">Failing sources</th><th scope="col">Failed accounts on source (failure %)</th><th scope="col">Rules</th></tr></thead><tbody id="history-rows"></tbody></table></div>
+          <p id="history-summary" class="insight-summary">Record a sign-in to compare observed history.</p>
+          <p class="insight-note">Fixed thresholds, experimental comparison. Excludes MFA, context rules and carried session evidence. Fewer records can remove or add a rule when the failure ratio changes. This does not measure accuracy or change retention.</p>
+        </section>
+        <section class="insight-card" aria-labelledby="decision-title"><h3 id="decision-title">02 · What changed in this session?</h3>
+          <p id="decision-summary" class="insight-summary">No evaluated event yet.</p><p id="decision-basis"></p><ul id="decision-changes"></ul>
+          <p class="insight-note">Compares consecutive retained events for the same account and session only. These are observed evidence changes, not a causal explanation of every score point. MFA verification does not erase earlier evidence.</p>
+        </section>
+        <section class="insight-card" aria-labelledby="lifetime-title"><h3 id="lifetime-title">03 · What remains in memory?</h3>
+          <p>Inventory from the last local server response. Counts include this demo only.</p><dl id="lifetime-inventory" class="lifetime-inventory"></dl><p id="lifetime-countdown" class="insight-summary">No current server inventory.</p>
+          <p class="insight-note">All listed application state is bounded by the original five-minute demo lifetime. Refreshing does not extend it. Passwords, raw usernames, raw IPs and persistent device fingerprints are not stored in this inventory. Reset removes application references; this is not proof of physical memory erasure.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+  <noscript>This demonstration requires JavaScript and the local verification service. It does not authenticate real company users.</noscript>
+</body>
+</html>

@@ -20,9 +20,9 @@
         "risk_score": 88,
         "probability": 0.8755632332094216,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Olağan saatten sapma: riski artıran model katkısı (+0.95)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Deviation from usual login hour: positive model contribution (+0.95)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -58,8 +58,8 @@
         "risk_score": 1,
         "probability": 0.011877583905927712,
         "reasons": [
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
-          "Ağ kategorisi: riski artıran model katkısı (+0.44)"
+          "Login attempts in 1 hour: positive model contribution (+0.71)",
+          "Network category: positive model contribution (+0.44)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -95,9 +95,9 @@
         "risk_score": 28,
         "probability": 0.28414834998818184,
         "reasons": [
-          "Olağan saatten sapma: riski artıran model katkısı (+0.94)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
-          "Ağ aşinalığı: riski artıran model katkısı (+0.58)"
+          "Deviation from usual login hour: positive model contribution (+0.94)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)",
+          "Network familiarity: positive model contribution (+0.58)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -133,9 +133,9 @@
         "risk_score": 35,
         "probability": 0.3506335772103017,
         "reasons": [
-          "Olağan saatten sapma: riski artıran model katkısı (+0.94)",
-          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
-          "Yeni cihaz bağlamı: riski artıran model katkısı (+0.43)"
+          "Deviation from usual login hour: positive model contribution (+0.94)",
+          "Network familiarity: positive model contribution (+0.58)",
+          "New device context: positive model contribution (+0.43)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -171,9 +171,9 @@
         "risk_score": 87,
         "probability": 0.8673839590994591,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Olağan saatten sapma: riski artıran model katkısı (+0.85)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Deviation from usual login hour: positive model contribution (+0.85)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -209,9 +209,9 @@
         "risk_score": 81,
         "probability": 0.81097612532099,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Olağan saatten sapma: riski artıran model katkısı (+1.75)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Deviation from usual login hour: positive model contribution (+1.75)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -247,9 +247,9 @@
         "risk_score": 8,
         "probability": 0.07868110291134628,
         "reasons": [
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
-          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
-          "Olağan saatten sapma: riski artıran model katkısı (+0.46)"
+          "Login attempts in 1 hour: positive model contribution (+0.71)",
+          "Network familiarity: positive model contribution (+0.58)",
+          "Deviation from usual login hour: positive model contribution (+0.46)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -285,9 +285,9 @@
         "risk_score": 6,
         "probability": 0.06270574123058176,
         "reasons": [
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
-          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
-          "2 dakikadaki farklı hesap sayısı: riski artıran model katkısı (+0.46)"
+          "Login attempts in 1 hour: positive model contribution (+0.71)",
+          "Network familiarity: positive model contribution (+0.58)",
+          "Distinct accounts in 2 minutes: positive model contribution (+0.46)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -323,8 +323,8 @@
         "risk_score": 1,
         "probability": 0.005133387086469974,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Ağ kategorisi: riski artıran model katkısı (+0.44)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Network category: positive model contribution (+0.44)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -360,8 +360,8 @@
         "risk_score": 1,
         "probability": 0.007153084998700431,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Ağ kategorisi: riski artıran model katkısı (+0.44)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Network category: positive model contribution (+0.44)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -397,9 +397,9 @@
         "risk_score": 67,
         "probability": 0.6744585179728481,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)",
-          "Ağ aşinalığı: riski artıran model katkısı (+0.58)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)",
+          "Network familiarity: positive model contribution (+0.58)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -435,9 +435,9 @@
         "risk_score": 74,
         "probability": 0.7391029126962758,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Ağ aşinalığı: riski artıran model katkısı (+0.58)",
-          "Yeni cihaz bağlamı: riski artıran model katkısı (+0.43)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Network familiarity: positive model contribution (+0.58)",
+          "New device context: positive model contribution (+0.43)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -473,9 +473,9 @@
         "risk_score": 89,
         "probability": 0.8858982933826457,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Olağan saatten sapma: riski artıran model katkısı (+1.56)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Deviation from usual login hour: positive model contribution (+1.56)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -511,9 +511,9 @@
         "risk_score": 93,
         "probability": 0.928881971487347,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Olağan saatten sapma: riski artıran model katkısı (+1.56)",
-          "Ağ aşinalığı: riski artıran model katkısı (+0.58)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Deviation from usual login hour: positive model contribution (+1.56)",
+          "Network familiarity: positive model contribution (+0.58)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -549,9 +549,9 @@
         "risk_score": 95,
         "probability": 0.9532293750475538,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "Olağan saatten sapma: riski artıran model katkısı (+1.44)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Deviation from usual login hour: positive model contribution (+1.44)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {
@@ -587,9 +587,9 @@
         "risk_score": 87,
         "probability": 0.8679641597674318,
         "reasons": [
-          "Yönetilen cihaz durumu: riski artıran model katkısı (+1.79)",
-          "2 dakikadaki farklı hesap sayısı: riski artıran model katkısı (+1.05)",
-          "1 saatteki deneme sayısı: riski artıran model katkısı (+0.71)"
+          "Managed device status: positive model contribution (+1.79)",
+          "Distinct accounts in 2 minutes: positive model contribution (+1.05)",
+          "Login attempts in 1 hour: positive model contribution (+0.71)"
         ],
         "model_version": "els-lr-41383a34524c-s42",
         "contributions": {

@@ -1,0 +1,145 @@
+{
+  "cohorts": {
+    "holdout_a": {
+      "brute_force": {
+        "all_rule_matches": 1,
+        "all_sessions": 79,
+        "scored_rule_match_rate": 0.013513513513513514,
+        "scored_rule_matches": 1,
+        "scored_sessions": 74
+      },
+      "cold_start": {
+        "all_rule_matches": 0,
+        "all_sessions": 255,
+        "scored_rule_match_rate": null,
+        "scored_rule_matches": 0,
+        "scored_sessions": 0
+      },
+      "night_shift": {
+        "all_rule_matches": 31,
+        "all_sessions": 398,
+        "scored_rule_match_rate": 0.07749077490774908,
+        "scored_rule_matches": 21,
+        "scored_sessions": 271
+      },
+      "normal": {
+        "all_rule_matches": 46,
+        "all_sessions": 2127,
+        "scored_rule_match_rate": 0.025745257452574527,
+        "scored_rule_matches": 38,
+        "scored_sessions": 1476
+      },
+      "password_spraying": {
+        "all_rule_matches": 2,
+        "all_sessions": 385,
+        "scored_rule_match_rate": 0.003816793893129771,
+        "scored_rule_matches": 1,
+        "scored_sessions": 262
+      },
+      "suspicious_success": {
+        "all_rule_matches": 74,
+        "all_sessions": 152,
+        "scored_rule_match_rate": 0.5555555555555556,
+        "scored_rule_matches": 60,
+        "scored_sessions": 108
+      },
+      "travel_new_device": {
+        "all_rule_matches": 268,
+        "all_sessions": 523,
+        "scored_rule_match_rate": 0.5052910052910053,
+        "scored_rule_matches": 191,
+        "scored_sessions": 378
+      },
+      "user_error": {
+        "all_rule_matches": 17,
+        "all_sessions": 649,
+        "scored_rule_match_rate": 0.02522935779816514,
+        "scored_rule_matches": 11,
+        "scored_sessions": 436
+      },
+      "vpn_new_device": {
+        "all_rule_matches": 933,
+        "all_sessions": 1914,
+        "scored_rule_match_rate": 0.49002217294900224,
+        "scored_rule_matches": 663,
+        "scored_sessions": 1353
+      }
+    },
+    "holdout_b": {
+      "brute_force": {
+        "all_rule_matches": 1,
+        "all_sessions": 79,
+        "scored_rule_match_rate": 0.015151515151515152,
+        "scored_rule_matches": 1,
+        "scored_sessions": 66
+      },
+      "cold_start": {
+        "all_rule_matches": 0,
+        "all_sessions": 256,
+        "scored_rule_match_rate": null,
+        "scored_rule_matches": 0,
+        "scored_sessions": 0
+      },
+      "night_shift": {
+        "all_rule_matches": 38,
+        "all_sessions": 391,
+        "scored_rule_match_rate": 0.08712121212121213,
+        "scored_rule_matches": 23,
+        "scored_sessions": 264
+      },
+      "normal": {
+        "all_rule_matches": 48,
+        "all_sessions": 2141,
+        "scored_rule_match_rate": 0.026936026936026935,
+        "scored_rule_matches": 40,
+        "scored_sessions": 1485
+      },
+      "password_spraying": {
+        "all_rule_matches": 1,
+        "all_sessions": 385,
+        "scored_rule_match_rate": 0.00390625,
+        "scored_rule_matches": 1,
+        "scored_sessions": 256
+      },
+      "suspicious_success": {
+        "all_rule_matches": 75,
+        "all_sessions": 162,
+        "scored_rule_match_rate": 0.41739130434782606,
+        "scored_rule_matches": 48,
+        "scored_sessions": 115
+      },
+      "travel_new_device": {
+        "all_rule_matches": 279,
+        "all_sessions": 554,
+        "scored_rule_match_rate": 0.538659793814433,
+        "scored_rule_matches": 209,
+        "scored_sessions": 388
+      },
+      "user_error": {
+        "all_rule_matches": 20,
+        "all_sessions": 667,
+        "scored_rule_match_rate": 0.03711340206185567,
+        "scored_rule_matches": 18,
+        "scored_sessions": 485
+      },
+      "vpn_new_device": {
+        "all_rule_matches": 863,
+        "all_sessions": 1914,
+        "scored_rule_match_rate": 0.4766214177978884,
+        "scored_rule_matches": 632,
+        "scored_sessions": 1326
+      }
+    }
+  },
+  "guard_version": "els-context-guard-v1",
+  "limitations": [
+    "Shared authored generator and previously inspected final cohorts.",
+    "Rule alerts can include legitimate combined context changes.",
+    "Baseline fallback still recommends review; these are rule matches, not full-policy FPR.",
+    "The blocked tuned candidate is not enabled by this evaluation."
+  ],
+  "model_retrained": false,
+  "numeric_scores_changed": false,
+  "scope": "posthoc_consumed_synthetic_cohorts_rule_only_not_new_validation",
+  "source_sha256": "95fdf7016c08aac635a88fef4ae9d4751324b22ecdbfc23677f4381040a6dee6"
+}

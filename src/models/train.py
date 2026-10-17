@@ -83,7 +83,7 @@ def train(args):
     validation = frame[(frame._split == "validation") & frame._eligible]
     for part in (fit, validation):
         if set(part.is_suspicious) != {0, 1}:
-            raise ValueError("Eğitim ve doğrulamada iki sınıftan puanlanabilir gözlem gerekli.")
+            raise ValueError("Fit and validation splits must contain scorable observations from both classes.")
     xfit, yfit = select_features(fit), fit.is_suspicious.astype(int)
     xvalidation = select_features(validation)
     estimators = {
@@ -115,13 +115,13 @@ def train(args):
     # Check portable implementation against fitted sklearn on ALL eligible heldout rows.
     test = frame[(frame._split == "test") & frame._eligible]
     if test.empty:
-        raise ValueError("Puanlanabilir test örneği yok.")
+        raise ValueError("No scorable test observations are available.")
     expected = fitted["logistic_regression"].predict_proba(select_features(test))[:, 1]
     actual = np.array([predict_portable(artifact, {key: row[key] for key in FEATURES})["probability"]
                        for _, row in test.iterrows()])
     parity_error = float(np.max(np.abs(actual - expected)))
     if parity_error > 1e-12:
-        raise AssertionError("Python taşınabilir model sklearn ile uyuşmuyor.")
+        raise AssertionError("The portable Python model does not match sklearn.")
     args.model_dir.mkdir(parents=True, exist_ok=True)
     args.output_dir.mkdir(parents=True, exist_ok=True)
     (args.model_dir / "demo_model.json").write_text(json.dumps(artifact, indent=2, ensure_ascii=False) + "\n")
@@ -160,7 +160,7 @@ def parse_args():
     parser.add_argument("--min-recall", type=float, default=.5)
     args = parser.parse_args()
     if not 0 <= args.max_fpr <= 1 or not 0 <= args.min_recall <= 1:
-        parser.error("FPR ve recall hedefleri [0,1] aralığında olmalı.")
+        parser.error("FPR and recall targets must be in [0,1].")
     return args
 
 

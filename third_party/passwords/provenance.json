@@ -1,0 +1,37 @@
+{
+  "sources": [
+    {
+      "name": "10k-most-common.txt",
+      "url": "https://raw.githubusercontent.com/danielmiessler/SecLists/1cb6ade5539246c326986193d67954a2855581f6/Passwords/Common-Credentials/10k-most-common.txt",
+      "repository": "https://github.com/danielmiessler/SecLists",
+      "repository_commit": "1cb6ade5539246c326986193d67954a2855581f6",
+      "path": "Passwords/Common-Credentials/10k-most-common.txt",
+      "sha256": "68782d6a4a19a4768d5f15dd66bd534e7a33055cc755411e33f16d18c50fdcce",
+      "license": "MIT",
+      "license_url": "https://raw.githubusercontent.com/danielmiessler/SecLists/1cb6ade5539246c326986193d67954a2855581f6/LICENSE",
+      "entry_count": 10000,
+      "excluded_record_like_or_invalid": 1,
+      "bytes": 73026
+    },
+    {
+      "name": "xato-net-10-million-passwords-10000.txt",
+      "url": "https://raw.githubusercontent.com/danielmiessler/SecLists/1cb6ade5539246c326986193d67954a2855581f6/Passwords/Common-Credentials/xato-net-10-million-passwords-10000.txt",
+      "repository": "https://github.com/danielmiessler/SecLists",
+      "repository_commit": "1cb6ade5539246c326986193d67954a2855581f6",
+      "path": "Passwords/Common-Credentials/xato-net-10-million-passwords-10000.txt",
+      "sha256": "c63d5e4ccc31344d662583cc39ca4bd5bd20517ff1d24501f0c4e0c22d9b722a",
+      "license": "MIT",
+      "license_url": "https://raw.githubusercontent.com/danielmiessler/SecLists/1cb6ade5539246c326986193d67954a2855581f6/LICENSE",
+      "entry_count": 9998,
+      "excluded_record_like_or_invalid": 2,
+      "bytes": 76497
+    }
+  ],
+  "license_sha256": "3dbdc93d5f8829de0941744841730a09c106d0732e5ae0e98ca1d77be7ded66c",
+  "reference_sha256": "97f0dde1d7814565a6aa8feb20819e977a7c8961f2408c5a1cd3aaf37513e398",
+  "reference_bytes": 1671053,
+  "unique_exact_entries": 12526,
+  "unique_normalized_entries": 12378,
+  "raw_lists_retained": false,
+  "scope": "Only public password-only dictionaries; no usernames, account records or email-password dumps."
+}

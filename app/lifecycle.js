@@ -17,7 +17,7 @@ export function createRetention({ onExpire, now = Date.now, schedule = setTimeou
     return false;
   }
   function start(minutes) {
-    if (!Number.isInteger(minutes) || minutes < 1 || minutes > MAX_RETENTION_MINUTES) throw new Error('Saklama süresi 1–15 dakika olmalı.');
+    if (!Number.isInteger(minutes) || minutes < 1 || minutes > MAX_RETENTION_MINUTES) throw new Error('Retention must be between 1 and 15 minutes.');
     clear();
     deadline = now() + minutes * 60000;
     timer = schedule(check, minutes * 60000);

@@ -1,91 +1,100 @@
-# AI 4 — Bağımsız güvenlik ve doğrulama planı
+# Independent test plan
 
-Proje: **Ephemeral Login Sentinel**  
-Plan tarihi: **17 Ekim 2026**  
-Kapsam: Ortak brief'e karşı A1, a2 ve a3 teslimlerinin bağımsız denetimi.
+The acceptance boundary is a tested local prototype, not perfect detection or a production authentication service. Runtime and historical experiments have distinct policies. All scenarios below use invented credentials/tokens and synthetic context.
 
-Bu plan, veri satırları ve model sonuçları incelenmeden önce ortak brief üzerinden hazırlanmıştır. İlk AI 4 denetimi veri/model/dashboard üretmeden yapılmıştır. Kullanıcının daha sonraki bütün görevleri tamamlama talebiyle diğer üç rol düzeltme, üretim ve eğitimi tamamlamış; bu plan birleşik teslimde yeniden uygulanmıştır. Denetim testleri yeniden eğitim yapmaz. Sonuçlar ve kanıtlar [security_review.md](security_review.md) dosyasındadır. İşaretli kutular kontrolün yürütüldüğünü gösterir; her birinin kararı ve sınırı raporda ayrıca belirtilir.
+## Normal and suspicious scenarios
 
-## 1. Başarı ölçütü ve karar dili
+| Scenario | Expected evidence and behaviour |
+|---|---|
+| Normal familiar successful login | Server-verified outcome, finite calibrated score when complete, no sequence escalation; current unavailable thresholds explicitly recommend review |
+| VPN/travel/new device without a failure pattern | No automatic sequence escalation from that context alone; model and conservative threshold fallback remain visible |
+| One to three mistaken passwords then recovery | No claim that an unsuccessfully submitted weak password is the account password; no unconditional password bonus |
+| Many failures against one account | Account streak/count rises within two minutes and raises the recommendation to review |
+| Many accounts failing from one source, or several failing sources against one account | Failed-account breadth plus a failure-dominated complete source window supports spraying review; distinct failing sources support distributed-attempt review across session changes |
+| Success following failures in unusual context | Corroborated sequence recommendation; trusted MFA records verification without erasing the peak or prior review evidence |
 
-- Oturum başına risk 0–100 aralığındadır; 100 en yüksek risktir. Puan saldırı olasılığı olarak sunulmaz.
-- Yüksek risk MFA veya insan incelemesi önerir; otomatik hesap kilitleme yapılmaz.
-- Kimlik, hedef etiket ve değerlendirme metaverisi model girdisinden ayrılır.
-- Geçmiş veya model çıktısı yokluğu düşük risk sayılmaz. Gerçek 30 günlük geçmiş varsayılmaz.
-- Sentetik sonuçlar yalnızca sentetik koşulları açıklar; gerçek dünya performansı iddia edilmez.
-- Her kontrol **geçti**, **bulgu**, **doğrulanamadı** veya **uygulanamaz** olarak sınıflandırılır. Eksik çıktı başarı sayılmaz.
+These are fresh adversarial software challenge cases. They are not a representative novel-customer benchmark and do not establish accuracy percentages. Test-only thresholds may isolate sequence logic; they are never exported as selected production thresholds.
 
-## 2. Altı bağımsız senaryo
+Exercise the narrower `els-contextual-shadow-v2` rules with a busy shared office source serving many successful accounts plus one user's mistakes; successful sources that must not inflate distributed-failure evidence; and sustained account/distributed failures that must remain visible despite unrelated successful traffic. Test failed-account breadth and the exact 0.8 source-failure-ratio boundary. A spray diluted by sufficient successful traffic can fall below the source rule; record this limitation rather than claiming complete detection or an empirical false-positive reduction.
 
-Beklentiler belirli bir doğrulanmamış eşik veya uydurma model puanı içermez. Normal senaryolarda özellikle tek bir yeni bağlam sinyalinin gereksiz yüksek riske dönüşüp dönüşmediği incelenir. Şüpheli senaryolarda birden çok uyumlu sinyalin açıklanabilmesi ve uygun öneri verilmesi beklenir.
+Check the [additional sequence signals](event_contract.md): account/source failure ratios, failed/successful account breadth, failing-source count, maximum per-source failures, median same-account gap, burst ratio and support count. Verify `(t−120,t]` boundaries, equal-timestamp gaps, MFA exclusion, `null` without denominators/support and explicit incomplete-window status. Observed ratios during warmup are not full-window lower bounds. Gap statistics do not change actions. No new numeric weights, model retraining or benchmark claims are introduced by these checks.
 
-| Kimlik | Sınıf | Senaryo | Kontrol ve beklenen davranış |
-| --- | --- | --- | --- |
-| N1 | Normal | Kullanıcı parolasını bir veya iki kez yanlış girer, ardından olağan bağlamda başarılı olur. | Birkaç hata tek başına brute force kabul edilmemeli. Başarısızlık etiketi ile şüpheli etiketi karıştırılmamalı; açıklama gerçek mevcut sinyallere dayanmalı. |
-| N2 | Normal | Yönetilen cihazda kurumsal VPN açılır; ağ/ASN ve görünen konum değişir, deneme yoğunluğu olağandır. | VPN veya yanıltıcı yüksek coğrafi hız tek başına saldırı kanıtı sayılmamalı. MFA gerekiyorsa bunun bağlam belirsizliği olduğu açıklanmalı; kilitleme olmamalı. |
-| N3 | Normal | Kullanıcı seyahatte yeni bir cihazla giriş yapar; yeterli geçmiş yoktur ve deneme yoğunluğu olağandır. | Seyahat, yeni cihaz ve eksik geçmiş otomatik kötü niyete dönüşmemeli. Eksiklik sıfırla doldurulmamalı; ölçülü MFA önerisi ile kesin saldırı iddiası ayrılmalı. |
-| S1 | Şüpheli | Aynı hesaba kayan 120 saniyede yoğun başarısız deneme gelir; yeni oturum anahtarları kullanılabilir. | Hesap düzeyindeki yoğunluk görünmeli; cookie yenilemek sayacı sıfırlamamalı. Yüksek riskte MFA/inceleme önerilmeli. |
-| S2 | Şüpheli | Ortak kaynak bağlamı 120 saniyede çok sayıda hesaba az sayıda deneme yapar. | Hesaplar arası yayılım model öncesinde doğru hesaplanmalı. Salt oturum sayacı spraying tespiti sayılmamalı. NAT/VPN ortak kaynak yanılgısı ayrıca değerlendirilmelidir. |
-| S3 | Şüpheli | Yoğun başarısızlık veya olağan dışı bağlam ardından yeni cihaz/ağ ile başarılı giriş olur. | Başarı yalnızca IdP sonucu/uygun metaveri ile doğrulanmalı; `is_suspicious` veya `attack_type` giriş başarısı veya model özelliği yapılmamalı. Bağlam gerekçesi ve MFA/inceleme önerisi görünmeli. |
+## Authentication and protocol controls
 
-## 3. Gizlilik ve veri sızıntısı kontrol listesi
+Verify the complete company controller → real local HTTP service → server credential check → risk engine → server MFA → fictional workspace flow, including incorrect code, no preceding login, cross-account evidence, session boundary, five-attempt exhaustion and missing artifacts. Each pending login returns `mfa_challenge_id`; the browser sends `challenge_id` with the code. An old challenge must not authorize a newer login. Browser claims of success or score must be rejected. Rejected requests must not rewrite an existing MFA challenge's immutable context.
 
-### Ham hassas veri
+Exercise HMAC body/path tampering, stale timestamps, replayed nonces/event IDs, wrong producer keys, browser Origins on trusted endpoints, cross-origin demo requests, foreign Host, duplicate JSON fields, nonfinite values, overlarge bodies and forbidden raw credential/target fields. Responses/logs must not echo inputs. A signed producer is not independent proof of correct upstream IdP validation.
 
-- [x] CSV başlığı tam 17 alan mı; ek kullanıcı adı, e-posta, parola, IP, cookie içeriği, cihaz izi veya biyometri sütunu var mı?
-- [x] Veri içerikleri, notebook hücreleri/çıktıları, uygulama kodu ve takip edilen dosyalarda ham kimlik, IP, parola veya sır örüntüsü var mı?
-- [x] Opak anahtarlar kullanıcı adı/e-posta taşımadan üretilmiş mi; tokenlar açıkça sentetik mi? Örüntü kontrolü anonimlik kanıtı değildir.
-- [x] Veri kaynağı ve üretim yolu açıklanmış mı? Sızdırılmış dosya/listelerle eşleştirme var mı?
-- [x] Gerçek müşteri verisini dış API'ye, telemetriye, AI servisine veya uzaktaki depoya gönderen bir yol var mı?
-- [x] Hatalar, notebook örnekleri ve loglar satır, dosya adı veya ham hassas değer yansıtıyor mu?
-- [x] Cookie yalnızca geçici rastgele anahtar mı; kalıcı cihaz izi veya fare/klavye kaydı var mı?
-- [x] Tarayıcı ve sunucu saklama/silme davranışı belgelenmiş ve uygulanan davranışla tutarlı mı?
+Producer authority must allow `/api/events` only; separate reviewer authority must allow `/api/review` and `/api/metrics` only. Reject identical role keys and fail closed for unconfigured roles. `GET /api/status` must expose readiness/configuration only, without traffic aggregates. Verify `python3 -m src.runtime.adapter --metrics` uses the reviewer key and does not read stdin. The adapter must reject disallowed event/review fields before opening a socket, not merely rely on a receiving-server rejection. `--disable-demo` must reject anonymous demo mutations without disabling authenticated shadow ingestion.
 
-### Model ve değerlendirme sızıntısı
+Verify real-stream startup/119/120-second observation coverage and that future timestamps cannot bypass warmup. Reject any event ahead of the receiving clock, including one millisecond, without poisoning global ordering; HMAC freshness allowance must not relax event-time validation. A retained session UUID cannot be reused for another account. Verify strict `(t−120,t]` boundaries, MFA exclusion from login counts, context/account/session isolation, late-event rejection, reset idempotency, idle cleanup and async response cancellation. No-score and unavailable-threshold states must remain distinct.
 
-- [x] `event_id`, `session_token`, `account_token`, `is_suspicious`, `attack_type` eğitim ve çıkarım özelliklerinden gerçekten çıkarılmış mı?
-- [x] Ham zaman damgası veya saldırı sınıfını dolaylı kodlayan başka alan hedef sızıntısı yaratıyor mu?
-- [x] Encoder/imputer/scaler ve özellik seçimi yalnızca eğitim verisine mi fit ediliyor?
-- [x] Eğitim ve test aynı hesabı, oturumu, yinelenen olayı veya aynı saldırı zincirini paylaşıyor mu?
-- [x] Rastgele satır ayrımı ile bağımsız kullanıcı/senaryo veya zaman ayrımı arasındaki fark raporlanmış mı?
-- [x] Sentetik sınıflar kolay, ayrık kurallarla mı üretilmiş; normal davranış ile saldırı gerçekçi biçimde örtüşüyor mu?
-- [x] Pencere özellikleri olaydan sonraki bilgiye veya etikete bakılarak türetilmiş mi?
-- [x] Etiketler ve senaryo açıklamaları UI'da gerçek tahmin veya model gerekçesi gibi sunuluyor mu?
+## Capacity, concurrency and request framing
 
-## 4. Pencere, silme ve puan sözleşmesi
+- Verify interactive wrong-password waits of 1/2/4/8/16/32/60/60 seconds using an injected monotonic clock. Reject just before each deadline; accept at the boundary. Correct passwords reset the streak while preserving MFA/review requirements. Early requests must not call the password checker, increment risk events or extend the delay. Check HTTP 429/Retry-After agreement, context/session rotation, reset/expiry, wall-clock changes and independent demo/trusted scopes. Synthetic event replay must not change interactive backoff. UI countdowns must disable submission, clear form values, recover after waiting, preserve prior risk evidence on a valid backoff response, and never resend credentials automatically.
 
-- Ortak kısa pencere 2 dakika / 120 saniye olmalı. Sınırda `t−120`, pencere içi, `t`, yinelenen ve geç gelen olayların politikası belgelenmeli.
-- `attempts_2m`, `attempts_1h` ve `distinct_accounts_2m` hesap/oturum/kaynak kapsamları uyumlu olmalı. Sayaçların yalnızca bağımsız rastgele değerler olması gerçek kayan pencere doğrulaması değildir.
-- Kaynak anahtarı CSV'de yoksa spraying korelasyonunun müşteri içinde nasıl yapıldığı açıklanmalı.
-- Cookie ömrü ile olay penceresi birbirine karıştırılmamalı. İki dakikalık korelasyon verisinin ve 1 saat/24 saat yardımcı sayaçlarının silme kuralları ayrı belirtilmeli.
-- Bilinmeyen geçmiş ve model hatası görünür olmalı; puan 0'a çevrilmemeli. Kısmi puanlanan oturum tam değerlendirilmiş gibi görünmemeli.
-- Puan çıktısı sonlu ve 0–100 olmalı. Eşikler, toplulaştırma ve gerekçeler belgelenmeli; otomatik kilitleme bulunmamalı.
+- Enforce 32 demos, 500 events per demo, 1,000 retained demo events, 4,000 retained trusted events and a 5,000-event global cap. A full demo quota must leave the reserved trusted budget available; no overflow may silently discard current evidence.
+- Test global channel and per-demo token buckets, bounded refill, and simulation batch costs. Resetting a demo must not reset process-level budgets; demo requests must not spend the trusted-ingestion bucket. Bound replay caches and retained state.
+- Keep password-reference checking outside the shared ingestion lock. A deliberately delayed check must not block trusted ingestion; reset/expiry during the check must prevent a stale result from restoring deleted state or granting access.
+- Enforce 16 HTTP workers, an eight-second absolute connection deadline, a 16 KiB total header budget and a separate 16 KiB body cap. Test trickled headers/bodies and excess connections; an idle timeout alone is insufficient.
+- Reject duplicate security-sensitive headers, ambiguous transfer framing, bodies on GET/HEAD and non-origin request targets before dispatch. Errors must not expose request bodies, client addresses, credentials or traceback details.
 
-## 5. İlk bağımsız denetimin yöntemi
+These are bounded-prototype software checks, not production resilience certification or a load-tested deployment guarantee.
 
-1. Branch adları ve commit kimliklerini kaydet; ilgili teslimleri birbirinin üzerine yazmadan oku.
-2. Bu planı oluştur. Mevcut veri/model çıktısını sonra incele.
-3. CSV'yi yalnızca yerel kodla kontrol et; sohbete veya rapora ham satır, token veya hassas eşleşme koyma. Yalnızca sayım, alan adı, satır/hücre konumu ve bulgu gerekçesi raporla.
-4. Notebook'u yürütmeden kod hücrelerini incele. Mevcut kaydedilmiş sonuçların gerçekten var olup olmadığını ayır. Eğitim hücrelerini çalıştırma.
-5. Eğitim gerektirmeyen şema, kimlik örtüşmesi, bölme yapısı, dağılım, zaman/sayaç tutarlılığı, çıktı sözleşmesi ve mevcut A1 testlerini incele. Oluşturulmuş yeni test verisiyle metrik üretme.
-6. N1–N3 ve S1–S3'ün mevcut teslimde temsil edilip edilmediğini kontrol et. Uygun etiket/çıkarım yoksa yanlış alarm veya yakalama oranı uydurma; doğrulanamadı yaz.
-7. Bulguları önem derecesi, kanıt, etki ve dosya sahibine yönelik düzeltme önerisiyle raporla. Diğer AI'ların dosyalarını düzeltme veya modeli yeniden eğitme.
+## Model and evaluation controls
 
-## 6. Öncelik ve demo geçiş ölçütleri
+Maintain the exact eleven-feature allowlist. Keep identity, timestamps, target/attack metadata, authentication outcomes and password flags outside the original model. Check baseline preservation, Python/JavaScript parity, policy checksum and exact model-file binding.
 
-- **P0 / kritik:** Ham hassas veri dışarı çıkışı, gerçek parola/sır kaydı veya doğrudan yetkisiz dış işlem.
-- **P1 / yüksek:** Hedef/kimlik sızıntısı, geçersiz bağımsız değerlendirme, çalışmayan temel sözleşme veya sonucu ciddi biçimde yanıltan çıktı.
-- **P2 / orta:** Eksik tehdit kapsamı, yanlış alarmın değerlendirilememesi, pencere/silme/eksik değer tutarsızlığı.
-- **P3 / düşük:** Belge, sunum veya izlenebilirlik eksikliği.
+Preserve the baseline CSV and trained model. The default runtime's descriptive signals are separate from its original trained features and numeric calibration. New experiments must use isolated, versioned artifacts.
 
-Demo, mock ve gerçek model sonucunu açıkça ayırmalı; mevcut olmayan modele/metriğe atıf yapmamalı. Hassas veri sızıntısı veya etiketten tahmin üretilmesi varsa gerçek veri/model demosu geçmez. Sadece mock gösterim, sınırlamaları açıkça ifade ederek ayrıca değerlendirilebilir. Rapor; tespit edilen durumları, kontrol edilemeyen alanları ve gerekli sonraki teslimleri birbirinden ayırır.
+Fit calibration only on its validation-account partition; select thresholds only on the other partition. Recompute the partition independently of labels; enforce account/session separation and report episode/source overlap. Preserve infeasible/null thresholds instead of silently choosing 30/70. Report Brier, reliability bins, ECE, coverage and subgroup metrics with denominators and limitations. Existing test reuse is regression evaluation, not untouched validation.
 
-## 7. Birleşik teslimde yürütme kaydı
+Human-review labels alone drive pilot feedback metrics. MFA success is not an automatic benign label. Repeated/corrected reviews must not double-count; expired events cannot receive feedback. Reviewer-authenticated aggregate metrics must expose no event/account/session/source identifiers; public status must not expose those aggregates at all. Distribution changes are descriptive until a drift detector is separately validated. Overlapping sequence-context groups must not be summed as disjoint populations; distinguish sequence-only alerts from conservative threshold-fallback recommendations.
 
-17 Ekim 2026 tarihinde ilk bulguların düzeltmeleri yeniden denetlendi. `integration/full-mvp` çalışma ağacında 12 veri, 22 model, 3 entegrasyon ve 11 HTTP olmak üzere **48 Python testi geçti**. Entegrasyon içinden 17 JavaScript sözleşme, 10 model/ömür ve 12 DOM kontrolü çalıştı. Gerçek teslimin 10.000 satırında Python–JavaScript puan/gerekçe eşliği doğrulandı.
+### Candidate tuning and release regression checks
 
-N1–N3 ile S1–S3 mevcut sentetik veri ve manifestte temsil ediliyor. Alt grup yanlış alarmları ve çekimserlik ölçüldü; seyahat/VPN yanlış alarmları hâlâ açık bir üretim sınırlamasıdır. Altı gerçek sentetik demo oturumu ve beklenen sonuçlar güvenlik raporunda verilmiştir.
+- Independently verify protocol/source/data/model digests, baseline preservation, grouped chronological separation and frozen final-test consumption. Calibration and decision thresholds must not use final labels; report both scored-session metrics and total-session review workload.
+- For the separate 21-input candidate, mutate identifier values, target/attack labels and the current outcome without changing the current vector. Check prefix causality, `(t−120,t]` boundaries, MFA exclusion and explicit gap support. Verify the shared offline/runtime extractor and displayed-score parity.
+- Compare bounded JSON tree inference with sklearn, reject malformed/cyclic trees, invalid calibration and corrupted artifacts, and abstain on missing context. No executable model deserialization is allowed.
+- Require model and full-runtime gates on both final cohorts. Check normal/VPN/travel/user-error subgroup denominators and all three required attack types independently. Success after failed attempts and suspicious success without preceding failures are distinct cases.
+- Preserve the observed failure: the frozen v2 candidate detects zero scored suspicious-success sessions in both final cohorts. Aggregate gate success must not override this gap. The promotion command must reject it without writing a destination; normal startup must keep the baseline and explicit tuned startup must fail closed.
+- Exercise the candidate against real local HTTP only by explicit test injection for compatibility. A passing integration test is not release qualification, real MFA verification or accuracy validation. No tests silently activate it for users or trusted ingestion.
 
-Kontrol listesinde ham hassas veri sızıntısı bulunmadı; gerçek müşteri kökeni üzerinde doğrulama yapılmadı. IdP/cookie/üretim TTL servisi bulunmadığından bunlara ilişkin uçtan uca test uygulanamaz. Yerel demo bellek süresi, reset, sayfadan ayrılma ve askı sonrası süre denetimi test edildi.
+The nonzero per-attack release guard was added after inspecting the consumed final tests; it is a stricter safety safeguard, not a predeclared statistical finding. Future studies need stronger predeclared per-attack targets and independently designed data. [Frozen findings](model_tuning.md).
 
-Canlı loopback HTTP smoke geçti. Gerçek tarayıcı yüzeyi bu ortamda erişilebilir olmadığı için görsel/erişilebilirlik QA **doğrulanamadı**; DOM testi bu kontrolün yerine sayılmaz. Uzak CI tanımlandı, çalıştırılmış gibi sunulmadı. İlk inceleme ile yeni durum birbirine karışmasın diye ilk güvenlik raporu `docs/reviews/` altında korundu.
+## Privacy checklist
+
+- No real credentials, raw IPs, customer files or account/password dumps in AI/repository/test fixtures.
+- Demo-only credentials travel to loopback transiently; trusted ingress has no credential fields.
+- No external lookup, credential retry, telemetry, access/body logs or browser persistence.
+- Opaque source/account IDs are customer-generated; no persistent fingerprint or biometric collection.
+- Five-minute bounded server state, CSV-specific retention and explicit cleanup semantics.
+- Synthetic history, public-reference coverage, threshold infeasibility and fake MFA clearly labelled.
+- No automatic account lockout or real shadow enforcement.
+
+## Interface regression boundary
+
+Preserve the classic 2010-style theme, existing IDs, labels, parameters and interactions when extending the interface. Keep current risk, retained peak, data quality/missing context, credential evidence, verification, review controls and historical analytics visible. The evidence workbench adds three panels below the existing company interface. Existing DOM tests cover behavior and preserved controls; do not mistake them for screenshot or layout tests.
+
+Inspect 320, 768 and 1280 px widths for horizontal overflow, readable labels, wrapping identifiers, usable forms and visible keyboard focus. Check that only `aria-hidden` decoration is suppressed by the theme. Actual Chromium desktop/mobile flows and screenshots are now part of the datathon verification; screen-reader and broader cross-browser accessibility testing remain separate work.
+
+## Evidence and privacy diagnostics
+
+Verify the [workbench](evidence_workbench.md) with exact 30/60/120-second left boundaries, MFA exclusion, lost failure evidence and a spraying rule added when old successes leave the denominator. The shared live rules must match the 120-second replay before carried session floors; shorter rows must never rerun the two-minute ML model or change its score/action. Incomplete startup or evicted supporting history must prevent completeness claims. A baseline with no rules must not produce a shorter-history sufficiency claim.
+
+Compare decisions only within one account and session, including interleaved accounts, session rotation and missing scores. No identifier or arbitrary raw input may enter the diagnostic response. Inspection must leave records, feedback labels, scores, deadlines and backoff unchanged. Refresh creates no event and exposes no public aggregate inventory; MFA expiry is still enforced. Check per-demo isolation and all clearing paths. Validate response sizes, fixed field/rule vocabularies, bounded counts and cross-field consistency before rendering. Expiry estimates must not claim physical erasure or a verified deletion receipt.
+
+## Commands and remaining verification
+
+The datathon extension adds receipt tamper/cross-scope/stale/reset tests, memory-hard verifier checks, bounded password capacity, per-request role enforcement, grant expiry, valid TLS/hostname checks, TLS 1.2 rejection and TLS adapter transport. Verify that the combined-context rule handles success without previous failures but remains disabled on trusted ingestion. Its high measured benign overlap must stay visible in the guide.
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s app/tests -p 'test_*.py' -v
+pnpm --dir app test
+pnpm --dir app exec playwright install --with-deps chromium
+pnpm --dir app test:browser
+python3 scripts/preflight.py
+```
+
+Use the project's configured Python environment for dependencies. Python discovery includes actual HTTP/TLS + DOM integration and focused runtime-hardening tests; regular JS tests isolate controller failures with stub responses. Playwright adds real Chromium desktop/mobile checks; screenshots are separately inspected. Provider-specific signatures/claims, actual MFA, deployment resilience, IBM Z execution and an untouched customer-local pilot remain to be tested after selecting the provider/environment. Passing the local suite does not certify production security or detection accuracy.

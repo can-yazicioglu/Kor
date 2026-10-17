@@ -98,6 +98,34 @@ class DemoServerTests(unittest.TestCase):
             self.assertEqual(status, 503)
             self.assertEqual(body, b'Model unavailable.')
 
+    def test_password_reference_is_local_and_read_only(self):
+        status, headers, body = self.request('/password-reference.json')
+        self.assertEqual(status, 200)
+        self.assertEqual(headers['Content-Type'], 'application/json; charset=utf-8')
+        self.assertEqual(json.loads(body)['schema_version'], 'els-password-reference-v1')
+        self.assertEqual(self.request('/password-reference.json', 'HEAD')[2], b'')
+        self.assertEqual(self.request('/password-reference.json', 'POST', body='unit-only')[0], 501)
+        self.assertEqual(self.request('/password-reference.json?password=unit-only')[0], 404)
+        self.assertEqual(self.request('/data/mvp_synthetic_logins_v2.csv')[0], 404)
+
+    def test_password_reference_corruption_and_contract_fail_closed(self):
+        original = json.loads(serve.REFERENCE_FILE.read_bytes())
+        changed = json.loads(json.dumps(original))
+        changed['exact_sha256'][0] = '0' * 64
+        incompatible = json.loads(json.dumps(original))
+        incompatible['normalization']['unicode'] = 'NFC'
+        serve._reference_module.seal_reference(incompatible)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'reference.json'
+            for value in [changed, incompatible]:
+                path.write_text(json.dumps(value))
+                with mock.patch.object(serve, 'REFERENCE_FILE', path):
+                    status, _, body = self.request('/password-reference.json')
+                    self.assertEqual(status, 503)
+                    self.assertEqual(body, b'Password reference unavailable.')
+            with mock.patch.object(serve, 'REFERENCE_FILE', path.parent / 'missing.json'):
+                self.assertEqual(self.request('/password-reference.json')[0], 503)
+
     def test_corrupt_or_missing_artifact_digest_fails_closed(self):
         original = json.loads(serve.MODEL_FILE.read_bytes())
         changed = json.loads(json.dumps(original))
@@ -120,7 +148,7 @@ class DemoServerTests(unittest.TestCase):
         with contextlib.redirect_stderr(captured):
             status, _, body = self.request('http://[', headers={'Host': f'127.0.0.1:{self.server.server_port}'})
             self.assertEqual(status, 400)
-            self.assertEqual(body, b'Request not supported.')
+            self.assertEqual(body.strip(), b'Request not supported.')
             with mock.patch.dict(serve.ASSETS, {'/missing.js': ('__missing__.js', 'text/javascript')}):
                 self.assertEqual(self.request('/missing.js')[0], 503)
             self.server.handle_error(None, ('private-client-example', 12345))
@@ -138,12 +166,14 @@ class DemoServerTests(unittest.TestCase):
         self.assertEqual(captured.getvalue(), '')
 
     def test_html_references_only_served_local_assets(self):
-        parser = AssetParser()
-        parser.feed((APP / 'index.html').read_text())
-        self.assertEqual(len(parser.ids), len(set(parser.ids)))
-        for asset in parser.assets:
-            self.assertTrue(asset.startswith('./'))
-            self.assertIn('/' + asset[2:], serve.ASSETS)
+        for page in ['index.html', 'company.html']:
+            with self.subTest(page=page):
+                parser = AssetParser()
+                parser.feed((APP / page).read_text())
+                self.assertEqual(len(parser.ids), len(set(parser.ids)))
+                for asset in parser.assets:
+                    self.assertTrue(asset.startswith('./'))
+                    self.assertIn('/' + asset[2:], serve.ASSETS)
 
 
 if __name__ == '__main__':

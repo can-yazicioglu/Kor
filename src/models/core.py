@@ -22,17 +22,17 @@ CATEGORIES = {"network_familiarity": ["familiar", "unfamiliar"],
 NUMERIC = [name for name in FEATURES if name not in CATEGORIES]
 FORBIDDEN = set(COLUMNS) - set(FEATURES)
 LABELS = {
-    "attempts_2m": "2 dakikadaki deneme sayısı",
-    "attempts_1h": "1 saatteki deneme sayısı",
-    "distinct_accounts_2m": "2 dakikadaki farklı hesap sayısı",
-    "failed_ratio_24h": "24 saatlik başarısızlık oranı",
-    "hour_deviation": "Olağan saatten sapma",
-    "typical_weekday": "Olağan gün bağlamı",
-    "geo_velocity_kmh": "Konum değişim hızı",
-    "network_familiarity": "Ağ aşinalığı",
-    "asn_category": "Ağ kategorisi",
-    "device_managed": "Yönetilen cihaz durumu",
-    "device_new": "Yeni cihaz bağlamı",
+    "attempts_2m": "Login attempts in 2 minutes",
+    "attempts_1h": "Login attempts in 1 hour",
+    "distinct_accounts_2m": "Distinct accounts in 2 minutes",
+    "failed_ratio_24h": "Failure ratio over 24 hours",
+    "hour_deviation": "Deviation from usual login hour",
+    "typical_weekday": "Usual weekday context",
+    "geo_velocity_kmh": "Location change speed",
+    "network_familiarity": "Network familiarity",
+    "asn_category": "Network category",
+    "device_managed": "Managed device status",
+    "device_new": "New device context",
 }
 SPLITS = ("fit", "validation", "test")
 
@@ -92,22 +92,22 @@ def load_dataset(csv_path, manifest_path):
 
     csv_path, manifest_path = Path(csv_path), Path(manifest_path)
     if not csv_path.is_file() or not manifest_path.is_file():
-        raise ValueError("Teslim edilmiş CSV ve denetim manifesti gerekli; eğitim başlamadı.")
+        raise ValueError("The delivered CSV and audit manifest are required; training has not started.")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("synthetic") is not True:
-        raise ValueError("Bu komut yalnızca açıkça sentetik olarak işaretlenmiş veriyi kabul eder.")
+        raise ValueError("This command accepts only data explicitly marked as synthetic.")
     if manifest.get("csv_sha256") != sha256_file(csv_path):
-        raise ValueError("CSV özeti manifest ile uyuşmuyor.")
+        raise ValueError("The CSV checksum does not match the manifest.")
     frame = pd.read_csv(csv_path)
     if list(frame.columns) != COLUMNS:
-        raise ValueError("CSV tam 17 ortak sütunu belirtilen sırada içermeli.")
+        raise ValueError("The CSV must contain exactly the 17 shared columns in the specified order.")
     if frame.empty or frame["event_id"].isna().any() or frame["event_id"].duplicated().any():
-        raise ValueError("Olay kimlikleri boş veya yinelenmiş; veri kabul edilmedi.")
+        raise ValueError("Event identifiers are missing or duplicated; data rejected.")
     if not frame["is_suspicious"].isin([0, 1]).all():
-        raise ValueError("Hedef etiketler yalnızca 0 veya 1 olmalı.")
+        raise ValueError("Target labels must be 0 or 1.")
     events = manifest.get("events", {})
     if set(events) != set(frame["event_id"]):
-        raise ValueError("Manifest olayları ile CSV birebir eşleşmiyor.")
+        raise ValueError("Manifest events do not match the CSV exactly.")
     frame["_split"] = frame["event_id"].map(lambda event: events[event]["split"])
     frame["_episode"] = frame["event_id"].map(lambda event: events[event]["episode_id"])
     frame["_source"] = frame["event_id"].map(lambda event: events[event]["source_token"])
@@ -115,7 +115,7 @@ def load_dataset(csv_path, manifest_path):
     if not frame["event_ts_utc"].astype("string").str.fullmatch(
         r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z", na=False
     ).all():
-        raise ValueError("Olay zamanı eksiksiz UTC ISO-8601 Z biçiminde olmalı.")
+        raise ValueError("Each event timestamp must be present and use UTC ISO-8601 Z format.")
     frame["_time"] = pd.to_datetime(frame["event_ts_utc"], utc=True, errors="raise")
     audit = audit_splits(frame)
     frame["_eligible"] = complete_mask(frame)
@@ -125,15 +125,15 @@ def load_dataset(csv_path, manifest_path):
 def audit_splits(frame):
     """Audit identities, episodes, sources and chronology before preprocessing."""
     if set(frame["_split"]) != set(SPLITS):
-        raise ValueError("Tam fit/validation/test bölmesi gerekli.")
+        raise ValueError("Complete fit/validation/test splits are required.")
     if frame["_time"].isna().any():
-        raise ValueError("Bölme zamanları eksik olamaz.")
+        raise ValueError("Split timestamps must not be missing.")
     report = {"overlap_counts": {}, "time_gaps_seconds": {}, "splits": {}}
     for split in SPLITS:
         part = frame[frame["_split"] == split]
         for key in ("account_token", "session_token", "_episode", "_source"):
             if part[key].isna().any() or part[key].eq("").any():
-                raise ValueError("Bölme kimlik metaverisi eksik.")
+                raise ValueError("Split identifier metadata is missing.")
         report["splits"][split] = {"rows": len(part), "accounts": part.account_token.nunique(),
             "episodes": part._episode.nunique(), "sources": part._source.nunique(),
             "start_utc": part._time.min().isoformat(), "end_utc": part._time.max().isoformat()}
@@ -144,51 +144,51 @@ def audit_splits(frame):
                 count = len(set(a[column]) & set(b[column]))
                 report["overlap_counts"][f"{left}/{right}:{column}"] = count
                 if count:
-                    raise ValueError(f"Bölme sızıntısı: {left}/{right}, {column}.")
+                    raise ValueError(f"Split leakage: {left}/{right}, {column}.")
             gap = (b._time.min() - a._time.max()).total_seconds()
             report["time_gaps_seconds"][f"{left}/{right}"] = gap
             if not math.isfinite(gap) or gap < 120:
-                raise ValueError("Bölmeler kronolojik ve en az 120 saniye ayrı olmalı.")
+                raise ValueError("Splits must be chronological and separated by at least 120 seconds.")
     return report
 
 
 def validate_artifact(model):
     if not isinstance(model, dict):
-        raise ValueError("Model nesnesi gerekli.")
+        raise ValueError("A model object is required.")
     if model.get("schema_version") != "els-logistic-v1" or model.get("feature_columns") != FEATURES:
-        raise ValueError("Desteklenmeyen model sözleşmesi.")
+        raise ValueError("Unsupported model contract.")
     if not isinstance(model.get("model_version"), str) or not model["model_version"].strip():
-        raise ValueError("Model sürümü gerekli.")
+        raise ValueError("A model version is required.")
     if model.get("synthetic_only") is not True or model.get("threshold_policy") != {"mfa_score": 30, "review_score": 70}:
-        raise ValueError("Sentetik model ve 30/70 demo politikası gerekli.")
+        raise ValueError("A synthetic model and the 30/70 demo policy are required.")
     prep = model["preprocessing"]
     if [field["name"] for field in prep["numeric"]] != NUMERIC:
-        raise ValueError("Sayısal özellik sınırı hatalı.")
+        raise ValueError("Invalid numeric feature boundary.")
     if [field["name"] for field in prep["categorical"]] != list(CATEGORIES):
-        raise ValueError("Kategorik özellik sınırı hatalı.")
+        raise ValueError("Invalid categorical feature boundary.")
     names = NUMERIC.copy()
     for field in prep["numeric"]:
         if not all(isinstance(field[key], (int, float)) and not isinstance(field[key], bool)
                    and math.isfinite(field[key]) for key in ("median", "mean", "scale")) or field["scale"] <= 0:
-            raise ValueError("Geçersiz ölçekleme parametresi.")
+            raise ValueError("Invalid scaling parameter.")
     for field in prep["categorical"]:
         if field["categories"] != CATEGORIES[field["name"]]:
-            raise ValueError("Beklenmeyen kategori sözlüğü.")
+            raise ValueError("Unexpected category vocabulary.")
         names += [f"{field['name']}={category}" for category in field["categories"]]
     if model["transformed_feature_order"] != names or len(model["coefficients"]) != len(names):
-        raise ValueError("Katsayı/özellik boyutları eşleşmiyor.")
+        raise ValueError("Coefficient and feature dimensions do not match.")
     if not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
                for v in [*model["coefficients"], model["intercept"]]):
-        raise ValueError("Model katsayıları sonlu olmalı.")
+        raise ValueError("Model coefficients must be finite.")
     if model.get("missing_policy") != "abstain" or model.get("unknown_category_policy") != "abstain":
-        raise ValueError("Eksik özellikte çekimserlik politikası gerekli.")
+        raise ValueError("Missing features must trigger abstention.")
     integrity = model.get("artifact_integrity", {})
     if integrity.get("algorithm") != "sha256" or integrity.get("canonicalization") != "python_json_sort_keys_utf8_excluding_artifact_integrity":
-        raise ValueError("Model bütünlük özeti gerekli.")
+        raise ValueError("A model integrity checksum is required.")
     payload = {key: value for key, value in model.items() if key != "artifact_integrity"}
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode()
     if hashlib.sha256(encoded).hexdigest() != integrity.get("digest"):
-        raise ValueError("Model bütünlük özeti eşleşmiyor.")
+        raise ValueError("The model integrity checksum does not match.")
     return model
 
 
@@ -226,10 +226,10 @@ def predict_portable(model, row):
         math.exp(linear) / (1 + math.exp(linear)))
     positive = sorted((name for name in FEATURES if contributions[name] > 0),
                       key=lambda name: (-contributions[name], FEATURES.index(name)))[:3]
-    reasons = [f"{LABELS[name]}: riski artıran model katkısı (+{contributions[name]:.2f})"
+    reasons = [f"{LABELS[name]}: positive model contribution (+{contributions[name]:.2f})"
                for name in positive]
     return {"risk_score": int(math.floor(probability * 100 + 0.5)), "probability": probability,
-            "reasons": reasons or ["Modelin birleşik özellik değerlendirmesi"],
+            "reasons": reasons or ["Combined feature assessment"],
             "model_version": model["model_version"], "contributions": contributions}
 
 
@@ -249,11 +249,11 @@ def select_threshold(labels, probabilities, max_fpr=.05, min_recall=.5):
     import numpy as np
     labels, probabilities = np.asarray(labels), np.asarray(probabilities, dtype=float)
     if labels.ndim != 1 or probabilities.ndim != 1 or len(labels) != len(probabilities):
-        raise ValueError("Eşik seçiminde etiket ve olasılık boyutları eşleşmeli.")
+        raise ValueError("Label and probability dimensions must match for threshold selection.")
     if not np.isin(labels, [0, 1]).all() or not np.isfinite(probabilities).all() or (
         probabilities.size and ((probabilities < 0).any() or (probabilities > 1).any())
     ) or not 0 <= max_fpr <= 1 or not 0 <= min_recall <= 1:
-        raise ValueError("Eşik seçimi sonlu [0,1] olasılık ve ikili etiket gerektirir.")
+        raise ValueError("Threshold selection requires finite probabilities in [0,1] and binary labels.")
     positive, negative = labels == 1, labels == 0
     if not positive.any() or not negative.any() or not len(probabilities):
         return {"feasible": False, "threshold": None, "reason": "validation_classes_missing",

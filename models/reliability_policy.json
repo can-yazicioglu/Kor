@@ -1,0 +1,283 @@
+{
+  "schema_version": "els-reliability-policy-v1",
+  "policy_version": "els-reliability-v1-validation-only",
+  "model_version": "els-lr-41383a34524c-s42",
+  "base_model_sha256": "a13373a72028088f455683d3d7bcfc2d38caee82006a7fa1448819657f160051",
+  "training_data_sha256": "41383a34524cefb434a66608c74a6554bada4377968298c6d7b7a43e4168b625",
+  "base_manifest_sha256": "b336ed637096e9bf29b30d8113d4c20f4b46973a91660e596e363f5136987ffb",
+  "calibration": {
+    "method": "sigmoid_logit",
+    "slope": 0.7795499554212308,
+    "intercept": -2.05854084374347,
+    "epsilon": 1e-12
+  },
+  "thresholds": {
+    "mfa": null,
+    "review": null
+  },
+  "missing_policy": "abstain",
+  "unavailable_threshold_policy": "missing_mfa_requires_review",
+  "score_semantics": "calibrated_on_synthetic_validation_only",
+  "selection": {
+    "unit": "session_max_integer",
+    "constraints_declared_before_evaluation": {
+      "mfa": {
+        "max_fpr": 0.05,
+        "min_recall": 0.5
+      },
+      "review": {
+        "max_fpr": 0.01,
+        "min_recall": 0.25
+      }
+    },
+    "calibration_fit": "unweighted logistic regression on raw logits; C=1; no class balancing",
+    "partition": {
+      "method": "sha256 account tokens; first half calibration-fit, second half threshold selection",
+      "salt": "els-reliability-validation-partition-v1:",
+      "labels_used_for_partition": false,
+      "shared_time_period": "both subsets are within the original validation interval",
+      "episode_independence": "not guaranteed within validation; overlaps are disclosed below",
+      "overlap_counts": {
+        "account_token": 0,
+        "session_token": 0,
+        "_episode": 57,
+        "_source": 57
+      },
+      "calibration_fit": {
+        "rows": 1032,
+        "accounts": 57,
+        "scorable_rows": 854,
+        "positives_scorable": 70,
+        "account_set_sha256": "dc47ab77145c3ad33b811654aae4adc42b2398ca2a4395d332a987892baaa47d"
+      },
+      "threshold_selection": {
+        "rows": 968,
+        "accounts": 58,
+        "scorable_rows": 771,
+        "positives_scorable": 67,
+        "account_set_sha256": "70f8ee4621c76ef2913fa3abeb4167cc3f28afec221064971bb0de0955c09308"
+      }
+    },
+    "mfa": {
+      "feasible": false,
+      "score_threshold": null,
+      "constraints": {
+        "max_fpr": 0.05,
+        "min_recall": 0.5
+      },
+      "scorable_sessions": 234,
+      "positive_sessions": 20,
+      "negative_sessions": 214,
+      "minimum_score_threshold": 0,
+      "reason": "predeclared_fpr_recall_constraints_infeasible"
+    },
+    "review": {
+      "feasible": false,
+      "score_threshold": null,
+      "constraints": {
+        "max_fpr": 0.01,
+        "min_recall": 0.25
+      },
+      "scorable_sessions": 234,
+      "positive_sessions": 20,
+      "negative_sessions": 214,
+      "minimum_score_threshold": 0,
+      "reason": "predeclared_fpr_recall_constraints_infeasible"
+    },
+    "total_selection_sessions": 375,
+    "abstained_selection_sessions": 141
+  },
+  "artifact_integrity": {
+    "algorithm": "sha256",
+    "canonicalization": "python_json_sort_keys_utf8_excluding_artifact_integrity",
+    "purpose": "accidental_corruption_not_authenticity",
+    "digest": "3837ad33344ff2487dfd39b38240d8d469b8d4ce1273d046ced16bb41ea19f6f"
+  },
+  "reference_histograms": {
+    "source": "original_validation_only",
+    "rows": 2000,
+    "features": {
+      "attempts_2m": {
+        "kind": "numeric",
+        "edges": [
+          1.0,
+          2.0,
+          3.0,
+          15.0
+        ],
+        "counts": [
+          0,
+          790,
+          430,
+          779,
+          1
+        ],
+        "missing": 0,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "attempts_1h": {
+        "kind": "numeric",
+        "edges": [
+          1.0,
+          2.0,
+          4.0,
+          15.0
+        ],
+        "counts": [
+          0,
+          734,
+          734,
+          530,
+          2
+        ],
+        "missing": 0,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "distinct_accounts_2m": {
+        "kind": "numeric",
+        "edges": [
+          1.0,
+          17.0
+        ],
+        "counts": [
+          0,
+          1999,
+          1
+        ],
+        "missing": 0,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "failed_ratio_24h": {
+        "kind": "numeric",
+        "edges": [
+          0.0,
+          0.111111,
+          0.5,
+          1.0
+        ],
+        "counts": [
+          0,
+          864,
+          406,
+          322,
+          151
+        ],
+        "missing": 257,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "hour_deviation": {
+        "kind": "numeric",
+        "edges": [
+          0.005556,
+          0.627222,
+          1.4826389999999998,
+          6.0647225,
+          11.981389
+        ],
+        "counts": [
+          0,
+          476,
+          478,
+          477,
+          476,
+          1
+        ],
+        "missing": 92,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "typical_weekday": {
+        "kind": "numeric",
+        "edges": [
+          0.0,
+          1.0
+        ],
+        "counts": [
+          0,
+          336,
+          1572
+        ],
+        "missing": 92,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "geo_velocity_kmh": {
+        "kind": "numeric",
+        "edges": [
+          0.18,
+          70.47,
+          127.92,
+          311.925,
+          5997.21
+        ],
+        "counts": [
+          0,
+          460,
+          460,
+          463,
+          457,
+          4
+        ],
+        "missing": 156,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "network_familiarity": {
+        "kind": "categorical",
+        "categories": [
+          "familiar",
+          "unfamiliar"
+        ],
+        "counts": [
+          1168,
+          676
+        ],
+        "missing": 156
+      },
+      "asn_category": {
+        "kind": "categorical",
+        "categories": [
+          "residential",
+          "business",
+          "cloud",
+          "vpn",
+          "unknown"
+        ],
+        "counts": [
+          630,
+          427,
+          214,
+          623,
+          106
+        ],
+        "missing": 0
+      },
+      "device_managed": {
+        "kind": "numeric",
+        "edges": [
+          0.0,
+          1.0
+        ],
+        "counts": [
+          0,
+          583,
+          1261
+        ],
+        "missing": 156,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      },
+      "device_new": {
+        "kind": "numeric",
+        "edges": [
+          0.0,
+          1.0
+        ],
+        "counts": [
+          0,
+          1274,
+          726
+        ],
+        "missing": 0,
+        "binning": "bisect_right(edges, value); includes underflow and overflow buckets"
+      }
+    },
+    "purpose": "reference distributions for drift monitoring; no validated alert threshold"
+  }
+}

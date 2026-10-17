@@ -9,15 +9,15 @@ const CATEGORICAL = ['network_familiarity', 'asn_category'];
 const CATEGORY_VALUES = { network_familiarity: ['familiar', 'unfamiliar'], asn_category: ['residential', 'business', 'cloud', 'vpn', 'unknown'] };
 const NUMERIC = FEATURE_COLUMNS.filter(name => !CATEGORICAL.includes(name));
 const LABELS = {
-  attempts_2m: '2 dakikadaki deneme sayısı', attempts_1h: '1 saatteki deneme sayısı',
-  distinct_accounts_2m: '2 dakikadaki farklı hesap sayısı', failed_ratio_24h: '24 saatlik başarısızlık oranı',
-  hour_deviation: 'Olağan saatten sapma', typical_weekday: 'Olağan gün bağlamı',
-  geo_velocity_kmh: 'Konum değişim hızı', network_familiarity: 'Ağ aşinalığı',
-  asn_category: 'Ağ kategorisi', device_managed: 'Yönetilen cihaz durumu', device_new: 'Yeni cihaz bağlamı',
+  attempts_2m: 'Login attempts in 2 minutes', attempts_1h: 'Login attempts in 1 hour',
+  distinct_accounts_2m: 'Distinct accounts in 2 minutes', failed_ratio_24h: 'Failure ratio over 24 hours',
+  hour_deviation: 'Deviation from usual login hour', typical_weekday: 'Usual weekday context',
+  geo_velocity_kmh: 'Location change speed', network_familiarity: 'Network familiarity',
+  asn_category: 'Network category', device_managed: 'Managed device status', device_new: 'New device context',
 };
 const equal = (a, b) => Array.isArray(a) && a.length === b.length && a.every((value, index) => value === b[index]);
 const finite = value => typeof value === 'number' && Number.isFinite(value);
-const contractError = () => new Error('Yerel model dosyası sözleşmeyle eşleşmiyor. Puanlama kapalı.');
+const contractError = () => new Error('The local model file does not match the contract. Scoring is disabled.');
 let predictor = null;
 let loadGeneration = 0;
 let status = { state: 'idle', version: null };
@@ -92,8 +92,8 @@ export function createPredictor(rawModel) {
     const probability = logit >= 0 ? 1 / (1 + Math.exp(-logit)) : Math.exp(logit) / (1 + Math.exp(logit));
     const strongest = FEATURE_COLUMNS.filter(name => contributions[name] > 0)
       .sort((a, b) => contributions[b] - contributions[a]).slice(0, 3);
-    const reasons = strongest.map(name => `${LABELS[name]}: riski artıran model katkısı (+${contributions[name].toFixed(2)})`);
-    if (!reasons.length) reasons.push('Modelin birleşik özellik değerlendirmesi');
+    const reasons = strongest.map(name => `${LABELS[name]}: positive model contribution (+${contributions[name].toFixed(2)})`);
+    if (!reasons.length) reasons.push('Combined feature assessment');
     return validatePrediction({
       risk_score: Math.min(100, Math.max(0, Math.floor(probability * 100 + 0.5))),
       reasons, model_version: model.model_version,
@@ -134,7 +134,7 @@ export function validatePrediction(result) {
       typeof result.model_version !== 'string' || !result.model_version.trim() || result.model_version.length > 80 ||
       !Array.isArray(result.reasons) || result.reasons.length > 6 ||
       result.reasons.some(reason => typeof reason !== 'string' || !reason.trim() || reason.length > 240)) {
-    throw new Error('Model yanıtı sözleşmeyle eşleşmiyor. Oturum puanlanmadı.');
+    throw new Error('The model response does not match the contract. The session was not scored.');
   }
   return { risk_score: result.risk_score, reasons: [...result.reasons], model_version: result.model_version };
 }

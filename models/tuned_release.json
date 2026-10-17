@@ -1,0 +1,27 @@
+{
+  "attack_breakdown_sha256": "74b8176362c47b5cf9147600e6890feeb65acb1b3d04d7a2e10581e7ac7a4430",
+  "blocking_reasons": [
+    "holdout_a: no detected scored sessions for required scenario suspicious_success",
+    "holdout_b: no detected scored sessions for required scenario suspicious_success"
+  ],
+  "constraints": {
+    "mfa": {
+      "max_fpr": 0.05,
+      "min_recall": 0.5
+    },
+    "review": {
+      "max_fpr": 0.01,
+      "min_recall": 0.25
+    }
+  },
+  "eligible_for_demo_promotion": false,
+  "experiment": "experiments/tuning_v2",
+  "final_report_sha256": "1c099ebcc7b0510df3819cf2900d299519833ffafc55615258837b89da9f6592",
+  "model_sha256": "07b3e6a5f7f857de3ba5ba0a4c70999352d96f23251793cbe871bcaf13f35dad",
+  "model_version": "els-tuned-v2-sequence_log-boosted-d3-l100-r0.1",
+  "notice": "Aggregate gates passed, but the required suspicious-success scenario had zero recall. Candidate remains offline; no production or default-demo activation.",
+  "post_evaluation_mvp_check": "blocked",
+  "protocol_digest": "80f17d4dcffd58b807363273a09eeede9148a92f15252e078c91046578ba12d6",
+  "schema_version": "els-tuned-demo-release-v1",
+  "scope": "synthetic_demo_only"
+}

@@ -1,0 +1,347 @@
+{
+  "candidate_sha256": "07b3e6a5f7f857de3ba5ba0a4c70999352d96f23251793cbe871bcaf13f35dad",
+  "cohorts": {
+    "holdout_a": {
+      "brute_force": {
+        "mfa": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              72
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 74,
+          "precision": 1.0,
+          "recall": 0.972972972972973,
+          "recall_wilson95": [
+            0.9067070748308751,
+            0.9925566473617328
+          ]
+        },
+        "review": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              72
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 74,
+          "precision": 1.0,
+          "recall": 0.972972972972973,
+          "recall_wilson95": [
+            0.9067070748308751,
+            0.9925566473617328
+          ]
+        },
+        "scored_sessions": 74,
+        "total_sessions": 79,
+        "unscored_sessions": 5
+      },
+      "password_spraying": {
+        "mfa": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              43,
+              219
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 262,
+          "precision": 1.0,
+          "recall": 0.8358778625954199,
+          "recall_wilson95": [
+            0.7862368585836719,
+            0.8758118706881202
+          ]
+        },
+        "review": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              43,
+              219
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 262,
+          "precision": 1.0,
+          "recall": 0.8358778625954199,
+          "recall_wilson95": [
+            0.7862368585836719,
+            0.8758118706881202
+          ]
+        },
+        "scored_sessions": 262,
+        "total_sessions": 385,
+        "unscored_sessions": 123
+      },
+      "suspicious_success": {
+        "mfa": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              108,
+              0
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 108,
+          "precision": null,
+          "recall": 0.0,
+          "recall_wilson95": [
+            0.0,
+            0.034347359746557025
+          ]
+        },
+        "review": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              108,
+              0
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 108,
+          "precision": null,
+          "recall": 0.0,
+          "recall_wilson95": [
+            0.0,
+            0.034347359746557025
+          ]
+        },
+        "scored_sessions": 108,
+        "total_sessions": 152,
+        "unscored_sessions": 44
+      }
+    },
+    "holdout_b": {
+      "brute_force": {
+        "mfa": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              64
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 66,
+          "precision": 1.0,
+          "recall": 0.9696969696969697,
+          "recall_wilson95": [
+            0.8960747808829028,
+            0.9916500898013463
+          ]
+        },
+        "review": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              2,
+              64
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 66,
+          "precision": 1.0,
+          "recall": 0.9696969696969697,
+          "recall_wilson95": [
+            0.8960747808829028,
+            0.9916500898013463
+          ]
+        },
+        "scored_sessions": 66,
+        "total_sessions": 79,
+        "unscored_sessions": 13
+      },
+      "password_spraying": {
+        "mfa": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              30,
+              226
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 256,
+          "precision": 1.0,
+          "recall": 0.8828125,
+          "recall_wilson95": [
+            0.8376373983055787,
+            0.9166687116183634
+          ]
+        },
+        "review": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              30,
+              226
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 256,
+          "precision": 1.0,
+          "recall": 0.8828125,
+          "recall_wilson95": [
+            0.8376373983055787,
+            0.9166687116183634
+          ]
+        },
+        "scored_sessions": 256,
+        "total_sessions": 385,
+        "unscored_sessions": 129
+      },
+      "suspicious_success": {
+        "mfa": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              115,
+              0
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 115,
+          "precision": null,
+          "recall": 0.0,
+          "recall_wilson95": [
+            0.0,
+            0.03232423144931307
+          ]
+        },
+        "review": {
+          "confusion_matrix": [
+            [
+              0,
+              0
+            ],
+            [
+              115,
+              0
+            ]
+          ],
+          "false_positive_rate": null,
+          "fpr_wilson95": [
+            null,
+            null
+          ],
+          "negative_sessions": 0,
+          "positive_sessions": 115,
+          "precision": null,
+          "recall": 0.0,
+          "recall_wilson95": [
+            0.0,
+            0.03232423144931307
+          ]
+        },
+        "scored_sessions": 115,
+        "total_sessions": 162,
+        "unscored_sessions": 47
+      }
+    }
+  },
+  "final_report_sha256": "1c099ebcc7b0510df3819cf2900d299519833ffafc55615258837b89da9f6592",
+  "freeze_digest": "0a6e146556723a9dec3e576bbe03af4638d61cc246dd1805203960d180c0ea8e",
+  "model_version": "els-tuned-v2-sequence_log-boosted-d3-l100-r0.1",
+  "scope": "post_evaluation_descriptive_stratification_not_new_validation",
+  "thresholds": {
+    "mfa": 90,
+    "review": 90
+  }
+}

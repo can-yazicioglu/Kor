@@ -128,6 +128,6 @@ await check('Expiry, early reset, sleeping tab and upper bound', () => {
 });
 await check('Reset aborts pending session construction', async () => {
   let active = true;
-  await assert.rejects(() => buildSessions(events, predictor, { active: () => active, yieldControl: async () => { active = false; } }), /iptal/);
+  await assert.rejects(() => buildSessions(events, predictor, { active: () => active, yieldControl: async () => { active = false; } }), /cancel/);
 });
 console.log(`${count} JavaScript model/CSV/lifecycle integration checks passed; ${parity.cases.length} Python parity cases.`);

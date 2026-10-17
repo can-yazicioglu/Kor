@@ -1,0 +1,116 @@
+{
+  "C": [
+    0.01,
+    0.1,
+    1.0,
+    10.0
+  ],
+  "baseline_sha256": {
+    "data/mvp_synthetic_logins.csv": "41383a34524cefb434a66608c74a6554bada4377968298c6d7b7a43e4168b625",
+    "data/mvp_synthetic_logins.manifest.json": "b336ed637096e9bf29b30d8113d4c20f4b46973a91660e596e363f5136987ffb",
+    "models/demo_model.json": "a13373a72028088f455683d3d7bcfc2d38caee82006a7fa1448819657f160051",
+    "models/reliability_policy.json": "f5816c78b0b2f68d4985d6b399a9f4e37ca53b123216689887cbe017a58f3691"
+  },
+  "calibration": "positive-slope sigmoid on a separate cohort; unweighted C=1",
+  "class_weights": [
+    "none",
+    "balanced",
+    "positive_3"
+  ],
+  "cohorts": [
+    {
+      "attack_rate": 0.08,
+      "name": "fit",
+      "rows": 18000,
+      "seed": 101,
+      "start": "2025-03-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "tune_a",
+      "rows": 6000,
+      "seed": 211,
+      "start": "2025-04-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "tune_b",
+      "rows": 6000,
+      "seed": 307,
+      "start": "2025-05-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "calibration",
+      "rows": 8000,
+      "seed": 401,
+      "start": "2025-06-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "selection",
+      "rows": 12000,
+      "seed": 503,
+      "start": "2025-07-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "holdout_a",
+      "rows": 12000,
+      "seed": 601,
+      "start": "2025-08-01T00:00:00Z"
+    },
+    {
+      "attack_rate": 0.08,
+      "name": "holdout_b",
+      "rows": 12000,
+      "seed": 709,
+      "start": "2025-09-01T00:00:00Z"
+    }
+  ],
+  "constraints": {
+    "mfa": {
+      "max_fpr": 0.05,
+      "min_recall": 0.5
+    },
+    "review": {
+      "max_fpr": 0.01,
+      "min_recall": 0.25
+    }
+  },
+  "promotion": {
+    "benign_subgroup_max_fpr": {
+      "mfa": 0.05,
+      "review": 0.01
+    },
+    "both_final_cohorts_required": true,
+    "max_brier_regression": 0.002,
+    "min_session_ap_gain_vs_current": 0.02,
+    "minimum_benign_subgroup_sessions": 30,
+    "minimum_scored_negative_sessions": 500,
+    "minimum_scored_positive_sessions": 50,
+    "model_and_full_runtime_must_meet_targets": true,
+    "unknown_sessions": "retain review fallback; report total workload separately; never count abstentions as correct"
+  },
+  "scope": "New independent random cohorts from the SAME authored generator; not independent real-world validation. Current labels and auth outcomes never enter candidate vectors.",
+  "selection_objective": "lexicographic: worst tuning-cohort session recall at FPR<=5%, mean recall, mean session AP; then stable candidate ID",
+  "source_sha256": {
+    "src/data/generate_synthetic.py": "59a39c788df2fc60aac534c76df071896f387b7fc87e4cff8583eda88faf2aed",
+    "src/models/tuned_runtime.py": "5276a139df9448ea952f26c9284c3444e3e9b16ccca11767fe46b57651bf3666",
+    "src/models/tuning_features.py": "84ecafe58c8069425eca0a792e0075249adc2c6a18d3211c1cc383383ef84efd",
+    "src/runtime/risk.py": "b250fff4438772d8cea83516ef725b808becda6d28c8e053e618bdb972c0e2bc"
+  },
+  "synthetic_only": true,
+  "threshold_selection": "integer session maxima; Wilson 95% upper FPR and lower recall satisfy targets; no fallback threshold",
+  "variants": [
+    "base_raw",
+    "base_log",
+    "sequence_log"
+  ],
+  "version": "els-tuning-v1",
+  "versions": {
+    "numpy": "2.5.4",
+    "pandas": "3.0.6",
+    "sklearn": "1.9.1"
+  }
+}

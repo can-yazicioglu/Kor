@@ -78,7 +78,7 @@ class ModelTests(unittest.TestCase):
         bad = copy.deepcopy(self.model)
         bad["intercept"] += .1
         self.assertIsNone(predict_portable(bad, self.row))
-        with self.assertRaisesRegex(ValueError, "bütünlük"):
+        with self.assertRaisesRegex(ValueError, "integrity"):
             validate_artifact(bad)
         for key in ("model_version", "artifact_integrity", "threshold_policy", "synthetic_only"):
             bad = copy.deepcopy(self.model)
@@ -95,7 +95,7 @@ class ModelTests(unittest.TestCase):
             fit_index = changed.index[changed._split == "fit"][0]
             test_index = changed.index[changed._split == "test"][0]
             changed.loc[test_index, name] = changed.loc[fit_index, name]
-            with self.assertRaisesRegex(ValueError, "Bölme sızıntısı"):
+            with self.assertRaisesRegex(ValueError, "Split leakage"):
                 audit_splits(changed)
 
     def test_time_gap_boundary_rejected(self):
@@ -103,7 +103,7 @@ class ModelTests(unittest.TestCase):
         last_fit = changed.loc[changed._split == "fit", "_time"].max()
         index = changed.index[changed._split == "validation"][0]
         changed.loc[index, "_time"] = last_fit + pd.Timedelta(seconds=119)
-        with self.assertRaisesRegex(ValueError, "120 saniye"):
+        with self.assertRaisesRegex(ValueError, "120 seconds"):
             audit_splits(changed)
         changed.loc[index, "_time"] = last_fit + pd.Timedelta(seconds=120)
         audit_splits(changed)
@@ -111,7 +111,7 @@ class ModelTests(unittest.TestCase):
     def test_missing_split_timestamps_rejected(self):
         changed = self.frame.copy()
         changed.loc[changed._split == "test", "_time"] = pd.NaT
-        with self.assertRaisesRegex(ValueError, "zamanları eksik"):
+        with self.assertRaisesRegex(ValueError, "timestamps must not be missing"):
             audit_splits(changed)
 
     def test_preprocessing_fit_only_statistics(self):

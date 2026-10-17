@@ -1,228 +1,228 @@
-> Tarihsel ilk denetim. Güncel sonuçlar için [son incelemeye](../security_review.md) bakın.
+> Historical initial audit, 17 October 2026. The observations, numbers and recommendations below describe the original branch snapshots, **not the current implementation**. See the [latest review](../security_review.md) for current results. This English translation does not reopen or reinterpret the initial findings.
 
-# AI 4 — Güvenlik ve bağımsız doğrulama raporu
+# AI 4 — Security and independent validation report
 
-**Proje:** Ephemeral Login Sentinel  
-**İnceleme tarihi:** 17 Ekim 2026  
-**Rapor branch'i:** `A4`, A1 tabanından oluşturuldu.  
-**Test planı:** [docs/test_plan.md](../test_plan.md)
+**Project:** Ephemeral Login Sentinel
+**Review date:** 17 October 2026
+**Report branch:** `A4`, created from A1.
+**Test plan:** [docs/test_plan.md](../test_plan.md)
 
-## 1. Karar
+## 1. Decision at the initial audit
 
-**Birleşik CSV → model → oturum riski demosu şu an geçmez.** A2 CSV'si A1 okuyucusundan geçmiyor; A3 notebook'u ortak şemanın kolon adlarıyla çalışmıyor ve kaydedilmiş model/çıkarım çıktısı içermiyor. A1'in açıkça işaretlenmiş mock ekranı, model çalışıyormuş izlenimi verilmeden sunulabilir.
+**The integrated CSV → model → session-risk demo did not pass.** The A2 CSV was rejected by the A1 reader. The A3 notebook did not use the shared column names and contained no saved model/inference artifacts. A1's explicitly labelled mock screen could be presented without implying that a model was operating.
 
-Mevcut dosyalarda ham müşteri kaydı veya dışarı veri aktarımına ilişkin bir bulgu tespit edilmedi. CSV'de e-posta, IP, özel anahtar ve yaygın API anahtarı örüntüsü eşleşmesi yok; üretici kaynak kodu değerleri sentetik olarak oluşturuyor. Bu, kapsam dışındaki geçmiş commit'ler, başka ortamlar veya verinin kaynağı için mutlak anonimlik/gizlilik garantisi değildir.
+No raw customer records or external data transfer were found in the inspected files. The CSV had no matches for email, IP, private-key or common API-key patterns; the generator source created synthetic values. This was not an absolute anonymity/privacy guarantee for earlier commits outside the review, other environments or data provenance beyond the inspected files.
 
-**Eğitim, yeniden eğitim, yeni veri üretimi, model çıkarımı veya dashboard değişikliği yapılmadı.** Notebook hücreleri çalıştırılmadı. Sayımlar veri/entegrasyon denetimidir; aşağıdaki hiçbir sayı model başarı metriği değildir. Sadece AI 4'ün iki Markdown raporu oluşturuldu. A1/a2/a3 dosyaları değiştirilmedi; uzak depoya push yapılmadı.
+**No training, retraining, new data generation, model inference or dashboard changes were performed during this initial audit.** Notebook cells were not executed. Counts below are data/integration audit observations, not model-performance metrics. Only AI 4's two Markdown reports were created. A1/a2/a3 files were not changed and nothing was pushed to the remote repository.
 
-## 2. İncelenen teslimler ve yöntem
+## 2. Inspected deliveries and method
 
-`git fetch origin` sonrası aşağıdaki commit'ler incelendi. `A1` ile `origin/A1` aynı commit'teydi. `origin/main` yalnızca `LICENSE` içeriyordu; ayrıca veri/model teslimi yoktu.
+The following commits were inspected after `git fetch origin`. `A1` and `origin/A1` pointed to the same commit. `origin/main` contained only `LICENSE`, with no additional data/model delivery.
 
-| Branch | İncelenen commit | Teslim |
+| Branch | Inspected commit | Delivery |
 | --- | --- | --- |
-| `A1` / `origin/A1` | `590802c718341cef62428a57dbb83561ff7a4d0e` | Mimari, demo, CSV okuyucusu, model bağdaştırıcısı ve testler |
-| `origin/a2` | `ca44fccf96df108f8882d21b41e045b98df229dc` | CSV, sentetik üretici ve veri belgeleri |
-| `origin/a3` | `8fee079990f028cd0dcfe7d82350fa38b634f7cc` | Kök dizinde `model_pipeline.ipynb` |
+| `A1` / `origin/A1` | `590802c718341cef62428a57dbb83561ff7a4d0e` | Architecture, demo, CSV reader, model adapter and tests |
+| `origin/a2` | `ca44fccf96df108f8882d21b41e045b98df229dc` | CSV, synthetic generator and data documentation |
+| `origin/a3` | `8fee079990f028cd0dcfe7d82350fa38b634f7cc` | Root-level `model_pipeline.ipynb` |
 
-Kaynak konumları bu commit'lere aittir. Notebook hücre numaraları Markdown hücreleri dâhil, **1'den başlayan tüm hücre sırası** ile verilmiştir; yürütme sayacı değildir.
+Source locations refer to these commits. Notebook cell numbers are the **one-based order of all cells**, including Markdown cells, not execution counts.
 
-Kontroller ortak brief'ten türetildi. A1'in kendi testlerinin geçmesi tek başına entegrasyon başarısı kabul edilmedi; a2'nin gerçek teslim edilmiş dosyası A1 okuyucusuna doğrudan verildi. CSV yalnızca yerel işlemlerde okundu; ham satırlar, hesap/oturum anahtarları veya örüntü eşleşmelerinin değerleri sohbete/rapora çıkarılmadı. Veri üreticisi yalnızca kaynak olarak okundu; çalıştırılmadı.
+Checks were derived from the shared brief. Passing A1's own tests was not accepted as proof of integration: the actual delivered a2 file was passed directly to the A1 reader. The CSV was read locally only. Raw rows, account/session keys and matched-pattern values were not copied into the chat or report. The generator was inspected as source and was not executed.
 
-İnceleme branch uçlarındaki takip edilen dosyaları kapsar. Tüm Git geçmişi, erişilemeyen müşteri ortamı, gerçek IdP, üretim cookie'si, canlı ağ veya fiziksel bellek silme doğrulanmadı. Tarayıcı üzerinden görsel/uçtan uca etkileşim testi yapılmadı. A2'nin dış veri kaynaklarına ilişkin lisans iddiaları yeniden araştırılmadı; bu inceleme veri/model güvenliği üzerinedir.
+The review covered tracked files at the branch tips. It did not verify the complete Git history, inaccessible customer environments, a real IdP, production cookies, a live network or physical memory erasure. No browser visual/end-to-end interaction test was performed. A2's external-data licensing claims were not researched again; this audit focused on data/model security.
 
-## 3. Doğrulanan temel sayımlar
+## 3. Verified baseline counts
 
-| Kontrol | Sonuç |
+| Check | Result at the initial audit |
 | --- | --- |
-| CSV dosyası | `data/mvp_synthetic_logins.csv`, 1.392.163 bayt |
+| CSV file | `data/mvp_synthetic_logins.csv`, 1,392,163 bytes |
 | SHA-256 | `f95b83d0649a0adfad55ab7de9e75bf7f012f2594e3457c5a0795054a66b003d` |
-| Başlık | Ortak 17 alan ve sıra ile tam eşleşiyor |
-| Olay / etiket | 10.000 olay; 9.200 normal etiket, 800 şüpheli etiket |
-| Boş hücre / fazla hücreli kayıt | 0 / 0 |
-| Benzersiz olay / oturum / hesap | 10.000 / 10.000 / 2.885 |
-| Sentetik anahtar biçimi dışındaki değer | 0 |
-| CSV hassas örüntü taraması | E-posta, IPv4, IPv6, özel anahtar ve yaygın API anahtarında 0 eşleşme |
-| Üç teslimin dosya taraması | 18 + 5 + 2 takip edilen dosyada e-posta/özel anahtar/yaygın API anahtarı eşleşmesi 0 |
-| Temel negatif değer, flag ve başarısızlık oranı kontrolleri | İncelenen sayısal/boolean alanlarda sınır ihlali yok |
-| `attempts_2m > attempts_1h` | **30 satır**; tamamı `suspicious_success` |
-| A1 Python sunucu kontrolleri | **7/7 geçti** |
-| A1 JavaScript sözleşme kontrolleri | **17/17 geçti** |
-| Gerçek A2 dosyası → A1 okuyucusu | **Reddedildi:** `Kayıt 2 · network_familiarity: negatif olmayan sayı bekleniyor.` |
-| A3 notebook | 27 kod hücresi; 0 kaydedilmiş yürütme sayacı, 0 kaydedilmiş çıktı |
-| A3 takip edilen model/metrik dosyası | Yok; yalnızca notebook ve lisans var |
+| Header | Exact match to the shared 17 fields and their order |
+| Events / labels | 10,000 events; 9,200 normal labels and 800 suspicious labels |
+| Empty cells / records with extra cells | 0 / 0 |
+| Unique events / sessions / accounts | 10,000 / 10,000 / 2,885 |
+| Values outside synthetic key formats | 0 |
+| CSV sensitive-pattern scan | 0 matches for email, IPv4, IPv6, private keys or common API keys |
+| File scan across the three deliveries | 0 email/private-key/common-API-key matches across 18 + 5 + 2 tracked files |
+| Basic negative-value, flag and failure-ratio checks | No domain violation in the inspected numeric/boolean fields |
+| `attempts_2m > attempts_1h` | **30 rows**, all `suspicious_success` |
+| A1 Python server checks | **7/7 passed** |
+| A1 JavaScript contract checks | **17/17 passed** |
+| Actual A2 file → A1 reader | **Rejected** with a row-2 `network_familiarity` error: “a non-negative number is expected” (English translation of the original message) |
+| A3 notebook | 27 code cells; 0 saved execution counts and 0 saved outputs |
+| A3 tracked model/metric artifact | None; only the notebook and licence were present |
 
-Son iki satır notebook'un başka bir yerde hiç çalıştırılmadığını ispatlamaz; **bu commit'te doğrulanabilir eğitim/çıkarım çıktısı teslim edilmediğini** gösterir.
+The last two rows do not prove that the notebook had never been run elsewhere. They establish that **this commit did not deliver verifiable training/inference artifacts**.
 
-## 4. Öncelikli bulgular
+## 4. Prioritized findings
 
-P0: bu kapsamda tespit edilmedi. P1: birleşik demoyu veya temel güvenilirlik sözleşmesini engelleyen sorun. P2: doğrulama/gizlilik kapsamı veya sağlamlık eksikliği. Durumlar fiilen gözlenen hata ile gelecekteki entegrasyon riskini ayırır.
+No P0 issue was identified within this scope. P1 means an issue blocking the integrated demo or its basic reliability contract. P2 means a validation/privacy-coverage or robustness gap. Status distinguishes observed failures from future integration risks.
 
-| Kimlik | Öncelik | Bulgu | Durum / sorumlu |
+| ID | Priority | Finding | Initial status / owner |
 | --- | --- | --- | --- |
-| A4-01 | **P1** | A2 ağ aşinalığı kodlaması A1 okuyucusuyla uyumsuz | Yeniden üretildi · AI 1 + AI 2 |
-| A4-02 | **P1** | A3 şema yapılandırması yanlış; baseline da ortak özellikleri kullanmıyor | Kaynak ve başlık kontrolüyle doğrulandı · AI 3 |
-| A4-03 | **P2** | A3 kimlikleri kesin bir özellik listesi yerine blacklist/benzersizlik sezgisiyle dışlıyor | Kod kusuru; fiilen eğitilmiş modelde sızıntı gözlenmedi · AI 3 |
-| A4-04 | **P2** | Sayaç tutarsızlığı ve gerçek kayan pencere doğrulamasının eksikliği | 30 kesin tutarsız kayıt + belgelenmiş sentetik özet sınırı · AI 2 |
-| A4-05 | **P2** | Normal zor durumlar ve eksik geçmiş yeterince temsil edilmiyor | Veri kapsamı doğrulandı; yanlış alarm oranı ölçülemedi · AI 2 + AI 3 |
-| A4-06 | **P1** | A3'ün tasarladığı çıktı A1 oturum/puan/gerekçe sözleşmesine bağlanamıyor | Kaynak sözleşmesi uyumsuz; model çıktısı ayrıca eksik · AI 1 + AI 3 |
-| A4-07 | **P2** | Yanlış alarm koşuluna uyan eşik yoksa notebook sessizce 50 döndürüyor | Kod yolu doğrulandı; mevcut veriyle gerçekleştiği iddia edilmiyor · AI 3 |
-| A4-08 | **P2** | Silme yaşam döngüsü uçtan uca uygulanmış değil; notebook kayıt kalıcılığı ayrı ele alınmamış | Tasarım/uygulama kapsamı eksikliği; mevcut ham veri sızıntısı değil · AI 1 + AI 3 |
+| A4-01 | **P1** | A2 network-familiarity encoding was incompatible with the A1 reader | Reproduced · AI 1 + AI 2 |
+| A4-02 | **P1** | A3 schema configuration was wrong; its baseline did not use the shared features | Confirmed by source/header inspection · AI 3 |
+| A4-03 | **P2** | A3 excluded identifiers through a blacklist/uniqueness heuristic rather than an exact feature list | Code defect; no leakage in an actually trained model was observed · AI 3 |
+| A4-04 | **P2** | Counter inconsistency and missing verification of actual rolling windows | 30 definite inconsistent records plus a documented synthetic-summary limitation · AI 2 |
+| A4-05 | **P2** | Challenging normal contexts and missing history were insufficiently represented | Data coverage confirmed; false-alarm rate could not be measured · AI 2 + AI 3 |
+| A4-06 | **P1** | A3's planned output could not satisfy A1's session/score/reason contract | Source contract mismatch; model outputs were also missing · AI 1 + AI 3 |
+| A4-07 | **P2** | Notebook silently returned 50 when no threshold met the false-alarm constraint | Code path confirmed; not claimed to have occurred on the delivered data · AI 3 |
+| A4-08 | **P2** | Deletion lifecycle was not implemented end to end; notebook persistence was not separately addressed | Design/implementation scope gap, not an observed raw-data leak · AI 1 + AI 3 |
 
-### A4-01 — CSV kodlama uyumsuzluğu
+### A4-01 — CSV encoding mismatch
 
-**Kanıt:** A2 üreticisi `src/data/generate_synthetic.py:136` satırında `network_familiarity` için `familiar/unfamiliar` metinlerini üretir. Teslim edilen CSV'de 7.434 `familiar`, 2.566 `unfamiliar` vardır. A1 `app/schema.js:14` alanı oran sayar; `app/schema.js:87` sayısal olmayan değeri reddeder. Dosya 2 MiB ve 10.000 olay sınırları içindedir; ret sebebi boyut değildir.
+**Evidence:** A2's generator at `src/data/generate_synthetic.py:136` produced `familiar/unfamiliar` strings for `network_familiarity`. The delivered CSV contained 7,434 `familiar` and 2,566 `unfamiliar` values. A1 `app/schema.js:14` treated the field as a ratio; `app/schema.js:87` rejected non-numeric values. The file was within the 2 MiB and 10,000-event limits, so size was not the reason for rejection.
 
-**Etki:** İlk veri kaydında içe aktarım durur; kullanılabilir CSV ile dahi oturum görünümüne geçilemez. A1'in birim testleri bu branch'ler arası uyumsuzluğu kapsamamıştır.
+**Impact:** Import stopped at the first data record, preventing the session view even with the delivered usable CSV. A1 unit tests had not covered this cross-branch mismatch.
 
-**Öneri:** Sütun adı ve sırası değişmeden ortak veri sözlüğünde kategori/sayı kararı verin. Mevcut A2 teslimi esas alınacaksa AI 1 okuyucusu ve AI 3 kategorik ön işleme sözleşmesi buna uyarlansın. Açık bir anlaşma olmadan `familiar→1` gibi örtülü dönüşüm yapılmasın. Kabul ölçütü, aynı sabit CSV'nin 10.000 kaydının okuyucudan geçmesi ve model yokken puanların hâlâ beklemesidir.
+**Recommendation:** Agree categorical versus numeric encoding in the shared data dictionary without changing column names/order. If retaining the A2 delivery, adapt the A1 reader and A3 categorical preprocessing contract. Do not silently map `familiar→1` without an explicit agreement. Acceptance requires the same fixed CSV's 10,000 records to pass the reader while scores remain pending when no model is available.
 
-### A4-02 — Notebook yapılandırması ve baseline
+### A4-02 — Notebook configuration and baseline
 
-**Kanıt:** A3 hücre 2, satır 23–27 `TARGET='label'`, `TIME_COL='timestamp'`, `USER_COL='user_id'` kullanır. Üçü de CSV'de yoktur. Hücre 4, satır 12–13 bu nedenle duracaktır. A3 branch'i tek başına CSV de içermez; yoksa dosya guard'ı önce durur. Ortak teslimler yerel olarak bir araya getirilse bile kolon guard'ı engeli devam eder.
+**Evidence:** A3 cell 2, lines 23–27 used `TARGET='label'`, `TIME_COL='timestamp'` and `USER_COL='user_id'`. None existed in the CSV. Cell 4, lines 12–13 would therefore stop. The A3 branch alone did not contain a CSV either; its file guard would stop first if the file was absent. Combining the deliveries locally would not resolve the column-guard failure.
 
-Ek olarak hücre 9'daki beş baseline kuralının dördü ortak şemada bulunmayan `failed_attempts_last_hour`, `is_new_device`, `is_new_country`, `ip_reputation_score` alanlarına dayanır. Yalnızca üç yapılandırma adı düzeltilirse aktif kalan tek kural, hücre 5'te sonradan türetilen `hour <= 5` olur. Puan aktif kuralların toplamına bölündüğü için bu tek gece kuralı **0 veya 100** üretir. Bu matematiksel kod davranışıdır; çalıştırılmış model sonucu değildir.
+Four of the five baseline rules in cell 9 depended on absent fields: `failed_attempts_last_hour`, `is_new_device`, `is_new_country` and `ip_reputation_score`. Correcting only the three configuration names would leave a single active rule, `hour <= 5`, derived in cell 5. Because the score was normalized by the number of active rules, that one nighttime rule would produce **0 or 100**. This was a mathematical property of the code, not an executed model result.
 
-**Etki:** Eğitim şu hâliyle başlayamaz. Yüzeysel bir kolon adı düzeltmesi de üç saldırı senaryosuna uygun bir baseline sağlamaz; gece girişleri tek başına en yüksek risk olabilir. İki dakikalık yoğunluk/yayılım baseline'a yansımaz.
+**Impact:** Training could not begin as delivered. A superficial column rename would still not produce a baseline suited to the three attack scenarios: nighttime login alone could receive maximum risk, while two-minute intensity/spread would not contribute.
 
-**Öneri:** AI 3, sabit şemayı değiştirmeden kendi yapılandırmasını `is_suspicious`, `event_ts_utc`, `account_token` ile eşleştirsin; baseline yalnızca mevcut ve anlamı kararlaştırılmış özellikleri kullansın. Eksik zorunlu özellikler sessizce atlanmasın. N1–N3 karşı örnekleriyle anlamlılık kontrolünden sonra değerlendirmeye geçilsin. Bu denetimde düzeltme veya eğitim yapılmadı.
+**Recommendation:** Map A3 configuration to `is_suspicious`, `event_ts_utc` and `account_token` without changing the shared schema. Baseline rules should use only existing features with agreed semantics. Missing required features must not be silently skipped. Check the N1–N3 counterexamples before evaluation. No correction or training was performed during this audit.
 
-### A4-03 — Kesin özellik sınırı yerine sezgisel dışlama
+### A4-03 — Heuristic exclusion instead of an exact feature boundary
 
-**Kanıt:** A3 hücre 2'deki `ID_COLS`, ortak şemanın üç kimlik alanını ismen dışlamaz. Hücre 5 `df.drop(...)` sonrası bütün kalan alanları aday alır; yalnızca metin olup benzersizlik oranı `>0.5` olanları siler. Bu karar tüm veri üzerinde, bölmeden önce hesaplanır. Hücre 5 ayrıca `hour/dayofweek` ekler; bunlar A1'in 11 özellikli bağlantı sözleşmesinde yoktur.
+**Evidence:** A3 cell 2's `ID_COLS` did not explicitly name the three shared identifier fields. After `df.drop(...)`, cell 5 considered every remaining field and removed only text fields with uniqueness ratio `>0.5`. That decision was computed on all data before splitting. Cell 5 also added `hour/dayofweek`, which were absent from A1's 11-feature interface.
 
-Mevcut CSV'de olay ve oturum tokenları tekildir. Zorunlu üç ayar doğru eşlenirse `account_token` açıkça düşer, olay ve oturum anahtarları da bu örnekte benzersizlik sezgisiyle düşer. Dolayısıyla **“mevcut model kimliklerle eğitildi” sonucu çıkarılamaz**: model yok ve ham yapılandırma zaten çalışmıyor. Ancak tekrar eden oturumlar veya pandas tarafından sayısal okunan kimlikler aynı korumadan geçmeyebilir. `is_suspicious`ın dışlanması da doğru `TARGET` ayarına bağlıdır; `attack_type` açıkça dışlanmıştır.
+Event/session tokens were unique in the delivered CSV. With the three required configuration mappings corrected, `account_token` would be explicitly dropped and the uniqueness heuristic would also drop event/session tokens in this particular file. Therefore **the audit could not conclude that a model had been trained on identifiers**: no model existed and the original configuration did not run. Repeated sessions or identifiers interpreted as numeric by pandas might bypass the same protection. Excluding `is_suspicious` depended on correct `TARGET` configuration; `attack_type` was explicitly excluded.
 
-**Etki:** İleride geçerli farklı bir CSV, eğitim özelliklerine kimlik sokabilir. Test kümesinin benzersizlik dağılımı özellik seçimini etkiler; ön işleme pipeline'ının yalnızca eğitimde fit edilmesi bu önceki seçimi düzeltmez.
+**Impact:** A different valid CSV could place identifiers among training features. Test-set uniqueness could influence feature selection; fitting preprocessing on training data alone would not repair that earlier decision.
 
-**Öneri:** AI 3'te A1 ile aynı açık özellik listesi kullanılsın; yasak alanların dönüştürülmüş model özelliklerinde de bulunmadığını doğrulayan kontrol eklensin. Kimlik/etiket/metaveri değişince özelliklerin değişmediği test edilsin. Timestamp'ten ek özellik isteniyorsa CSV şemasını değiştirmeden ayrı bir bağlantı sözleşmesi önerisi olarak onaylansın; sessizce 13 özellikli modele geçilmesin.
+**Recommendation:** Use the same explicit feature list as A1 and verify that forbidden fields are absent from transformed model features. Test that changing identifiers/labels/metadata leaves features unchanged. Any additional timestamp-derived feature should be proposed as a separate interface change without altering the CSV schema; do not silently move to 13 features.
 
-### A4-04 — Pencere ve sayaç tutarlılığı
+### A4-04 — Window and counter consistency
 
-**Kanıt:** A2 `src/data/generate_synthetic.py:275` aynı kayıt için iki dakikalık sayıyı 1–3, bir saatlik sayıyı 1–8 aralığından bağımsız seçer. Teslim edilen CSV'de **30 kayıtta `attempts_2m > attempts_1h`** bulunur; ilk dosya satır numaraları 1227, 1279, 1291, 1292, 1382'dir. Değerler/anahtarlar burada yayımlanmamıştır.
+**Evidence:** A2 `src/data/generate_synthetic.py:275` independently sampled two-minute attempts from 1–3 and one-hour attempts from 1–8 for the same record. The delivered CSV had **30 records with `attempts_2m > attempts_1h`**; the first file line numbers were 1227, 1279, 1291, 1292 and 1382. Values/keys were not published here.
 
-Aynı hesap kapsamı ve aynı bitiş zamanı varsayımıyla iki dakikalık pencere bir saatlik pencerenin alt kümesidir; bu 30 kayıt tutarsızdır. Ayrıca brute force sayıları episode zamanlarından önce atanır (`:231–239`); spraying'de bütün episode'un hesap sayısı her kayda yazılır (`:249–258`). Bunlar olay anındaki geçmiş satırlardan yeniden hesaplanmış kayan sayaçlar değildir. A2 belgesi de 24 saat oranının ve coğrafi hızın örneklendiğini açıkça belirtir (`docs/synthetic_data.md:45`).
+For the same account scope and end time, a two-minute window is a subset of a one-hour window, making those 30 records inconsistent. Brute-force counts were assigned before episode times (`:231–239`); spraying wrote the full episode account count to each record (`:249–258`). These were not rolling counters recalculated from prior events at each event time. A2 documentation also stated that the 24-hour ratio and geographic speed were sampled (`docs/synthetic_data.md:45`).
 
-CSV gözlenen bütün girişleri içerdiğini iddia etmediği için, dosyadaki geçmiş satır sayısı ile sayacın her uyuşmazlığı ayrı bir hata veya gerçek gelecek-veri sızıntısı sayılmadı. **Kesin bulgu 30 alt-küme tutarsızlığıdır; kalan konu gerçek pencere doğrulamasının yokluğudur.** Kaynak anahtarı ve giriş sonucu olmadığı için spraying gruplaması ile başarısızlık oranı bu CSV'den bağımsız olarak yeniden kurulamaz.
+Because the CSV did not claim to contain every observed login, each mismatch between prior row counts and supplied counters was not labelled a separate defect or proven future-data leakage. **The definite finding was 30 subset inconsistencies; the remaining issue was lack of actual window verification.** Without source keys and login outcomes, spraying groups and failure ratios could not be independently reconstructed from that CSV.
 
-**Öneri:** AI 2 aynı kapsamda `attempts_1h >= attempts_2m` değişmezini sağlamalı. Özelliklerin sentetik özet mi, olaylardan türetilmiş sayaç mı olduğu açıkça ayrılmalı. Kaynak/episode denetim metaverisi gerekiyorsa sabit CSV'ye eklenmeden, müşteri/sentetik test ortamındaki ayrı bir manifestte tutulmalı ve modele verilmemeli. 120 saniye sınırı, yinelenen/geç olay ve cookie yenileme kontrolleri özellik çıkarıcı tesliminde yürütülmeli.
+**Recommendation:** Enforce `attempts_1h >= attempts_2m` within the same scope. Distinguish synthetic summaries from event-derived counters. If source/episode audit metadata is needed, keep it in a separate customer/synthetic-test manifest rather than adding fields to the fixed CSV or model inputs. Test the 120-second boundary, duplicate/late events and cookie renewal when the feature extractor is delivered.
 
-### A4-05 — Yanlış alarm ve zor normal bağlam kapsamı
+### A4-05 — False alarms and challenging normal-context coverage
 
-**Kanıt:** 9.200 negatif örneğin tamamında `hour_deviation` 0–1, `geo_velocity_kmh` 0–250 aralığında; boş özellik yoktur. 1.495 `user_error` ve 1.132 `vpn_new_device` örneği bulunması yararlıdır. Ancak VPN/yeni cihaz örneklerinin de saati olağandır; bu alt grubun 379 kaydı gerçekten `asn_category='vpn'` taşır, tamamı VPN değildir. Ayrı bir normal seyahat senaryosu yoktur.
+**Evidence:** All 9,200 negative examples had `hour_deviation` in 0–1 and `geo_velocity_kmh` in 0–250, with no missing features. The 1,495 `user_error` and 1,132 `vpn_new_device` examples were useful. However, VPN/new-device examples also occurred at usual hours, and only 379 records in that subgroup actually had `asn_category='vpn'`. There was no separate normal-travel scenario.
 
-Brute force örneklerinde saat sapması 5–12 ve 24 saat başarısızlık oranı 0,623–0,999; `suspicious_success` örneklerinde saat sapması 5–12 ve hız 500–5.994'tür. Bu ayrımlar üretici kurallarıyla güçlü biçimde sınıfı işaretler. Bu bir model metriği veya yasak etiket kolonunun doğrudan modele verildiği kanıtı değildir; **sentetik görevin kolaylaşması ve gerçek normal davranışın dar temsil edilmesi** sorunudur.
+Brute-force examples had hour deviation 5–12 and 24-hour failure ratio 0.623–0.999; `suspicious_success` had hour deviation 5–12 and speed 500–5,994. These generator rules strongly separated classes. This was neither a model metric nor evidence of the prohibited target column being passed directly to the model. The concern was **an easier synthetic task and a narrow representation of real normal behaviour**.
 
-**Etki:** Gelecekte yüksek sentetik skor alınsa dahi VPN konum sıçraması, seyahat, gece çalışma, yeni cihaz + yeni ağ ve eksik geçmiş için yanlış alarm davranışı bilinmez. Hiç eksik değer olmaması A1'in `null` politikasını ve AI 3'ün imputasyon kararını bu veriyle sınamayı engeller. A3 median/most-frequent imputasyon tasarlar; eksikliğin nasıl işaretleneceği veya ne zaman puan üretilemeyeceği ortak sözleşmede netleştirilmelidir.
+**Impact:** Even a future high synthetic score would not establish false-alarm behaviour for VPN location jumps, travel, night shifts, new device plus new network or missing history. With no missing values, the data could not test A1's null policy or A3's imputation choice. A3 proposed median/most-frequent imputation; the shared contract needed to specify missingness representation and when scoring must abstain.
 
-**Öneri:** AI 2/AI 3 normal zor durumları ayrı değerlendirme grupları olarak planlasın; AI 4 bu çalışmada veri üretmez. Mevcut çıktılar geldiğinde N1/N2/N3 için ayrı destek sayısı ve yanlış alarm ölçümü raporlansın. N3 temsil edilmeden “seyahatte gereksiz alarm vermiyor” denmesin. Başarı sonucunun CSV'de bulunmadığı açık tutulmalı; `attack_type='suspicious_success'` girişin başarılı olduğuna bağımsız kanıt sayılmamalı.
+**Recommendation:** AI 2/AI 3 should plan separate challenging-normal evaluation groups; AI 4 did not generate data in this audit. Report subgroup support and false alarms for N1/N2/N3 when predictions are delivered. Do not claim absence of unnecessary travel alarms without N3 coverage. State that the CSV lacks a login-success result; `attack_type='suspicious_success'` is not independent proof of a successful login.
 
-### A4-06 — Model çıktısı ve oturum entegrasyonu eksik
+### A4-06 — Missing model output and session integration
 
-**Kanıt:** A1 `app/model-adapter.js:6` her zaman `null` döndürür. Doğrulayıcı, 0–100 **tamsayı** `risk_score`, `reasons` ve `model_version` ister. `app/sessions.js` sonuçları gerçek `session_token` üzerinden ilişkilendirir.
+**Evidence:** A1 `app/model-adapter.js:6` always returned `null`. Its validator required an **integer** `risk_score` in 0–100, `reasons` and `model_version`. `app/sessions.js` correlated results by the actual `session_token`.
 
-A3 hücre 7 olasılığı 100 ile çarpar; hücre 36 çıkışta bir ondalıklı model skorlarıyla `user_id`, `timestamp`, `label` sütunları yazar. Planlanan CSV'de `event_id/session_token`, olay bazlı `reasons` ve `model_version` yoktur; model açıklama hücreleri küresel katsayı/SHAP özetleri üretir, oturumun gerekçe sözleşmesini sağlamaz. A3'ün takip edilen çıktısı bulunmadığı için gerçek skorun aralığı, eşlemesi veya doğruluğu denetlenemedi.
+A3 cell 7 multiplied probabilities by 100; cell 36 planned an output containing one-decimal model scores with `user_id`, `timestamp` and `label`. The planned CSV lacked `event_id/session_token`, event-level `reasons` and `model_version`. Explanation cells produced global coefficient/SHAP summaries rather than satisfying the session explanation contract. No tracked A3 output existed, so actual score range, correlation or accuracy could not be audited.
 
-**Etki:** Bu export doğrudan A1'e bağlanamaz. Hesap/zaman çifti bir olay/oturum anahtarının güvenilir yerine geçmez. Ondalıklı puan doğrudan verilirse A1 reddeder. Yeni dosyada özellikleri yeniden türetmek veya etiketten gerekçe üretmek çözüm değildir.
+**Impact:** That export could not connect directly to A1. An account/time pair was not a reliable substitute for an event/session key. A1 would reject a directly supplied fractional score. Rederiving features in a new file or constructing reasons from the label would not solve the interface problem.
 
-**Öneri:** AI 1 + AI 3, müşteri içinde çalışan bir çıkarım sözleşmesini ortaklaştırmalı. Model sadece 11 özellik almalı; olay/oturum korelasyonu model dışında korunmalı. Puan dönüşümü/yuvarlama ve eşik uygulama sırası, neden üretme yöntemi ve model versiyonu birlikte tanımlanmalı. Nihai bağlama kadar mock ibaresi ve CSV için “puan bekleniyor” korunmalı. Model yokluğu güvenli oturum demek değildir.
+**Recommendation:** AI 1 + AI 3 should agree a customer-local inference contract. The model should accept only 11 features, with event/session correlation retained outside it. Define score conversion/rounding, threshold order, explanation method and model version together. Keep mock labels and “score pending” on CSV data until integration. A missing model does not establish a safe session.
 
-### A4-07 — Uygun eşik bulunamaması sessiz geçiliyor
+### A4-07 — Infeasible threshold selection silently ignored
 
-**Kanıt:** A3 hücre 14, satır 11–19 `best_t=50` ile başlar; sadece 1–99 adaylarını dener. Hiçbir aday `FAR_TARGET` koşulunu sağlamazsa yine 50 döndürür ve bunun başarısız seçim olduğunu belirtmez. Hücre 9 baseline ayrıca eksik girdileri `fillna(0)` ile etkisiz sinyal yapar.
+**Evidence:** A3 cell 14, lines 11–19 initialized `best_t=50` and considered only candidates 1–99. If no candidate met `FAR_TARGET`, it still returned 50 without identifying failed selection. Cell 9 also used `fillna(0)` to make missing baseline inputs inactive signals.
 
-**Etki:** Kod, koşulu karşılayan eşik bulunmadığı bir durumda bile seçilmiş eşik varmış gibi sonraki raporlara devam edebilir. Koşulun test kümesinde ayrıca garanti edilmesi zaten mümkün değildir; doğrulama kümesindeki seçim başarısızlığının da görünmesi gerekir. Bu yolun mevcut CSV'de gerçekleştiği ölçülmedi.
+**Impact:** Reports could continue as if a threshold had been selected even when none satisfied the condition. The condition was not guaranteed on test data either; validation-selection failure also needed to remain visible. This path was not measured as having occurred on the delivered CSV.
 
-**Öneri:** Uygun eşik yokluğu ayrı bir sonuç/hata olmalı; varsayılan 50'ye sessiz dönüş kaldırılmalı. Eşik uçları, alarm üretmeme seçeneği ve tüm eşiklerin başarısız olduğu durum için sözleşme testleri eklenmeli. Eksik sinyal normal davranışla eşitlenmemeli. Gerçek yanlış alarm sonuçları ancak AI 3'ün teslim ettiği tahminlerle değerlendirilmeli.
+**Recommendation:** Represent infeasibility explicitly as a result/error and remove the silent return to 50. Add contract tests for threshold endpoints, the no-alarm option and the case where every threshold fails. Missing signals must not be equated with normal behaviour. Actual false-alarm results require delivered AI 3 predictions.
 
-### A4-08 — Silme ve notebook kalıcılığı
+### A4-08 — Deletion and notebook persistence
 
-**Kanıt:** A1 `app/main.js:159–165` sıfırlamada veri referanslarını bırakır; ayrıca sayfa kapanışı/yenileme davranışı belgelenmiştir. Otomatik 120 saniyelik bellek temizliği veya gerçek cookie uygulanmamıştır. `docs/architecture.md:51,60,146` cookie TTL'si, kaynak bağlamının silinmesi ve 1 saat/24 saat yardımcı sayaçları **hedef tasarım** olarak anlatır; uygulanan üretim yaşam döngüsü değildir.
+**Evidence:** A1 `app/main.js:159–165` released data references on reset; close/reload behaviour was documented. Neither automatic 120-second memory clearing nor a real cookie was implemented. `docs/architecture.md:51,60,146` described cookie TTL, source-context deletion and auxiliary one-hour/24-hour counters as **target design**, not an implemented production lifecycle.
 
-A3 hücre 4, satır 10 doğrulama öncesi `display(df.head())` ile kayıtları notebook çıktısına yazar. Hücre 36 hesap kimliği, zaman ve hedef etiketi içeren `demo_risk_scores.csv` dosyasını kalıcılaştırmayı planlar. Bu çıktılar mevcut commit'te yoktur; bugün gerçekleşmiş ham hassas veri sızıntısı denmiyor. Ancak müşteri kayıtlarıyla tekrar kullanılırsa notebook/output klasörlerinin saklama, erişim ve paylaşım sınırı ayrıca gerekir.
+A3 cell 4, line 10 used `display(df.head())` before validation, which would write records into notebook output. Cell 36 planned persistent `demo_risk_scores.csv` containing account identifier, timestamp and target label. These artifacts did not exist in that commit, so no present raw-sensitive-data leak was claimed. Reuse with customer records would require explicit retention, access and sharing boundaries for notebook/output folders.
 
-**Etki:** “Tüm veri iki dakikada siliniyor” veya “hiçbir kayıt kalıcılaşmıyor” denemez. İki dakikalık analiz penceresi, cookie ömrü ve dosya saklama süresi farklı kavramlardır. A2'nin açıkça sentetik CSV'sinin depoda kalması tek başına müşteri verisi silme kuralı ihlali değildir.
+**Impact:** It was not valid to claim “all data is deleted in two minutes” or “no records persist.” The two-minute analysis window, cookie lifetime and file retention are different concepts. Keeping A2's explicitly synthetic CSV in the repository was not by itself a customer-data deletion violation.
 
-**Öneri:** CSV, notebook çıktıları, model, geçici kaynak bağlamı ve uzun pencere sayaçları için ayrı yaşam döngüsü tablosu oluşturulmalı. AI 3 satır önizlemesini güvenli özetlerle değiştirmeli; gerekmedikçe kimlik/etiketi export etmemeli. Kimlik eşlemesi gerekiyorsa müşteri içi geçici katmanda tutulmalı. Gerçek özellik servisi geldiğinde TTL dolması/silme testi çalıştırılmalı; yalnızca tasarımdan geçti sonucu çıkarılmamalı.
+**Recommendation:** Document separate lifecycles for CSVs, notebook output, models, temporary source context and longer-window counters. Replace row previews with safe aggregate summaries and avoid identifier/label export unless necessary. Keep required identity correlation in a temporary customer-local layer. Test TTL expiry/deletion when the real feature service exists; a design description alone is not a passing result.
 
-## 5. Kullanıcı, zaman ve senaryo sızıntısı denetimi
+## 5. User, time and scenario leakage audit
 
-**A1:** Açık 11 özellik listesi ve `selectFeatures` sayesinde `event_id`, `session_token`, `account_token`, `is_suspicious`, `attack_type` ile ham zaman modele aktarılmaz. Mevcut sözleşme testleri bunu doğruluyor. A1 modeli olmadığı için bu, özellik aktarım sınırının kontrolüdür.
+**A1:** The explicit 11-feature list and `selectFeatures` excluded `event_id`, `session_token`, `account_token`, `is_suspicious`, `attack_type` and raw time from the model. Existing contract tests confirmed the boundary. Because A1 had no model, this was a feature-transfer-boundary check only.
 
-**A3:** Gerçekte üretilmiş bir eğitim/test bölmesi veya model yok. Hücre 6'nın amaçladığı kullanıcı + zaman ayrımını değerlendirmek için, yalnızca üç zorunlu alan adının doğru eşleneceği varsayımıyla mevcut CSV üzerinde **salt okunur bir bölme tanısı** yapıldı. Notebook değiştirilmedi; eğitim/çıkarım/performans hesabı yapılmadı. Tanıda NumPy 2.3.5, seed 42, kronolojik sıralama, %20 kullanıcı ayırma, 0,70 zaman yüzdeliği ve eğitim içi 0,80 doğrulama yüzdeliği kullanıldı.
+**A3:** No actual training/test split or trained model had been delivered. To inspect the intended user-plus-time split in cell 6, a **read-only split diagnostic** was performed on the delivered CSV, assuming only that the three required field names were mapped correctly. The notebook was not changed; no training, inference or performance calculation was performed. The diagnostic used NumPy 2.3.5, seed 42, chronological sorting, 20% held-out users, a 0.70 time quantile and a 0.80 internal training/validation quantile.
 
-| Geçici tanı | Sonuç |
+| Provisional diagnostic | Result |
 | --- | ---: |
-| Fit / doğrulama / test satırı | 4.492 / 1.124 / 605 |
-| İki koşulun dışında kaldığı için dışlanan satır | 3.779 |
-| Eğitim (fit + doğrulama) ile test arasında hesap kesişimi | **0** |
-| Fit ile doğrulama arasında hesap kesişimi | **727** |
-| Eğitim sonu ile test başlangıcı arasındaki fark | 1.410 saniye |
-| Fit sonu ile doğrulama başlangıcı arasındaki fark | 54 saniye |
-| Fit ile testte ortak tam 11 özellik vektörü | 1 |
-| Hesap + 120 saniye yakınlığıyla gruplanan brute force kümelerinin fit/doğrulama kesişimi | 0 |
+| Fit / validation / test rows | 4,492 / 1,124 / 605 |
+| Rows excluded for falling outside both conditions | 3,779 |
+| Account intersection between training (fit + validation) and test | **0** |
+| Account intersection between fit and validation | **727** |
+| Gap between training end and test start | 1,410 seconds |
+| Gap between fit end and validation start | 54 seconds |
+| Identical complete 11-feature vectors shared by fit and test | 1 |
+| Fit/validation overlap of brute-force clusters grouped by account and 120-second proximity | 0 |
 
-Bu tanı fiilen eğitilmiş bir modele ait ayrım olarak sunulamaz; sürüm/sıralama ve gerçek çalıştırma çıktısı geldiğinde tekrar doğrulanmalıdır. 727 ortak hesap, fit/doğrulama ayrımının kullanıcıdan bağımsız olmadığını gösterir; **eğitim/test kullanıcı sızıntısı bulunduğu anlamına gelmez**. Aynı özellik vektörünün bir kez tekrarı da düşük ayrıntılı sentetik normal kayıtlarda mümkün olduğundan tek başına kopya olay veya sızıntı kanıtı değildir.
+This diagnostic was not the split of an actually trained model and required rechecking against the eventual version/order and execution outputs. The 727 shared accounts showed that fit/validation were not user-independent; **they did not establish training/test user leakage**. One identical feature vector can occur in low-detail synthetic normal records and alone is not evidence of a duplicated event or leakage.
 
-Bu snapshot'taki 1.410 saniyelik eğitim/test boşluğu kısa saldırı episode'larını ayırmak bakımından olumludur. Bununla birlikte kodda açık bir pencere boşluğu/episode gruplama şartı yoktur. CSV kaynak/episode kimliği taşımadığından spraying episode bağımsızlığı tam ispatlanamaz; fit/doğrulama sınırı da sadece 54 saniyedir. Aynı `attack_type` sınıflarının iki kümede bulunması normaldir; senaryo sızıntısı diye tek başına sayılmamalıdır. Asıl sınanması gereken aynı episode'un veya aynı kolay üretim şablonunun genelleme iddiasını şişirip şişirmediğidir.
+The 1,410-second training/test gap in that snapshot was helpful for separating short attack episodes. However, the code imposed no explicit window gap or episode-grouping requirement. The CSV lacked source/episode identifiers, so spraying-episode independence could not be established fully; the fit/validation gap was only 54 seconds. Having the same `attack_type` classes in both sets is normal and alone is not scenario leakage. The relevant question is whether the same episode or easy generator template inflates a generalization claim.
 
-Preprocessor pipeline'ları fit aşamasında eğitim dilimine uygulanacak şekilde yazılmıştır; bu olumlu bir tasarım kontrolüdür. Buna karşılık tüm veri üzerindeki kimlik-benzerliği seçimi A4-03'te belirtilmiştir. Model tesliminden sonra gerçek bölme manifesti ve senaryo bazlı çıktılar kontrol edilmeden “tamamen sızıntısız değerlendirme” onayı verilmez.
+Preprocessor pipelines were written to fit on the training portion, a positive design control. Feature selection based on identifier-like uniqueness over the entire dataset remained the separate A4-03 issue. A “fully leakage-free evaluation” conclusion required the actual split manifest and scenario predictions after model delivery.
 
-## 6. Gizlilik ve iddia kontrolünün sonucu
+## 6. Privacy and claim-check results
 
-| Kontrol | Karar | Gerekçe |
+| Check | Initial decision | Reason |
 | --- | --- | --- |
-| Ham parola / kullanıcı adı / IP / sızdırılmış liste | **İncelenen teslimlerde bulgu yok** | Sabit alanlar, sentetik üretim kodu ve örüntü kontrolleri; kapsam dışı köken için garanti değil |
-| A1'den dışa veri gönderimi | **Geçti, mevcut statik sınır kapsamında** | File API ile yerel okuma, CSP `connect-src 'none'`, dış script/font/telemetri yok, upload endpoint'i yok |
-| A1 erişim logu / cookie / kalıcı browser storage | **Geçti, kod ve sunucu testleri kapsamında** | Erişim logu kapalı; cookie ve web storage kullanımı yok |
-| Fare/klavye biyometrisi ve kalıcı cihaz izi | **İncelenen kodda yok** | Arama/form etkileşimleri davranış kaydı için kullanılmıyor |
-| Kimlik/etiket/model ayrımı | **A1 geçti; A3 için sağlamlaştırma gerekli** | A1 allowlist; A3 blacklist/sezgi ve çalışmayan yapılandırma |
-| Gerçek 30 günlük geçmiş varsayımı | **Geçti, belge/kaynak kapsamında** | A2 geçmişi açıkça sentetik, A1 bilinmeyeni `null` tutuyor |
-| 120 saniyelik gerçek sayaç ve silme | **Kısmen tasarım; çalışma davranışı doğrulanamadı** | Özellik servisi/cookie yok; A4-04 ve A4-08 |
-| VPN/seyahat/yeni cihaz/yanlış parola yanlış alarmı | **Doğrulanamadı** | Veri kapsamı sınırlı; model/tahmin teslimi yok |
-| Otomatik kilitleme | **İncelenen uygulamada yok** | A1 yalnızca MFA/inceleme önerisi gösteriyor |
-| Sentetik sonucun gerçek başarı gibi sunulması | **Mevcut A1/A2 belgelerinde bulunmadı** | Açık mock/sentetik uyarıları var. A3'te henüz metrik yok; gelecekteki çıktı raporuna aynı sınırlama eklenmeli. |
+| Raw passwords / usernames / IPs / leaked lists | **No finding in inspected deliveries** | Fixed fields, synthetic generator code and pattern checks; no guarantee for provenance outside scope |
+| Outbound data transfer from A1 | **Passed within the static implementation boundary** | Local File API reading, CSP `connect-src 'none'`, no external scripts/fonts/telemetry or upload endpoint |
+| A1 access logs / cookies / persistent browser storage | **Passed within code/server-test scope** | Access logging disabled; no cookies or web storage used |
+| Mouse/keyboard biometrics and persistent device fingerprints | **Absent from inspected code** | Search/form interactions were not recorded as behaviour |
+| Identifier/label/model separation | **A1 passed; A3 needed hardening** | A1 allowlist; A3 blacklist/heuristic and non-working configuration |
+| Assumption of real 30-day history | **Passed within documentation/source scope** | A2 history explicitly synthetic; A1 kept unknown values null |
+| Actual 120-second counters and deletion | **Partly design; execution behaviour unverified** | No feature service/cookie; see A4-04 and A4-08 |
+| False alarms for VPN/travel/new device/wrong password | **Unverified** | Limited data coverage and no delivered model/predictions |
+| Automatic locking | **Absent from inspected application** | A1 displayed only MFA/review recommendations |
+| Synthetic results presented as real success | **Not found in the inspected A1/A2 documents** | Explicit mock/synthetic notices. A3 had no metrics yet; future reports needed the same limitation. |
 
-“Gerçek CSV” ifadesi A3'te **AI 2 tarafından fiilen teslim edilen sentetik dosya** olarak anlaşılmalıdır; gerçek müşteri kaydı talebi değildir. Hiçbir gerçek kayıt AI sohbetine yüklenmemelidir.
+For A3, “actual CSV” meant **the synthetic file actually delivered by AI 2**, not a request for real customer records. No real records should be uploaded to an AI chat.
 
-## 7. Demo sırasında kullanılabilecek test akışı
+## 7. Demo test flow available at the initial audit
 
-Bu bölüm uygulamaya senaryo eklemez veya veri üretmez. Mevcut mock ekranında yalnızca dört kart vardır. Altı bağımsız senaryonun tamamı bugün çalıştırılmış gibi sunulamaz.
+This section did not add application scenarios or generate data. The original mock screen had only four cards. It would have been incorrect to present all six independent scenarios as executed.
 
-### Bugünkü demo
+### Demo available in the original snapshot
 
-1. `python3 app/serve.py` ile yerel ekranı açın. **MOCK** uyarısını gösterin; örnek puanların model sonucu olmadığını söyleyin.
-2. Brute force mock kartında 86, spraying kartında 74, yeni bağlamdan başarı kartında 61 örnek puanı ve gerekçeleri gösterin. Bunlar sırasıyla S1/S2/S3'ün yalnızca arayüz anlatımıdır; saldırı tespit testi değildir.
-3. Olağan bağlam kartındaki 18 puanın da mock olduğunu gösterin. Bu kart N1/N2/N3'ün ayrı doğrulamasının yerine geçmez.
-4. Risk filtresi ve arama üzerinden bir oturumu seçin. Aksiyonların MFA/inceleme önerisi olduğunu, otomatik kilitleme veya gerçek IdP işlemi olmadığını kontrol edin.
-5. A2'nin mevcut, onaylı sentetik CSV'si seçildiğinde beklenen mevcut sonuç **A4-01 doğrulama hatasıdır**. Önceki mock görünüm korunmalı; hata satır değerini/tokenı göstermemeli. Bu olumsuz entegrasyon testi raporda kapanana kadar geçerli veri içe aktarıldı denmemeli.
-6. Veri sözleşmesi ve gizlilik ekranlarını gösterin. CSV'nin sunucuya yüklenmediğini, “2 dakika”nın modelin/özellik servisininki gibi uygulanmış bir silme garantisi olmadığını açıklayın.
+1. Run `python3 app/serve.py` and open the local screen. Show the **MOCK** notice and explain that sample scores are not model results.
+2. Show the brute-force mock score 86, spraying score 74 and new-context-success score 61 with their reasons. These illustrate S1/S2/S3 in the interface only; they are not attack-detection tests.
+3. Explain that the usual-context score 18 is also mock. That card does not separately validate N1/N2/N3.
+4. Select a session using risk filters/search. Confirm that actions are MFA/review recommendations, without automatic locking or real IdP actions.
+5. Selecting the approved A2 synthetic CSV should reproduce the **A4-01 validation error** in that snapshot. The previous mock view should remain, and the error must not reveal a row value/token. Do not claim successful valid-data import until this negative integration finding is closed.
+6. Show the data-contract and privacy views. Explain that the CSV is not uploaded and that “two minutes” is not an implemented deletion guarantee from a model/feature service.
 
-### Veri/model uyumu düzeltildikten sonraki kabul testleri
+### Acceptance tests proposed after data/model alignment
 
-| Senaryo | Mevcut veri desteği | Sonraki demo/doğrulama koşulu |
+| Scenario | Initial data support | Proposed demo/validation condition |
 | --- | --- | --- |
-| N1 · yanlış parola | 1.495 `user_error`; gerçek başarı sonucu yok | Alt grupta tahmin çıktısı geldiğinde alarm sayısı incelensin; kısa hata dizisi otomatik saldırı sayılmasın. |
-| N2 · VPN | `vpn_new_device` içinde 379 VPN kaydı; diğer negatiflerde de VPN var | VPN alt grubunun tamamı ayrıca değerlendirilsin; yüksek konum sıçramalı normal durumun mevcut veride eksik olduğu belirtilsin. |
-| N3 · seyahat + yeni cihaz + eksik geçmiş | Tam senaryo temsil edilmiyor | **Şu an doğrulanamaz.** AI 2/AI 3 uygun ayrı test teslimi sağladığında incelensin. |
-| S1 · brute force | 320 kayıt, kısa aynı-hesap episode'ları | Gerçek 120 saniye sayacı ve cookie yenilemesine dayanım ayrıca doğrulansın; sadece yüksek sentetik sayı yeterli değil. |
-| S2 · password spraying | 240 kayıt; kaynak kimliği yok | Müşteri içi kaynak korelasyonu/ayrı episode manifesti olmadan uçtan uca spraying tespiti iddia edilmesin. |
-| S3 · şüpheli başarılı giriş | 240 senaryo etiketi; bağımsız giriş sonucu yok | Başarı IdP seviyesinde doğrulansın; `attack_type` tahmin girdisi veya açıklaması yapılmasın. |
+| N1 · wrong password | 1,495 `user_error`; no real success outcome | Inspect subgroup alarms after predictions arrive; do not automatically classify a short mistake sequence as an attack. |
+| N2 · VPN | 379 VPN records within `vpn_new_device`, with VPNs also among other negatives | Evaluate the complete VPN subgroup separately and state the lack of normal high-location-jump cases in the initial data. |
+| N3 · travel + new device + missing history | Complete scenario not represented | **Not verifiable at the initial audit.** Review when AI 2/AI 3 deliver an appropriate separate test. |
+| S1 · brute force | 320 records in short same-account episodes | Independently verify actual 120-second counters and resilience to cookie renewal; large synthetic counts alone are insufficient. |
+| S2 · password spraying | 240 records; no source identity | Do not claim end-to-end spraying detection without customer-local source correlation or a separate episode manifest. |
+| S3 · suspicious successful login | 240 scenario labels; no independent login outcome | Verify success at the IdP; never use `attack_type` as a prediction input or explanation. |
 
-A4-01 kapandıktan sonra model hâlâ bağlı değilse içe aktarılan tüm oturumlar **puan bekliyor** görünmelidir. Etiketler değişse bile model özellikleri değişmemelidir. Model hata/null döndürdüğünde veya bir oturumun bir olayı puanlanamadığında oturum düşük risk sayılmamalıdır. Gerçek model bağlandıktan sonra puan 0–100, nedenler aynı puanlanan olaya ait ve aksiyon MFA/inceleme olmalıdır.
+After A4-01 is resolved, if no model is connected, every imported session must remain **score pending**. Changing labels must not change model features. Model errors/nulls or any unscorable event must not make its session appear low risk. Once a model is connected, its score must be 0–100, reasons must belong to the same scored event, and the action must remain MFA/review.
 
-## 8. Tekrar üretme ve kapanış sırası
+## 8. Reproduction and proposed closure sequence
 
-Mevcut A1 testleri, A4 branch'inde aynı kaynaklar üzerinde:
+The original A1 tests were run against the same source on the A4 branch:
 
 ```bash
 python3 -m unittest discover -s app/tests -p 'test_*.py' -v
 node app/tests/contracts.test.mjs
 ```
 
-Node.js komutu Node 20+ gerektirir; demoyu çalıştırmak için gerekmez. Denetimde JavaScript kontrolleri mevcut Node çalışma aracı üzerinden aynı dosyalarda çalıştırıldı. Bu komutlar eğitim veya veri üretimi çalıştırmaz.
+The Node.js command requires Node 20+; Node is not required to run the demo. JavaScript checks were executed on the same files using the available Node runtime tool. These commands do not train models or generate data.
 
-CSV sayımı ve alt-pencere tutarsızlığını satır içeriğini yazdırmadan tekrar üretme:
+Reproduce the historical CSV counts and subset inconsistency without printing row contents:
 
 ```bash
 python3 - <<'PY'
@@ -238,14 +238,14 @@ print('attempts_2m > attempts_1h:', sum(
 PY
 ```
 
-Beklenen sonuç: yukarıdaki SHA-256, 10.000 satır ve 30 tutarsız kayıt. CSV veya notebook'u terminale bütünüyle dökmek, sohbet ortamına yüklemek ya da notebook'un eğitim hücrelerini çalıştırmak bu denetimin parçası değildir.
+Expected historical result: the SHA-256 above, 10,000 rows and 30 inconsistent records. Dumping the entire CSV/notebook into a terminal or chat, or executing notebook training cells, was outside this audit.
 
-**Kapanış sırası:**
+**Proposed closure sequence at the initial audit:**
 
-1. **AI 1 + AI 2:** Ağ aşinalığı kodlamasını ortaklaştır; A4-01 çapraz branch testi geçsin. AI 2 30 sayaç tutarsızlığını düzeltsin ve veri sürümünü belgelesin.
-2. **AI 3:** Sabit alan adları, açık özellik listesi ve uygun baseline ile kendi kodunu düzelt; yokluk/eksiklik guard'larını koru. AI 4 bu işlem kapsamında eğitim yapmaz.
-3. **AI 1 + AI 3:** Çıkarım sonucu, kimliklerin model dışı eşlemesi, gerekçe ve versiyon sözleşmesini bağla. Model teslimi olmadan başarı/yanlış alarm oranı yayınlama.
-4. **AI 2 + AI 3:** Normal zor durumlar, gerçek bölme manifesti ve senaryo bazlı tahminleri teslim et; AI 4 N1–N3/S1–S3'ü ve sızıntı kontrollerini tekrar değerlendirir.
-5. **Entegrasyon sahipleri:** Pencere, cookie, bellekteki geçici bağlam ve diskteki çıktılar için uygulanabilir silme/erişim politikasını tamamla. Model/sentetik başarı iddialarının sınırlarını demo ve sonuç raporunda koru.
+1. **AI 1 + AI 2:** Reconcile network-familiarity encoding and pass the A4-01 cross-branch test. Correct the 30 counter inconsistencies and document the data version.
+2. **AI 3:** Fix schema names, use an explicit feature list and a suitable baseline, and retain missing-input/file guards. AI 4 does not train within this initial-audit task.
+3. **AI 1 + AI 3:** Connect inference output, external identity correlation, reasons and version contracts. Publish no success/false-alarm rates before model delivery.
+4. **AI 2 + AI 3:** Deliver challenging normal cases, the actual split manifest and scenario predictions. AI 4 then reevaluates N1–N3/S1–S3 and leakage checks.
+5. **Integration owners:** Complete implementable retention/access policies for windows, cookies, temporary memory context and disk artifacts. Preserve model/synthetic-performance limitations in the demo and reports.
 
-Bu değişiklikler bu raporda **öneridir**; A1/a2/a3 koduna uygulanmamıştır. Yeni commit veya gerçek model çıktısı gelirse bu incelemenin kanıt kapsamı güncellenmelidir.
+These changes were **recommendations in the initial report** and had not been applied to A1/a2/a3 code at that point. New commits or actual model outputs require an updated evidence scope, recorded separately in the current review.

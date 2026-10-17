@@ -1,0 +1,3737 @@
+{
+  "artifact_sha256": {
+    "models/tuned_base.json": "603c7c0a010b9ccdeff36566511c559120740ccb5fea033215d52c6f21a49a8f",
+    "models/tuned_sequence.json": "07b3e6a5f7f857de3ba5ba0a4c70999352d96f23251793cbe871bcaf13f35dad"
+  },
+  "freeze_digest": "0a6e146556723a9dec3e576bbe03af4638d61cc246dd1805203960d180c0ea8e",
+  "holdout_used_for_selection": false,
+  "holdouts": {
+    "holdout_a": {
+      "current_deployed": {
+        "benign_subgroups": {
+          "cold_start": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 0
+          },
+          "night_shift": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  271
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9860230009068599,
+                0.9999999999999999
+              ],
+              "negative_sessions": 271,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  271
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9860230009068599,
+                0.9999999999999999
+              ],
+              "negative_sessions": 271,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 271
+          },
+          "normal": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1476
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.997404141641122,
+                1.0
+              ],
+              "negative_sessions": 1476,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1476
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.997404141641122,
+                1.0
+              ],
+              "negative_sessions": 1476,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1476
+          },
+          "travel_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  378
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9899396497369397,
+                1.0
+              ],
+              "negative_sessions": 378,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  378
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9899396497369397,
+                1.0
+              ],
+              "negative_sessions": 378,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 378
+          },
+          "user_error": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  436
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9912662648241621,
+                1.0
+              ],
+              "negative_sessions": 436,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  436
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9912662648241621,
+                1.0
+              ],
+              "negative_sessions": 436,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 436
+          },
+          "vpn_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1353
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.997168822638989,
+                0.9999999999999998
+              ],
+              "negative_sessions": 1353,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1353
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.997168822638989,
+                0.9999999999999998
+              ],
+              "negative_sessions": 1353,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1353
+          }
+        },
+        "coverage": 0.6723233569885838,
+        "event_calibration": {
+          "bins": [
+            {
+              "count": 10309,
+              "lower": 0.0,
+              "mean_probability": 0.024442500786502144,
+              "observed_positive_rate": 0.019594529052284412,
+              "upper": 0.1,
+              "upper_inclusive": false
+            },
+            {
+              "count": 1233,
+              "lower": 0.1,
+              "mean_probability": 0.14151110932817876,
+              "observed_positive_rate": 0.1030008110300081,
+              "upper": 0.2,
+              "upper_inclusive": false
+            },
+            {
+              "count": 541,
+              "lower": 0.2,
+              "mean_probability": 0.2440787138063293,
+              "observed_positive_rate": 0.25508317929759705,
+              "upper": 0.3,
+              "upper_inclusive": false
+            },
+            {
+              "count": 312,
+              "lower": 0.3,
+              "mean_probability": 0.34502192727433123,
+              "observed_positive_rate": 0.3814102564102564,
+              "upper": 0.4,
+              "upper_inclusive": false
+            },
+            {
+              "count": 207,
+              "lower": 0.4,
+              "mean_probability": 0.445907325610015,
+              "observed_positive_rate": 0.42028985507246375,
+              "upper": 0.5,
+              "upper_inclusive": false
+            },
+            {
+              "count": 137,
+              "lower": 0.5,
+              "mean_probability": 0.5487627301002584,
+              "observed_positive_rate": 0.48905109489051096,
+              "upper": 0.6,
+              "upper_inclusive": false
+            },
+            {
+              "count": 85,
+              "lower": 0.6,
+              "mean_probability": 0.6472899089696279,
+              "observed_positive_rate": 0.6,
+              "upper": 0.7,
+              "upper_inclusive": false
+            },
+            {
+              "count": 76,
+              "lower": 0.7,
+              "mean_probability": 0.74890691281715,
+              "observed_positive_rate": 0.8947368421052632,
+              "upper": 0.8,
+              "upper_inclusive": false
+            },
+            {
+              "count": 85,
+              "lower": 0.8,
+              "mean_probability": 0.8543745908719521,
+              "observed_positive_rate": 1.0,
+              "upper": 0.9,
+              "upper_inclusive": false
+            },
+            {
+              "count": 143,
+              "lower": 0.9,
+              "mean_probability": 0.9617737724608252,
+              "observed_positive_rate": 1.0,
+              "upper": 1.0,
+              "upper_inclusive": true
+            }
+          ],
+          "brier_score": 0.04586297488000179,
+          "ece_10_equal_width_bins": 0.01227894961594981,
+          "scored_events": 13128
+        },
+        "model_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                0,
+                3914
+              ],
+              [
+                0,
+                444
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9990194961023638,
+              0.9999999999999999
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.10188159706287288,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9914222795924031,
+              0.9999999999999999
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                0,
+                3914
+              ],
+              [
+                0,
+                444
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9990194961023638,
+              0.9999999999999999
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.10188159706287288,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9914222795924031,
+              0.9999999999999999
+            ]
+          }
+        },
+        "offline_runtime_integer_score_parity": true,
+        "runtime_all_sessions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                0,
+                5866
+              ],
+              [
+                0,
+                616
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9993455600380959,
+              1.0
+            ],
+            "negative_sessions": 5866,
+            "positive_sessions": 616,
+            "precision": 0.09503239740820735,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9938025139073419,
+              1.0
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                0,
+                5866
+              ],
+              [
+                0,
+                616
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9993455600380959,
+              1.0
+            ],
+            "negative_sessions": 5866,
+            "positive_sessions": 616,
+            "precision": 0.09503239740820735,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9938025139073419,
+              1.0
+            ]
+          }
+        },
+        "runtime_scored_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                0,
+                3914
+              ],
+              [
+                0,
+                444
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9990194961023638,
+              0.9999999999999999
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.10188159706287288,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9914222795924031,
+              0.9999999999999999
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                0,
+                3914
+              ],
+              [
+                0,
+                444
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9990194961023638,
+              0.9999999999999999
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.10188159706287288,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9914222795924031,
+              0.9999999999999999
+            ]
+          }
+        },
+        "scored_sessions": 4358,
+        "session_ranking": {
+          "recall_at_fpr_5pct": 0.6396396396396397,
+          "scored_sessions": 4358,
+          "session_average_precision": 0.7090877626042277
+        },
+        "thresholds": {
+          "mfa": null,
+          "review": null
+        },
+        "total_sessions": 6482,
+        "unscored_sessions": 2124
+      },
+      "tuned_base": {
+        "benign_subgroups": {
+          "cold_start": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 0
+          },
+          "night_shift": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  270,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0036900369003690036,
+              "fpr_wilson95": [
+                0.0006516793729821075,
+                0.020602242236075707
+              ],
+              "negative_sessions": 271,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  270,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0036900369003690036,
+              "fpr_wilson95": [
+                0.0006516793729821075,
+                0.020602242236075707
+              ],
+              "negative_sessions": 271,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 271
+          },
+          "normal": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1474,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0013550135501355014,
+              "fpr_wilson95": [
+                0.00037167227122444,
+                0.004927178341423682
+              ],
+              "negative_sessions": 1476,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1474,
+                  2
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0013550135501355014,
+              "fpr_wilson95": [
+                0.00037167227122444,
+                0.004927178341423682
+              ],
+              "negative_sessions": 1476,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1476
+          },
+          "travel_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  378,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01006035026306037
+              ],
+              "negative_sessions": 378,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  378,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01006035026306037
+              ],
+              "negative_sessions": 378,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 378
+          },
+          "user_error": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  426,
+                  10
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.022935779816513763,
+              "fpr_wilson95": [
+                0.012505044757518102,
+                0.041699619997409745
+              ],
+              "negative_sessions": 436,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  430,
+                  6
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.013761467889908258,
+              "fpr_wilson95": [
+                0.006321858865235655,
+                0.02969443405805619
+              ],
+              "negative_sessions": 436,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 436
+          },
+          "vpn_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1353,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00283117736101088
+              ],
+              "negative_sessions": 1353,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1353,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00283117736101088
+              ],
+              "negative_sessions": 1353,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1353
+          }
+        },
+        "coverage": 0.6723233569885838,
+        "event_calibration": {
+          "bins": [
+            {
+              "count": 11112,
+              "lower": 0.0,
+              "mean_probability": 0.017140010781679895,
+              "observed_positive_rate": 0.015028797696184305,
+              "upper": 0.1,
+              "upper_inclusive": false
+            },
+            {
+              "count": 701,
+              "lower": 0.1,
+              "mean_probability": 0.14248884166394485,
+              "observed_positive_rate": 0.11840228245363767,
+              "upper": 0.2,
+              "upper_inclusive": false
+            },
+            {
+              "count": 228,
+              "lower": 0.2,
+              "mean_probability": 0.2425409917021271,
+              "observed_positive_rate": 0.17982456140350878,
+              "upper": 0.3,
+              "upper_inclusive": false
+            },
+            {
+              "count": 287,
+              "lower": 0.3,
+              "mean_probability": 0.3511452107288379,
+              "observed_positive_rate": 0.3902439024390244,
+              "upper": 0.4,
+              "upper_inclusive": false
+            },
+            {
+              "count": 126,
+              "lower": 0.4,
+              "mean_probability": 0.44098246331287544,
+              "observed_positive_rate": 0.48412698412698413,
+              "upper": 0.5,
+              "upper_inclusive": false
+            },
+            {
+              "count": 44,
+              "lower": 0.5,
+              "mean_probability": 0.5419644963625218,
+              "observed_positive_rate": 0.6590909090909091,
+              "upper": 0.6,
+              "upper_inclusive": false
+            },
+            {
+              "count": 66,
+              "lower": 0.6,
+              "mean_probability": 0.6478428948725465,
+              "observed_positive_rate": 0.7272727272727273,
+              "upper": 0.7,
+              "upper_inclusive": false
+            },
+            {
+              "count": 51,
+              "lower": 0.7,
+              "mean_probability": 0.7423954884679054,
+              "observed_positive_rate": 0.8431372549019608,
+              "upper": 0.8,
+              "upper_inclusive": false
+            },
+            {
+              "count": 47,
+              "lower": 0.8,
+              "mean_probability": 0.8613045519848934,
+              "observed_positive_rate": 0.8936170212765957,
+              "upper": 0.9,
+              "upper_inclusive": false
+            },
+            {
+              "count": 466,
+              "lower": 0.9,
+              "mean_probability": 0.9819564228052194,
+              "observed_positive_rate": 0.9892703862660944,
+              "upper": 1.0,
+              "upper_inclusive": true
+            }
+          ],
+          "brier_score": 0.031180889238291022,
+          "ece_10_equal_width_bins": 0.006989801361975478,
+          "scored_events": 13128
+        },
+        "model_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3906,
+                8
+              ],
+              [
+                157,
+                287
+              ]
+            ],
+            "false_positive_rate": 0.002043944813490036,
+            "fpr_wilson95": [
+              0.0010360691552500382,
+              0.004028316177653807
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9728813559322034,
+            "recall": 0.6463963963963963,
+            "recall_wilson95": [
+              0.600844259621336,
+              0.6894370384575207
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3906,
+                8
+              ],
+              [
+                157,
+                287
+              ]
+            ],
+            "false_positive_rate": 0.002043944813490036,
+            "fpr_wilson95": [
+              0.0010360691552500382,
+              0.004028316177653807
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9728813559322034,
+            "recall": 0.6463963963963963,
+            "recall_wilson95": [
+              0.600844259621336,
+              0.6894370384575207
+            ]
+          }
+        },
+        "offline_runtime_integer_score_parity": true,
+        "runtime_all_sessions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3901,
+                1965
+              ],
+              [
+                154,
+                462
+              ]
+            ],
+            "false_positive_rate": 0.334981247869076,
+            "fpr_wilson95": [
+              0.3230144559721521,
+              0.347164029497716
+            ],
+            "negative_sessions": 5866,
+            "positive_sessions": 616,
+            "precision": 0.1903584672435105,
+            "recall": 0.75,
+            "recall_wilson95": [
+              0.7143268948814304,
+              0.7825743620722406
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3905,
+                1961
+              ],
+              [
+                154,
+                462
+              ]
+            ],
+            "false_positive_rate": 0.33429935219911355,
+            "fpr_wilson95": [
+              0.3223391154689134,
+              0.3464764711805823
+            ],
+            "negative_sessions": 5866,
+            "positive_sessions": 616,
+            "precision": 0.19067271976888156,
+            "recall": 0.75,
+            "recall_wilson95": [
+              0.7143268948814304,
+              0.7825743620722406
+            ]
+          }
+        },
+        "runtime_scored_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3901,
+                13
+              ],
+              [
+                154,
+                290
+              ]
+            ],
+            "false_positive_rate": 0.003321410321921308,
+            "fpr_wilson95": [
+              0.001942124957711104,
+              0.00567468627223506
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9570957095709571,
+            "recall": 0.6531531531531531,
+            "recall_wilson95": [
+              0.6077377717202259,
+              0.6959411247315013
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3905,
+                9
+              ],
+              [
+                154,
+                290
+              ]
+            ],
+            "false_positive_rate": 0.0022994379151762903,
+            "fpr_wilson95": [
+              0.0012102336481620917,
+              0.004364636864150217
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9698996655518395,
+            "recall": 0.6531531531531531,
+            "recall_wilson95": [
+              0.6077377717202259,
+              0.6959411247315013
+            ]
+          }
+        },
+        "scored_sessions": 4358,
+        "session_ranking": {
+          "recall_at_fpr_5pct": 0.8626126126126126,
+          "scored_sessions": 4358,
+          "session_average_precision": 0.8876560402031276
+        },
+        "thresholds": {
+          "mfa": 74,
+          "review": 74
+        },
+        "total_sessions": 6482,
+        "unscored_sessions": 2124
+      },
+      "tuned_sequence": {
+        "benign_subgroups": {
+          "cold_start": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 0
+          },
+          "night_shift": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  271,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.013976999093140033
+              ],
+              "negative_sessions": 271,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  271,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.013976999093140033
+              ],
+              "negative_sessions": 271,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 271
+          },
+          "normal": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1476,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.0025958583588781437
+              ],
+              "negative_sessions": 1476,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1476,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.0025958583588781437
+              ],
+              "negative_sessions": 1476,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1476
+          },
+          "travel_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  378,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01006035026306037
+              ],
+              "negative_sessions": 378,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  378,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01006035026306037
+              ],
+              "negative_sessions": 378,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 378
+          },
+          "user_error": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  428,
+                  8
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.01834862385321101,
+              "fpr_wilson95": [
+                0.009326209521923855,
+                0.03578426931718599
+              ],
+              "negative_sessions": 436,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  433,
+                  3
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.006880733944954129,
+              "fpr_wilson95": [
+                0.00234277366927438,
+                0.02003224038029046
+              ],
+              "negative_sessions": 436,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 436
+          },
+          "vpn_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1353,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00283117736101088
+              ],
+              "negative_sessions": 1353,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1353,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00283117736101088
+              ],
+              "negative_sessions": 1353,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1353
+          }
+        },
+        "coverage": 0.6723233569885838,
+        "event_calibration": {
+          "bins": [
+            {
+              "count": 11150,
+              "lower": 0.0,
+              "mean_probability": 0.014623496951172679,
+              "observed_positive_rate": 0.012286995515695067,
+              "upper": 0.1,
+              "upper_inclusive": false
+            },
+            {
+              "count": 631,
+              "lower": 0.1,
+              "mean_probability": 0.14387235110829416,
+              "observed_positive_rate": 0.11251980982567353,
+              "upper": 0.2,
+              "upper_inclusive": false
+            },
+            {
+              "count": 266,
+              "lower": 0.2,
+              "mean_probability": 0.2387407413324393,
+              "observed_positive_rate": 0.20676691729323307,
+              "upper": 0.3,
+              "upper_inclusive": false
+            },
+            {
+              "count": 189,
+              "lower": 0.3,
+              "mean_probability": 0.3582755006334847,
+              "observed_positive_rate": 0.36507936507936506,
+              "upper": 0.4,
+              "upper_inclusive": false
+            },
+            {
+              "count": 186,
+              "lower": 0.4,
+              "mean_probability": 0.43853312958400653,
+              "observed_positive_rate": 0.5268817204301075,
+              "upper": 0.5,
+              "upper_inclusive": false
+            },
+            {
+              "count": 57,
+              "lower": 0.5,
+              "mean_probability": 0.5460642227591976,
+              "observed_positive_rate": 0.5087719298245614,
+              "upper": 0.6,
+              "upper_inclusive": false
+            },
+            {
+              "count": 43,
+              "lower": 0.6,
+              "mean_probability": 0.6525089004880639,
+              "observed_positive_rate": 0.6744186046511628,
+              "upper": 0.7,
+              "upper_inclusive": false
+            },
+            {
+              "count": 39,
+              "lower": 0.7,
+              "mean_probability": 0.7671105782501807,
+              "observed_positive_rate": 0.8974358974358975,
+              "upper": 0.8,
+              "upper_inclusive": false
+            },
+            {
+              "count": 30,
+              "lower": 0.8,
+              "mean_probability": 0.8432039894128397,
+              "observed_positive_rate": 0.9666666666666667,
+              "upper": 0.9,
+              "upper_inclusive": false
+            },
+            {
+              "count": 537,
+              "lower": 0.9,
+              "mean_probability": 0.9877199003029332,
+              "observed_positive_rate": 0.9962756052141527,
+              "upper": 1.0,
+              "upper_inclusive": true
+            }
+          ],
+          "brier_score": 0.02746820544347752,
+          "ece_10_equal_width_bins": 0.006741926363989501,
+          "scored_events": 13128
+        },
+        "model_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3913,
+                1
+              ],
+              [
+                154,
+                290
+              ]
+            ],
+            "false_positive_rate": 0.0002554931016862545,
+            "fpr_wilson95": [
+              4.510222985478569e-05,
+              0.0014458868471898113
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9965635738831615,
+            "recall": 0.6531531531531531,
+            "recall_wilson95": [
+              0.6077377717202259,
+              0.6959411247315013
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3913,
+                1
+              ],
+              [
+                154,
+                290
+              ]
+            ],
+            "false_positive_rate": 0.0002554931016862545,
+            "fpr_wilson95": [
+              4.510222985478569e-05,
+              0.0014458868471898113
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9965635738831615,
+            "recall": 0.6531531531531531,
+            "recall_wilson95": [
+              0.6077377717202259,
+              0.6959411247315013
+            ]
+          }
+        },
+        "offline_runtime_integer_score_parity": true,
+        "runtime_all_sessions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3906,
+                1960
+              ],
+              [
+                153,
+                463
+              ]
+            ],
+            "false_positive_rate": 0.3341288782816229,
+            "fpr_wilson95": [
+              0.3221702847639675,
+              0.34630457718043506
+            ],
+            "negative_sessions": 5866,
+            "positive_sessions": 616,
+            "precision": 0.1910854312835328,
+            "recall": 0.7516233766233766,
+            "recall_wilson95": [
+              0.7160137796043619,
+              0.7841141088879694
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3911,
+                1955
+              ],
+              [
+                153,
+                463
+              ]
+            ],
+            "false_positive_rate": 0.3332765086941698,
+            "fpr_wilson95": [
+              0.32132615779811974,
+              0.3454450806208173
+            ],
+            "negative_sessions": 5866,
+            "positive_sessions": 616,
+            "precision": 0.1914805624483044,
+            "recall": 0.7516233766233766,
+            "recall_wilson95": [
+              0.7160137796043619,
+              0.7841141088879694
+            ]
+          }
+        },
+        "runtime_scored_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3906,
+                8
+              ],
+              [
+                153,
+                291
+              ]
+            ],
+            "false_positive_rate": 0.002043944813490036,
+            "fpr_wilson95": [
+              0.0010360691552500382,
+              0.004028316177653807
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9732441471571907,
+            "recall": 0.6554054054054054,
+            "recall_wilson95": [
+              0.6100377596611852,
+              0.698107002914832
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3911,
+                3
+              ],
+              [
+                153,
+                291
+              ]
+            ],
+            "false_positive_rate": 0.0007664793050587634,
+            "fpr_wilson95": [
+              0.00026070560316652255,
+              0.0022512538326950023
+            ],
+            "negative_sessions": 3914,
+            "positive_sessions": 444,
+            "precision": 0.9897959183673469,
+            "recall": 0.6554054054054054,
+            "recall_wilson95": [
+              0.6100377596611852,
+              0.698107002914832
+            ]
+          }
+        },
+        "scored_sessions": 4358,
+        "session_ranking": {
+          "recall_at_fpr_5pct": 0.8873873873873874,
+          "scored_sessions": 4358,
+          "session_average_precision": 0.9061049172969965
+        },
+        "thresholds": {
+          "mfa": 90,
+          "review": 90
+        },
+        "total_sessions": 6482,
+        "unscored_sessions": 2124
+      }
+    },
+    "holdout_b": {
+      "current_deployed": {
+        "benign_subgroups": {
+          "cold_start": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 0
+          },
+          "night_shift": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  264
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9856577139416427,
+                1.0
+              ],
+              "negative_sessions": 264,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  264
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9856577139416427,
+                1.0
+              ],
+              "negative_sessions": 264,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 264
+          },
+          "normal": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1485
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9974198335236196,
+                0.9999999999999999
+              ],
+              "negative_sessions": 1485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1485
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9974198335236196,
+                0.9999999999999999
+              ],
+              "negative_sessions": 1485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1485
+          },
+          "travel_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  388
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9901963951638616,
+                1.0
+              ],
+              "negative_sessions": 388,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  388
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9901963951638616,
+                1.0
+              ],
+              "negative_sessions": 388,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 388
+          },
+          "user_error": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  485
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.992141708213617,
+                1.0
+              ],
+              "negative_sessions": 485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  485
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.992141708213617,
+                1.0
+              ],
+              "negative_sessions": 485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 485
+          },
+          "vpn_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1326
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9971113407577918,
+                1.0
+              ],
+              "negative_sessions": 1326,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  1326
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 1.0,
+              "fpr_wilson95": [
+                0.9971113407577918,
+                1.0
+              ],
+              "negative_sessions": 1326,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1326
+          }
+        },
+        "coverage": 0.6695678729577035,
+        "event_calibration": {
+          "bins": [
+            {
+              "count": 10419,
+              "lower": 0.0,
+              "mean_probability": 0.025031429055208956,
+              "observed_positive_rate": 0.019483635665610902,
+              "upper": 0.1,
+              "upper_inclusive": false
+            },
+            {
+              "count": 1156,
+              "lower": 0.1,
+              "mean_probability": 0.14225565310082566,
+              "observed_positive_rate": 0.13581314878892733,
+              "upper": 0.2,
+              "upper_inclusive": false
+            },
+            {
+              "count": 505,
+              "lower": 0.2,
+              "mean_probability": 0.24293014386573056,
+              "observed_positive_rate": 0.24158415841584158,
+              "upper": 0.3,
+              "upper_inclusive": false
+            },
+            {
+              "count": 273,
+              "lower": 0.3,
+              "mean_probability": 0.34316135278392157,
+              "observed_positive_rate": 0.3516483516483517,
+              "upper": 0.4,
+              "upper_inclusive": false
+            },
+            {
+              "count": 193,
+              "lower": 0.4,
+              "mean_probability": 0.44637965565130716,
+              "observed_positive_rate": 0.45077720207253885,
+              "upper": 0.5,
+              "upper_inclusive": false
+            },
+            {
+              "count": 136,
+              "lower": 0.5,
+              "mean_probability": 0.5467005793124343,
+              "observed_positive_rate": 0.5588235294117647,
+              "upper": 0.6,
+              "upper_inclusive": false
+            },
+            {
+              "count": 104,
+              "lower": 0.6,
+              "mean_probability": 0.6439857134945755,
+              "observed_positive_rate": 0.6346153846153846,
+              "upper": 0.7,
+              "upper_inclusive": false
+            },
+            {
+              "count": 63,
+              "lower": 0.7,
+              "mean_probability": 0.7494972906197349,
+              "observed_positive_rate": 0.873015873015873,
+              "upper": 0.8,
+              "upper_inclusive": false
+            },
+            {
+              "count": 69,
+              "lower": 0.8,
+              "mean_probability": 0.8538204394618558,
+              "observed_positive_rate": 1.0,
+              "upper": 0.9,
+              "upper_inclusive": false
+            },
+            {
+              "count": 138,
+              "lower": 0.9,
+              "mean_probability": 0.9538395785506889,
+              "observed_positive_rate": 1.0,
+              "upper": 1.0,
+              "upper_inclusive": true
+            }
+          ],
+          "brier_score": 0.04615056500430038,
+          "ece_10_equal_width_bins": 0.007349634501937503,
+          "scored_events": 13056
+        },
+        "model_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                0,
+                3948
+              ],
+              [
+                0,
+                437
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.999027931950023,
+              1.0
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.09965792474344355,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9912860763346294,
+              1.0
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                0,
+                3948
+              ],
+              [
+                0,
+                437
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.999027931950023,
+              1.0
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.09965792474344355,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9912860763346294,
+              1.0
+            ]
+          }
+        },
+        "offline_runtime_integer_score_parity": true,
+        "runtime_all_sessions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                0,
+                5923
+              ],
+              [
+                0,
+                626
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9993518539600924,
+              0.9999999999999999
+            ],
+            "negative_sessions": 5923,
+            "positive_sessions": 626,
+            "precision": 0.09558711253626508,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.993900911464471,
+              1.0
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                0,
+                5923
+              ],
+              [
+                0,
+                626
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.9993518539600924,
+              0.9999999999999999
+            ],
+            "negative_sessions": 5923,
+            "positive_sessions": 626,
+            "precision": 0.09558711253626508,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.993900911464471,
+              1.0
+            ]
+          }
+        },
+        "runtime_scored_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                0,
+                3948
+              ],
+              [
+                0,
+                437
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.999027931950023,
+              1.0
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.09965792474344355,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9912860763346294,
+              1.0
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                0,
+                3948
+              ],
+              [
+                0,
+                437
+              ]
+            ],
+            "false_positive_rate": 1.0,
+            "fpr_wilson95": [
+              0.999027931950023,
+              1.0
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.09965792474344355,
+            "recall": 1.0,
+            "recall_wilson95": [
+              0.9912860763346294,
+              1.0
+            ]
+          }
+        },
+        "scored_sessions": 4385,
+        "session_ranking": {
+          "recall_at_fpr_5pct": 0.6270022883295194,
+          "scored_sessions": 4385,
+          "session_average_precision": 0.6838785019708614
+        },
+        "thresholds": {
+          "mfa": null,
+          "review": null
+        },
+        "total_sessions": 6549,
+        "unscored_sessions": 2164
+      },
+      "tuned_base": {
+        "benign_subgroups": {
+          "cold_start": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 0
+          },
+          "night_shift": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  264,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01434228605835731
+              ],
+              "negative_sessions": 264,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  264,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01434228605835731
+              ],
+              "negative_sessions": 264,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 264
+          },
+          "normal": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1485,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.002580166476380185
+              ],
+              "negative_sessions": 1485,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1485,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.002580166476380185
+              ],
+              "negative_sessions": 1485,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1485
+          },
+          "travel_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  388,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00980360483613851
+              ],
+              "negative_sessions": 388,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  388,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00980360483613851
+              ],
+              "negative_sessions": 388,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 388
+          },
+          "user_error": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  468,
+                  17
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.03505154639175258,
+              "fpr_wilson95": [
+                0.02199776292508289,
+                0.05541273108658455
+              ],
+              "negative_sessions": 485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  480,
+                  5
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.010309278350515464,
+              "fpr_wilson95": [
+                0.004411321820051967,
+                0.023903500032591136
+              ],
+              "negative_sessions": 485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 485
+          },
+          "vpn_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1326,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                2.168404344971009e-19,
+                0.002888659242208269
+              ],
+              "negative_sessions": 1326,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1326,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                2.168404344971009e-19,
+                0.002888659242208269
+              ],
+              "negative_sessions": 1326,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1326
+          }
+        },
+        "coverage": 0.6695678729577035,
+        "event_calibration": {
+          "bins": [
+            {
+              "count": 11139,
+              "lower": 0.0,
+              "mean_probability": 0.017441521500887777,
+              "observed_positive_rate": 0.01597989047490798,
+              "upper": 0.1,
+              "upper_inclusive": false
+            },
+            {
+              "count": 665,
+              "lower": 0.1,
+              "mean_probability": 0.1472546389167314,
+              "observed_positive_rate": 0.14285714285714285,
+              "upper": 0.2,
+              "upper_inclusive": false
+            },
+            {
+              "count": 224,
+              "lower": 0.2,
+              "mean_probability": 0.2516201504828577,
+              "observed_positive_rate": 0.29910714285714285,
+              "upper": 0.3,
+              "upper_inclusive": false
+            },
+            {
+              "count": 216,
+              "lower": 0.3,
+              "mean_probability": 0.34900423992290086,
+              "observed_positive_rate": 0.32407407407407407,
+              "upper": 0.4,
+              "upper_inclusive": false
+            },
+            {
+              "count": 138,
+              "lower": 0.4,
+              "mean_probability": 0.43976200626623285,
+              "observed_positive_rate": 0.3333333333333333,
+              "upper": 0.5,
+              "upper_inclusive": false
+            },
+            {
+              "count": 61,
+              "lower": 0.5,
+              "mean_probability": 0.5463376715513554,
+              "observed_positive_rate": 0.5737704918032787,
+              "upper": 0.6,
+              "upper_inclusive": false
+            },
+            {
+              "count": 81,
+              "lower": 0.6,
+              "mean_probability": 0.6441563829014452,
+              "observed_positive_rate": 0.691358024691358,
+              "upper": 0.7,
+              "upper_inclusive": false
+            },
+            {
+              "count": 43,
+              "lower": 0.7,
+              "mean_probability": 0.7399675823595192,
+              "observed_positive_rate": 0.9069767441860465,
+              "upper": 0.8,
+              "upper_inclusive": false
+            },
+            {
+              "count": 51,
+              "lower": 0.8,
+              "mean_probability": 0.8606891820546468,
+              "observed_positive_rate": 0.9019607843137255,
+              "upper": 0.9,
+              "upper_inclusive": false
+            },
+            {
+              "count": 438,
+              "lower": 0.9,
+              "mean_probability": 0.9862491326759377,
+              "observed_positive_rate": 0.997716894977169,
+              "upper": 1.0,
+              "upper_inclusive": true
+            }
+          ],
+          "brier_score": 0.0320167103362429,
+          "ece_10_equal_width_bins": 0.005340108949141021,
+          "scored_events": 13056
+        },
+        "model_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3943,
+                5
+              ],
+              [
+                165,
+                272
+              ]
+            ],
+            "false_positive_rate": 0.0012664640324214793,
+            "fpr_wilson95": [
+              0.0005410752566523739,
+              0.0029614586797228693
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.9819494584837545,
+            "recall": 0.6224256292906178,
+            "recall_wilson95": [
+              0.5760927814023008,
+              0.666624862002288
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3943,
+                5
+              ],
+              [
+                165,
+                272
+              ]
+            ],
+            "false_positive_rate": 0.0012664640324214793,
+            "fpr_wilson95": [
+              0.0005410752566523739,
+              0.0029614586797228693
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.9819494584837545,
+            "recall": 0.6224256292906178,
+            "recall_wilson95": [
+              0.5760927814023008,
+              0.666624862002288
+            ]
+          }
+        },
+        "offline_runtime_integer_score_parity": true,
+        "runtime_all_sessions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3931,
+                1992
+              ],
+              [
+                163,
+                463
+              ]
+            ],
+            "false_positive_rate": 0.336316056052676,
+            "fpr_wilson95": [
+              0.3243937492701522,
+              0.34845054503533157
+            ],
+            "negative_sessions": 5923,
+            "positive_sessions": 626,
+            "precision": 0.18859470468431772,
+            "recall": 0.7396166134185304,
+            "recall_wilson95": [
+              0.7038517895753074,
+              0.772458551382107
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3943,
+                1980
+              ],
+              [
+                163,
+                463
+              ]
+            ],
+            "false_positive_rate": 0.3342900557150093,
+            "fpr_wilson95": [
+              0.32238704388259204,
+              0.3464078760357497
+            ],
+            "negative_sessions": 5923,
+            "positive_sessions": 626,
+            "precision": 0.18952108063855916,
+            "recall": 0.7396166134185304,
+            "recall_wilson95": [
+              0.7038517895753074,
+              0.772458551382107
+            ]
+          }
+        },
+        "runtime_scored_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3931,
+                17
+              ],
+              [
+                163,
+                274
+              ]
+            ],
+            "false_positive_rate": 0.004305977710233029,
+            "fpr_wilson95": [
+              0.0026902422753165545,
+              0.00688540978841445
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.9415807560137457,
+            "recall": 0.6270022883295194,
+            "recall_wilson95": [
+              0.5807386101980884,
+              0.6710525899692888
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3943,
+                5
+              ],
+              [
+                163,
+                274
+              ]
+            ],
+            "false_positive_rate": 0.0012664640324214793,
+            "fpr_wilson95": [
+              0.0005410752566523739,
+              0.0029614586797228693
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.982078853046595,
+            "recall": 0.6270022883295194,
+            "recall_wilson95": [
+              0.5807386101980884,
+              0.6710525899692888
+            ]
+          }
+        },
+        "scored_sessions": 4385,
+        "session_ranking": {
+          "recall_at_fpr_5pct": 0.816933638443936,
+          "scored_sessions": 4385,
+          "session_average_precision": 0.8505661106276815
+        },
+        "thresholds": {
+          "mfa": 74,
+          "review": 74
+        },
+        "total_sessions": 6549,
+        "unscored_sessions": 2164
+      },
+      "tuned_sequence": {
+        "benign_subgroups": {
+          "cold_start": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": null,
+              "fpr_wilson95": [
+                null,
+                null
+              ],
+              "negative_sessions": 0,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 0
+          },
+          "night_shift": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  264,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01434228605835731
+              ],
+              "negative_sessions": 264,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  264,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.01434228605835731
+              ],
+              "negative_sessions": 264,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 264
+          },
+          "normal": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1485,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.002580166476380185
+              ],
+              "negative_sessions": 1485,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1485,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.002580166476380185
+              ],
+              "negative_sessions": 1485,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1485
+          },
+          "travel_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  388,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00980360483613851
+              ],
+              "negative_sessions": 388,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  388,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                0.0,
+                0.00980360483613851
+              ],
+              "negative_sessions": 388,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 388
+          },
+          "user_error": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  471,
+                  14
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0288659793814433,
+              "fpr_wilson95": [
+                0.017271343938722296,
+                0.04786523203318906
+              ],
+              "negative_sessions": 485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  484,
+                  1
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.002061855670103093,
+              "fpr_wilson95": [
+                0.00036406092317974644,
+                0.011585536876455246
+              ],
+              "negative_sessions": 485,
+              "positive_sessions": 0,
+              "precision": 0.0,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 485
+          },
+          "vpn_new_device": {
+            "mfa": {
+              "confusion_matrix": [
+                [
+                  1326,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                2.168404344971009e-19,
+                0.002888659242208269
+              ],
+              "negative_sessions": 1326,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "review": {
+              "confusion_matrix": [
+                [
+                  1326,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ]
+              ],
+              "false_positive_rate": 0.0,
+              "fpr_wilson95": [
+                2.168404344971009e-19,
+                0.002888659242208269
+              ],
+              "negative_sessions": 1326,
+              "positive_sessions": 0,
+              "precision": null,
+              "recall": null,
+              "recall_wilson95": [
+                null,
+                null
+              ]
+            },
+            "scored_sessions": 1326
+          }
+        },
+        "coverage": 0.6695678729577035,
+        "event_calibration": {
+          "bins": [
+            {
+              "count": 11166,
+              "lower": 0.0,
+              "mean_probability": 0.014850128213679873,
+              "observed_positive_rate": 0.014866559197564034,
+              "upper": 0.1,
+              "upper_inclusive": false
+            },
+            {
+              "count": 579,
+              "lower": 0.1,
+              "mean_probability": 0.1409641029966159,
+              "observed_positive_rate": 0.12607944732297063,
+              "upper": 0.2,
+              "upper_inclusive": false
+            },
+            {
+              "count": 253,
+              "lower": 0.2,
+              "mean_probability": 0.24219851043241333,
+              "observed_positive_rate": 0.25296442687747034,
+              "upper": 0.3,
+              "upper_inclusive": false
+            },
+            {
+              "count": 189,
+              "lower": 0.3,
+              "mean_probability": 0.35744409661055215,
+              "observed_positive_rate": 0.26455026455026454,
+              "upper": 0.4,
+              "upper_inclusive": false
+            },
+            {
+              "count": 153,
+              "lower": 0.4,
+              "mean_probability": 0.4417872373444393,
+              "observed_positive_rate": 0.35947712418300654,
+              "upper": 0.5,
+              "upper_inclusive": false
+            },
+            {
+              "count": 67,
+              "lower": 0.5,
+              "mean_probability": 0.5468834648432066,
+              "observed_positive_rate": 0.7014925373134329,
+              "upper": 0.6,
+              "upper_inclusive": false
+            },
+            {
+              "count": 89,
+              "lower": 0.6,
+              "mean_probability": 0.643285114123191,
+              "observed_positive_rate": 0.797752808988764,
+              "upper": 0.7,
+              "upper_inclusive": false
+            },
+            {
+              "count": 38,
+              "lower": 0.7,
+              "mean_probability": 0.7602461066562011,
+              "observed_positive_rate": 0.7105263157894737,
+              "upper": 0.8,
+              "upper_inclusive": false
+            },
+            {
+              "count": 26,
+              "lower": 0.8,
+              "mean_probability": 0.8512961498125459,
+              "observed_positive_rate": 0.8076923076923077,
+              "upper": 0.9,
+              "upper_inclusive": false
+            },
+            {
+              "count": 496,
+              "lower": 0.9,
+              "mean_probability": 0.9889330330396764,
+              "observed_positive_rate": 0.9979838709677419,
+              "upper": 1.0,
+              "upper_inclusive": true
+            }
+          ],
+          "brier_score": 0.029644396037258734,
+          "ece_10_equal_width_bins": 0.00561385896857442,
+          "scored_events": 13056
+        },
+        "model_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3947,
+                1
+              ],
+              [
+                152,
+                285
+              ]
+            ],
+            "false_positive_rate": 0.00025329280648429586,
+            "fpr_wilson95": [
+              4.471379930511476e-05,
+              0.0014334474279515401
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.9965034965034965,
+            "recall": 0.6521739130434783,
+            "recall_wilson95": [
+              0.6063680900446772,
+              0.695327672318036
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3947,
+                1
+              ],
+              [
+                152,
+                285
+              ]
+            ],
+            "false_positive_rate": 0.00025329280648429586,
+            "fpr_wilson95": [
+              4.471379930511476e-05,
+              0.0014334474279515401
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.9965034965034965,
+            "recall": 0.6521739130434783,
+            "recall_wilson95": [
+              0.6063680900446772,
+              0.695327672318036
+            ]
+          }
+        },
+        "offline_runtime_integer_score_parity": true,
+        "runtime_all_sessions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3934,
+                1989
+              ],
+              [
+                147,
+                479
+              ]
+            ],
+            "false_positive_rate": 0.33580955596825934,
+            "fpr_wilson95": [
+              0.3238920496723211,
+              0.3479399010363772
+            ],
+            "negative_sessions": 5923,
+            "positive_sessions": 626,
+            "precision": 0.1940842787682334,
+            "recall": 0.7651757188498403,
+            "recall_wilson95": [
+              0.7304145929249941,
+              0.796702184401211
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3947,
+                1976
+              ],
+              [
+                147,
+                479
+              ]
+            ],
+            "false_positive_rate": 0.33361472226912037,
+            "fpr_wilson95": [
+              0.3217181972896964,
+              0.34572693116626463
+            ],
+            "negative_sessions": 5923,
+            "positive_sessions": 626,
+            "precision": 0.195112016293279,
+            "recall": 0.7651757188498403,
+            "recall_wilson95": [
+              0.7304145929249941,
+              0.796702184401211
+            ]
+          }
+        },
+        "runtime_scored_decisions": {
+          "mfa": {
+            "confusion_matrix": [
+              [
+                3934,
+                14
+              ],
+              [
+                147,
+                290
+              ]
+            ],
+            "false_positive_rate": 0.0035460992907801418,
+            "fpr_wilson95": [
+              0.0021135579594657554,
+              0.005943814572426308
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.9539473684210527,
+            "recall": 0.6636155606407322,
+            "recall_wilson95": [
+              0.6180622683367173,
+              0.7063173859329669
+            ]
+          },
+          "review": {
+            "confusion_matrix": [
+              [
+                3947,
+                1
+              ],
+              [
+                147,
+                290
+              ]
+            ],
+            "false_positive_rate": 0.00025329280648429586,
+            "fpr_wilson95": [
+              4.471379930511476e-05,
+              0.0014334474279515401
+            ],
+            "negative_sessions": 3948,
+            "positive_sessions": 437,
+            "precision": 0.9965635738831615,
+            "recall": 0.6636155606407322,
+            "recall_wilson95": [
+              0.6180622683367173,
+              0.7063173859329669
+            ]
+          }
+        },
+        "scored_sessions": 4385,
+        "session_ranking": {
+          "recall_at_fpr_5pct": 0.8260869565217391,
+          "scored_sessions": 4385,
+          "session_average_precision": 0.8667161413638126
+        },
+        "thresholds": {
+          "mfa": 90,
+          "review": 90
+        },
+        "total_sessions": 6549,
+        "unscored_sessions": 2164
+      }
+    }
+  },
+  "promotion": {
+    "automatic_production_deployment": false,
+    "eligible_for_demo_promotion": true,
+    "failures": [],
+    "uncertainty_scope": "Wilson intervals treat sessions as binomial trials; residual within-cohort correlations and common generator bias are not eliminated. Not production assurance."
+  },
+  "protocol_digest": "80f17d4dcffd58b807363273a09eeede9148a92f15252e078c91046578ba12d6",
+  "scope": "same_generator_synthetic_only",
+  "split_audit": {
+    "cohorts": {
+      "calibration": {
+        "accounts": 464,
+        "episodes": 2435,
+        "events": 8000,
+        "positive_events": 640,
+        "scored_events": 6522,
+        "sessions": 3269
+      },
+      "fit": {
+        "accounts": 1379,
+        "episodes": 7185,
+        "events": 24000,
+        "positive_events": 1920,
+        "scored_events": 19627,
+        "sessions": 9678
+      },
+      "holdout_a": {
+        "accounts": 921,
+        "episodes": 4805,
+        "events": 16000,
+        "positive_events": 1280,
+        "scored_events": 13128,
+        "sessions": 6482
+      },
+      "holdout_b": {
+        "accounts": 922,
+        "episodes": 4873,
+        "events": 16000,
+        "positive_events": 1280,
+        "scored_events": 13056,
+        "sessions": 6549
+      },
+      "original_previously_inspected": {
+        "accounts": 4794,
+        "episodes": 25224,
+        "events": 84000,
+        "positive_events": 6720,
+        "scored_events": 68808,
+        "sessions": 33988
+      },
+      "selection": {
+        "accounts": 1036,
+        "episodes": 5430,
+        "events": 18000,
+        "positive_events": 1440,
+        "scored_events": 14710,
+        "sessions": 7309
+      },
+      "tune_a": {
+        "accounts": 338,
+        "episodes": 1818,
+        "events": 6000,
+        "positive_events": 480,
+        "scored_events": 4897,
+        "sessions": 2450
+      },
+      "tune_b": {
+        "accounts": 339,
+        "episodes": 1830,
+        "events": 6000,
+        "positive_events": 480,
+        "scored_events": 4918,
+        "sessions": 2452
+      }
+    },
+    "overlaps": {
+      "calibration:holdout_a:_episode": 0,
+      "calibration:holdout_a:_source": 0,
+      "calibration:holdout_a:account_token": 0,
+      "calibration:holdout_a:event_id": 0,
+      "calibration:holdout_a:session_token": 0,
+      "calibration:holdout_b:_episode": 0,
+      "calibration:holdout_b:_source": 0,
+      "calibration:holdout_b:account_token": 0,
+      "calibration:holdout_b:event_id": 0,
+      "calibration:holdout_b:session_token": 0,
+      "calibration:selection:_episode": 0,
+      "calibration:selection:_source": 0,
+      "calibration:selection:account_token": 0,
+      "calibration:selection:event_id": 0,
+      "calibration:selection:session_token": 0,
+      "fit:calibration:_episode": 0,
+      "fit:calibration:_source": 0,
+      "fit:calibration:account_token": 0,
+      "fit:calibration:event_id": 0,
+      "fit:calibration:session_token": 0,
+      "fit:holdout_a:_episode": 0,
+      "fit:holdout_a:_source": 0,
+      "fit:holdout_a:account_token": 0,
+      "fit:holdout_a:event_id": 0,
+      "fit:holdout_a:session_token": 0,
+      "fit:holdout_b:_episode": 0,
+      "fit:holdout_b:_source": 0,
+      "fit:holdout_b:account_token": 0,
+      "fit:holdout_b:event_id": 0,
+      "fit:holdout_b:session_token": 0,
+      "fit:selection:_episode": 0,
+      "fit:selection:_source": 0,
+      "fit:selection:account_token": 0,
+      "fit:selection:event_id": 0,
+      "fit:selection:session_token": 0,
+      "fit:tune_a:_episode": 0,
+      "fit:tune_a:_source": 0,
+      "fit:tune_a:account_token": 0,
+      "fit:tune_a:event_id": 0,
+      "fit:tune_a:session_token": 0,
+      "fit:tune_b:_episode": 0,
+      "fit:tune_b:_source": 0,
+      "fit:tune_b:account_token": 0,
+      "fit:tune_b:event_id": 0,
+      "fit:tune_b:session_token": 0,
+      "holdout_a:holdout_b:_episode": 0,
+      "holdout_a:holdout_b:_source": 0,
+      "holdout_a:holdout_b:account_token": 0,
+      "holdout_a:holdout_b:event_id": 0,
+      "holdout_a:holdout_b:session_token": 0,
+      "original_previously_inspected:calibration:_episode": 0,
+      "original_previously_inspected:calibration:_source": 0,
+      "original_previously_inspected:calibration:account_token": 0,
+      "original_previously_inspected:calibration:event_id": 0,
+      "original_previously_inspected:calibration:session_token": 0,
+      "original_previously_inspected:fit:_episode": 0,
+      "original_previously_inspected:fit:_source": 0,
+      "original_previously_inspected:fit:account_token": 0,
+      "original_previously_inspected:fit:event_id": 0,
+      "original_previously_inspected:fit:session_token": 0,
+      "original_previously_inspected:holdout_a:_episode": 0,
+      "original_previously_inspected:holdout_a:_source": 0,
+      "original_previously_inspected:holdout_a:account_token": 0,
+      "original_previously_inspected:holdout_a:event_id": 0,
+      "original_previously_inspected:holdout_a:session_token": 0,
+      "original_previously_inspected:holdout_b:_episode": 0,
+      "original_previously_inspected:holdout_b:_source": 0,
+      "original_previously_inspected:holdout_b:account_token": 0,
+      "original_previously_inspected:holdout_b:event_id": 0,
+      "original_previously_inspected:holdout_b:session_token": 0,
+      "original_previously_inspected:selection:_episode": 0,
+      "original_previously_inspected:selection:_source": 0,
+      "original_previously_inspected:selection:account_token": 0,
+      "original_previously_inspected:selection:event_id": 0,
+      "original_previously_inspected:selection:session_token": 0,
+      "original_previously_inspected:tune_a:_episode": 0,
+      "original_previously_inspected:tune_a:_source": 0,
+      "original_previously_inspected:tune_a:account_token": 0,
+      "original_previously_inspected:tune_a:event_id": 0,
+      "original_previously_inspected:tune_a:session_token": 0,
+      "original_previously_inspected:tune_b:_episode": 0,
+      "original_previously_inspected:tune_b:_source": 0,
+      "original_previously_inspected:tune_b:account_token": 0,
+      "original_previously_inspected:tune_b:event_id": 0,
+      "original_previously_inspected:tune_b:session_token": 0,
+      "selection:holdout_a:_episode": 0,
+      "selection:holdout_a:_source": 0,
+      "selection:holdout_a:account_token": 0,
+      "selection:holdout_a:event_id": 0,
+      "selection:holdout_a:session_token": 0,
+      "selection:holdout_b:_episode": 0,
+      "selection:holdout_b:_source": 0,
+      "selection:holdout_b:account_token": 0,
+      "selection:holdout_b:event_id": 0,
+      "selection:holdout_b:session_token": 0,
+      "tune_a:calibration:_episode": 0,
+      "tune_a:calibration:_source": 0,
+      "tune_a:calibration:account_token": 0,
+      "tune_a:calibration:event_id": 0,
+      "tune_a:calibration:session_token": 0,
+      "tune_a:holdout_a:_episode": 0,
+      "tune_a:holdout_a:_source": 0,
+      "tune_a:holdout_a:account_token": 0,
+      "tune_a:holdout_a:event_id": 0,
+      "tune_a:holdout_a:session_token": 0,
+      "tune_a:holdout_b:_episode": 0,
+      "tune_a:holdout_b:_source": 0,
+      "tune_a:holdout_b:account_token": 0,
+      "tune_a:holdout_b:event_id": 0,
+      "tune_a:holdout_b:session_token": 0,
+      "tune_a:selection:_episode": 0,
+      "tune_a:selection:_source": 0,
+      "tune_a:selection:account_token": 0,
+      "tune_a:selection:event_id": 0,
+      "tune_a:selection:session_token": 0,
+      "tune_a:tune_b:_episode": 0,
+      "tune_a:tune_b:_source": 0,
+      "tune_a:tune_b:account_token": 0,
+      "tune_a:tune_b:event_id": 0,
+      "tune_a:tune_b:session_token": 0,
+      "tune_b:calibration:_episode": 0,
+      "tune_b:calibration:_source": 0,
+      "tune_b:calibration:account_token": 0,
+      "tune_b:calibration:event_id": 0,
+      "tune_b:calibration:session_token": 0,
+      "tune_b:holdout_a:_episode": 0,
+      "tune_b:holdout_a:_source": 0,
+      "tune_b:holdout_a:account_token": 0,
+      "tune_b:holdout_a:event_id": 0,
+      "tune_b:holdout_a:session_token": 0,
+      "tune_b:holdout_b:_episode": 0,
+      "tune_b:holdout_b:_source": 0,
+      "tune_b:holdout_b:account_token": 0,
+      "tune_b:holdout_b:event_id": 0,
+      "tune_b:holdout_b:session_token": 0,
+      "tune_b:selection:_episode": 0,
+      "tune_b:selection:_source": 0,
+      "tune_b:selection:account_token": 0,
+      "tune_b:selection:event_id": 0,
+      "tune_b:selection:session_token": 0
+    },
+    "time_gaps_seconds": {
+      "calibration:holdout_a": 2852175.0,
+      "calibration:holdout_b": 5444305.0,
+      "calibration:selection": 173669.0,
+      "fit:calibration": 5357325.0,
+      "fit:holdout_a": 10627896.0,
+      "fit:holdout_b": 13220026.0,
+      "fit:selection": 7949390.0,
+      "fit:tune_a": 260748.0,
+      "fit:tune_b": 2679597.0,
+      "holdout_a:holdout_b": 173212.0,
+      "original_previously_inspected:calibration": 15899061.0,
+      "original_previously_inspected:fit": 8123054.0,
+      "original_previously_inspected:holdout_a": 21169632.0,
+      "original_previously_inspected:holdout_b": 23761762.0,
+      "original_previously_inspected:selection": 18491126.0,
+      "original_previously_inspected:tune_a": 10802484.0,
+      "original_previously_inspected:tune_b": 13221333.0,
+      "selection:holdout_a": 259442.0,
+      "selection:holdout_b": 2851572.0,
+      "tune_a:calibration": 2678576.0,
+      "tune_a:holdout_a": 7949147.0,
+      "tune_a:holdout_b": 10541277.0,
+      "tune_a:selection": 5270641.0,
+      "tune_a:tune_b": 848.0,
+      "tune_b:calibration": 264974.0,
+      "tune_b:holdout_a": 5535545.0,
+      "tune_b:holdout_b": 8127675.0,
+      "tune_b:selection": 2857039.0
+    }
+  },
+  "winner": "tuned_sequence"
+}

@@ -16,17 +16,17 @@
     "device_new"
   ],
   "feature_labels": {
-    "attempts_2m": "2 dakikadaki deneme sayısı",
-    "attempts_1h": "1 saatteki deneme sayısı",
-    "distinct_accounts_2m": "2 dakikadaki farklı hesap sayısı",
-    "failed_ratio_24h": "24 saatlik başarısızlık oranı",
-    "hour_deviation": "Olağan saatten sapma",
-    "typical_weekday": "Olağan gün bağlamı",
-    "geo_velocity_kmh": "Konum değişim hızı",
-    "network_familiarity": "Ağ aşinalığı",
-    "asn_category": "Ağ kategorisi",
-    "device_managed": "Yönetilen cihaz durumu",
-    "device_new": "Yeni cihaz bağlamı"
+    "attempts_2m": "Login attempts in 2 minutes",
+    "attempts_1h": "Login attempts in 1 hour",
+    "distinct_accounts_2m": "Distinct accounts in 2 minutes",
+    "failed_ratio_24h": "Failure ratio over 24 hours",
+    "hour_deviation": "Deviation from usual login hour",
+    "typical_weekday": "Usual weekday context",
+    "geo_velocity_kmh": "Location change speed",
+    "network_familiarity": "Network familiarity",
+    "asn_category": "Network category",
+    "device_managed": "Managed device status",
+    "device_new": "New device context"
   },
   "missing_policy": "abstain",
   "unknown_category_policy": "abstain",
@@ -167,7 +167,7 @@
   "artifact_integrity": {
     "algorithm": "sha256",
     "canonicalization": "python_json_sort_keys_utf8_excluding_artifact_integrity",
-    "digest": "63bb1561b144f33491ef90979c933f20d7ce117a50837e2016cb0d974c8bef4e",
+    "digest": "8b9a805ad89fbb331c34a28274fed1ade792a917b5c8585a390c71aed376da43",
     "purpose": "accidental_corruption_not_authenticity"
   }
 }
