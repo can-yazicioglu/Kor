@@ -1,9 +1,14 @@
 """Boundary tests: serving local assets must not expose customer files or APIs."""
 import contextlib
+import errno
 import http.client
 import importlib.util
 import io
 import json
+import os
+import ssl
+import subprocess
+import sys
 import tempfile
 from pathlib import Path
 import threading
@@ -54,6 +59,33 @@ class DemoServerTests(unittest.TestCase):
             return response.status, dict(response.getheaders()), response.read()
         finally:
             client.close()
+
+    def test_occupied_port_preserves_bind_error_and_running_server(self):
+        with self.assertRaises(OSError) as error:
+            serve.DemoServer(('127.0.0.1', self.server.server_port), serve.DemoHandler)
+        self.assertEqual(error.exception.errno, errno.EADDRINUSE)
+        self.assertEqual(self.request('/company.html')[0], 200)
+
+    def test_cli_occupied_port_has_actionable_error_without_traceback(self):
+        env = {key: value for key, value in os.environ.items()
+               if key not in ('SENTINEL_INGEST_SECRET', 'SENTINEL_REVIEW_SECRET')}
+        result = subprocess.run(
+            [sys.executable, str(APP / 'serve.py'), '--port', str(self.server.server_port)],
+            cwd=APP.parent, env=env, capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn(f'Port {self.server.server_port} is already in use', result.stderr)
+        self.assertIn('--port', result.stderr)
+        self.assertNotIn('Traceback', result.stderr)
+        self.assertEqual(result.stdout, '')
+        self.assertEqual(self.request('/company.html')[0], 200)
+
+    def test_tls_startup_failure_closes_bound_socket(self):
+        context = mock.Mock()
+        context.wrap_socket.side_effect = ssl.SSLError('synthetic TLS setup failure')
+        with self.assertRaises(ssl.SSLError):
+            serve.DemoServer(('127.0.0.1', 0), serve.DemoHandler, tls_context=context)
+        failed_socket = context.wrap_socket.call_args.args[0]
+        self.assertEqual(failed_socket.fileno(), -1)
 
     def test_main_assets_and_mime(self):
         for route, (_, mime) in serve.ASSETS.items():

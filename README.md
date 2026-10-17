@@ -51,6 +51,23 @@ python3 app/serve.py --port 8001
 
 Open **[http://127.0.0.1:8001/company.html](http://127.0.0.1:8001/company.html)**. Keep the terminal running; stop with `Ctrl+C`. On Windows, use `py -3` if `python3` is unavailable. If port 8001 is occupied, choose another `--port` and open that port.
 
+<details>
+<summary><strong>Startup troubleshooting: wrong folder or occupied port</strong></summary>
+
+`can't open file .../scripts/preflight.py` means the command was run outside the checkout. Run `cd ~/TurAz-Security` first, or use the actual path where you cloned the project.
+
+`Port 8001 is already in use` means another process already owns that port. If your Sentinel demo is already running there, open its browser address instead of starting it again. Otherwise, choose a free port, for example:
+
+```bash
+cd ~/TurAz-Security
+python3 scripts/preflight.py
+python3 app/serve.py --port 8002
+```
+
+Then open **http://127.0.0.1:8002/company.html**. The server does not stop the existing process or silently change ports. The preflight's `tuned_candidate: blocked`, `customer_idp: not_connected` and `ibm_z_execution: not_verified` are expected prototype status fields, not a failed startup.
+
+</details>
+
 | Public demo fixture | Value |
 |---|---|
 | Username | `demo` |
@@ -128,7 +145,7 @@ The password reference contains **12,526 entries from two pinned password-only d
 
 | Area | Current evidence and boundary |
 |---|---|
-| **Working software** | 200 Python tests, 13 HTTP/server tests, 111 JavaScript checks and 8 Chromium desktop/mobile cases recorded in the [security review](docs/security_review.md). The CI badge reports the current run. |
+| **Working software** | 200 Python tests, 16 HTTP/server tests, 111 JavaScript checks and 8 Chromium desktop/mobile cases recorded in the [security review](docs/security_review.md). The CI badge reports the current run. |
 | **Default model** | Complete-context scores are available, but no threshold met the predefined false-positive/recall targets. **Review is the current fallback, including normal logins.** |
 | **Tuning candidate** | Better synthetic ranking, but **0/108 and 0/115 scored suspicious-success sessions detected** in two final cohorts. **Release blocked; not the default model.** |
 | **Demo context safeguard** | Combined new device/network/unusual context triggers an illustrative rule. Its substantial benign VPN/travel overlap is measured; it is **disabled on trusted ingestion**. |

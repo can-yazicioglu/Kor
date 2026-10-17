@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Loopback-only static demo, local verifier and authenticated shadow-event API."""
 import argparse
+import errno
 import importlib.util
 import hashlib
 import hmac
@@ -92,16 +93,23 @@ class DemoServer(ThreadingHTTPServer):
             secret=os.environ.get('SENTINEL_INGEST_SECRET'), review_secret=os.environ.get('SENTINEL_REVIEW_SECRET'))
         self.request_deadline = request_deadline
         self._workers = threading.BoundedSemaphore(max_workers)
-        super().__init__(*args, **kwargs)
-        self.scheme = 'https' if tls_context else 'http'
-        if tls_context:
-            # Handshake runs in a bounded worker under the connection deadline,
-            # never in the single accept loop.
-            self.socket = tls_context.wrap_socket(self.socket, server_side=True, do_handshake_on_connect=False)
-        self.runtime.transport = 'tls13_loopback' if tls_context else 'loopback_http'
+        # TCPServer calls our server_close() if binding fails during its
+        # constructor, before a cleanup thread can have been started.
         self._cleanup_stop = threading.Event()
-        self._cleanup_thread = threading.Thread(target=self._cleanup_loop, daemon=True)
-        self._cleanup_thread.start()
+        self._cleanup_thread = None
+        super().__init__(*args, **kwargs)
+        try:
+            self.scheme = 'https' if tls_context else 'http'
+            if tls_context:
+                # Handshake runs in a bounded worker under the connection deadline,
+                # never in the single accept loop.
+                self.socket = tls_context.wrap_socket(self.socket, server_side=True, do_handshake_on_connect=False)
+            self.runtime.transport = 'tls13_loopback' if tls_context else 'loopback_http'
+            self._cleanup_thread = threading.Thread(target=self._cleanup_loop, daemon=True)
+            self._cleanup_thread.start()
+        except BaseException:
+            self.server_close()
+            raise
 
     def process_request(self, request, client_address):
         if not self._workers.acquire(blocking=False):
@@ -131,7 +139,8 @@ class DemoServer(ThreadingHTTPServer):
 
     def server_close(self):
         self._cleanup_stop.set()
-        self._cleanup_thread.join(timeout=2)
+        if self._cleanup_thread is not None and self._cleanup_thread.is_alive():
+            self._cleanup_thread.join(timeout=2)
         super().server_close()
 
     def handle_error(self, _request, _client_address):
@@ -374,7 +383,9 @@ def main():
         server = DemoServer(('127.0.0.1', args.port), DemoHandler, runtime=runtime, tls_context=tls_context)
     except ssl.SSLError:
         parser.exit(1, 'TLS certificate/key could not be loaded. No plaintext fallback was started.\n')
-    except OSError:
+    except OSError as error:
+        if error.errno == errno.EADDRINUSE:
+            parser.exit(1, f'Port {args.port} is already in use. Use your existing demo or choose a different --port.\n')
         parser.exit(1, 'Local port or TLS files unavailable. Check --port and configured file paths.\n')
     except ValueError:
         parser.exit(1, 'Invalid runtime configuration. Role keys must be distinct; --tuned-demo requires a qualified intact release.\n')

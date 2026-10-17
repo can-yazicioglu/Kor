@@ -109,6 +109,6 @@ Sunumda şu sırayı kullan:
 5. **Evidence & privacy → Reset demo:** geçici durumun kapsamını ve sıfırlamayı göster.
 6. Son cümlede sentetik değerlendirme sınırını ve kapalı aday modeli açıkça söyle.
 
-Yazılım için kayıtlı doğrulama kapsamı: **200 Python testi, 13 sunucu testi, 111 JavaScript kontrolü ve 8 masaüstü/mobil Chromium senaryosu**. Güncel çalışmanın sonucu GitHub CI rozetinde görünür. Testlerin geçmesi güvenlik açıklarının veya model hatalarının tamamen bittiği anlamına gelmez.
+Yazılım için kayıtlı doğrulama kapsamı: **200 Python testi, 16 sunucu testi, 111 JavaScript kontrolü ve 8 masaüstü/mobil Chromium senaryosu**. Güncel çalışmanın sonucu GitHub CI rozetinde görünür. Testlerin geçmesi güvenlik açıklarının veya model hatalarının tamamen bittiği anlamına gelmez.
 
 Bir sonraki büyük adım daha fazla özellik eklemekten önce, şüpheli başarılı girişleri normal seyahat/VPN kullanımından ayırabilmek; yeni ve önceden dondurulmuş değerlendirme gruplarıyla sınamak; seçilecek kimlik sağlayıcısıyla müşteri ortamında gözlem modunda çalışmak. Üretim güvenilirliği buradan kazanılacak.

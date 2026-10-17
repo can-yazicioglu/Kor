@@ -19,7 +19,7 @@
     "app/pnpm-lock.yaml": "289350e727c32cd870dda56f0d99f5547b7b23a2adaad48e6987a963ad2b9866",
     "app/reliability-api.js": "fb90b4d26b40726526c2b44f7f4e30cbfbe81c97476a3810cfa6d135818e67c9",
     "app/schema.js": "cf1642dab4f9d8ac2175aa928e0a5452b380e155f7fbb726e93be99e3112cf26",
-    "app/serve.py": "c272c7ab831814a832a832bc5ed7c1099fb560535a25811a66e07a8ee50950ee",
+    "app/serve.py": "59f40a4031ec4b3cdf651493d3aff11c2cb9d836ebfaa49a2d7fc3827e7e0603",
     "app/sessions.js": "87c93f5f77cce14f41005ddc97eeb00d97e3e9fd23ecab086de59d728e4d8cf4",
     "app/styles.css": "2aede8157b7d6ede445ad894a21c34013da5d414be7049747321728edee976a1",
     "data/password_reference.json": "97f0dde1d7814565a6aa8feb20819e977a7c8961f2408c5a1cd3aaf37513e398",
