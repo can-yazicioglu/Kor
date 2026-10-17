@@ -1,0 +1,8 @@
+{
+  "name": "ephemeral-login-sentinel-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/contracts.test.mjs"
+  }
+}
