@@ -4,7 +4,7 @@
 
 **Understand suspicious sign-ins. Keep less identity data. Show your evidence.**
 
-[![Tests](https://github.com/can-yazicioglu/TurAz-Security/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/can-yazicioglu/TurAz-Security/actions/workflows/tests.yml)
+[![Tests](https://github.com/can-yazicioglu/Kor/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/can-yazicioglu/Kor/actions/workflows/tests.yml)
 [![Python 3.10+](https://img.shields.io/badge/runtime-Python_3.10%2B-32688c?style=flat-square)](#quick-start)
 [![MIT license](https://img.shields.io/badge/license-MIT-b49a54?style=flat-square)](LICENSE)
 [![Synthetic research prototype](https://img.shields.io/badge/status-synthetic_prototype-725d86?style=flat-square)](#what-is-actually-validated)
@@ -43,8 +43,8 @@ The fictional **Vela employee portal** puts the full journey on screen: sign in,
 **Python 3.10+** is enough to run the included demo. No API key, build step, runtime package installation or network access is required after cloning.
 
 ```bash
-git clone https://github.com/can-yazicioglu/TurAz-Security.git
-cd TurAz-Security
+git clone https://github.com/can-yazicioglu/Kor.git
+cd Kor
 python3 scripts/preflight.py
 python3 app/serve.py --port 8001
 ```
@@ -54,12 +54,12 @@ Open **[http://127.0.0.1:8001/company.html](http://127.0.0.1:8001/company.html)*
 <details>
 <summary><strong>Startup troubleshooting: wrong folder or occupied port</strong></summary>
 
-`can't open file .../scripts/preflight.py` means the command was run outside the checkout. Run `cd ~/TurAz-Security` first, or use the actual path where you cloned the project.
+`can't open file .../scripts/preflight.py` means the command was run outside the checkout. Run `cd ~/Kor` first, or use the actual path where you cloned the project.
 
 `Port 8001 is already in use` means another process already owns that port. If your Kör demo is already running there, open its browser address instead of starting it again. Otherwise, choose a free port, for example:
 
 ```bash
-cd ~/TurAz-Security
+cd ~/Kor
 python3 scripts/preflight.py
 python3 app/serve.py --port 8002
 ```

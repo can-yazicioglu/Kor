@@ -12,7 +12,7 @@ README, artwork, screenshots, animation and documentation are versioned in Git. 
 
 Use the repository's demo guide, not an invented live deployment:
 
-`https://github.com/can-yazicioglu/TurAz-Security/blob/main/docs/datathon_demo.md`
+`https://github.com/can-yazicioglu/Kor/blob/main/docs/datathon_demo.md`
 
 **Topics**
 
@@ -31,14 +31,14 @@ gh auth login --hostname github.com --git-protocol ssh --web
 Then apply the prepared settings:
 
 ```bash
-gh repo edit can-yazicioglu/TurAz-Security \
+gh repo edit can-yazicioglu/Kor \
   --description 'Kör — privacy-aware session-risk prototype: local AI, expiring evidence, MFA/review recommendations and inspectable security controls. Synthetic demo for the IBM Z Datathon.' \
-  --homepage 'https://github.com/can-yazicioglu/TurAz-Security/blob/main/docs/datathon_demo.md' \
+  --homepage 'https://github.com/can-yazicioglu/Kor/blob/main/docs/datathon_demo.md' \
   --add-topic 'cybersecurity,privacy,privacy-by-design,machine-learning,anomaly-detection,risk-scoring,authentication,authorization,identity-access-management,mfa,responsible-ai,data-minimization,python,javascript,ibm-z,datathon'
 ```
 
 Verify the actual server settings rather than assuming a commit applied them:
 
 ```bash
-gh repo view can-yazicioglu/TurAz-Security --json description,homepageUrl,repositoryTopics
+gh repo view can-yazicioglu/Kor --json description,homepageUrl,repositoryTopics
 ```
